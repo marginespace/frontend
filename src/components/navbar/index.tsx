@@ -8,7 +8,6 @@ import { EthereumButton } from './ethereum-btn';
 import { NavbarItem } from './navbar-item';
 import { Profile } from './profile';
 
-import CuberaLabel from '@/components/ui/cubera-label';
 import { Menu } from '@/components/ui/icons';
 import { navbarItems } from '@/constants/navbarItems';
 import {
@@ -29,8 +28,7 @@ export const Navbar = () => {
   return (
     <nav className="container m-0 flex min-h-fit min-w-[calc(100%+20px)] flex-row flex-wrap justify-between border-b border-white bg-gradient-to-r from-[#282236] to-[#25214b] py-[16px] 2xl:gap-[24px]">
       <div className="order-1 flex w-1/2 flex-row items-center gap-1 xl:order-1 xl:w-auto">
-        <Image alt="logo" src="/icons/logo.svg" width={36} height={32} />
-        <CuberaLabel />
+        <Image alt="logo" src="/icons/logo.svg" width={120} height={40} />
       </div>
       <div className="order-2 flex w-1/2 items-center justify-end xl:order-3 xl:hidden xl:w-auto 2xl:flex">
         <EthereumButton />
