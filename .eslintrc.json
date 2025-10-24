@@ -1,0 +1,7 @@
+{
+  "extends": ["next/core-web-vitals", "plugin:@redduck/recommended-react"],
+  "plugins": ["@redduck"],
+  "rules": {
+    "react/prop-types": "off"
+  }
+}

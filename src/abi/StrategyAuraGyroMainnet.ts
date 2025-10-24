@@ -1,0 +1,1591 @@
+export const strategyAuraGyroMainnetAbi = [
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'callFees',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'batcherFees',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'strategistFees',
+        type: 'uint256',
+      },
+    ],
+    name: 'ChargedFees',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'tvl',
+        type: 'uint256',
+      },
+    ],
+    name: 'Deposit',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint8',
+        name: 'version',
+        type: 'uint8',
+      },
+    ],
+    name: 'Initialized',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
+    ],
+    name: 'Paused',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'feeConfig',
+        type: 'address',
+      },
+    ],
+    name: 'SetFeeConfig',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'feeRecipient',
+        type: 'address',
+      },
+    ],
+    name: 'SetFeeRecipient',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'keeper',
+        type: 'address',
+      },
+    ],
+    name: 'SetKeeper',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'feeId',
+        type: 'uint256',
+      },
+    ],
+    name: 'SetStratFeeId',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'strategist',
+        type: 'address',
+      },
+    ],
+    name: 'SetStrategist',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'unirouter',
+        type: 'address',
+      },
+    ],
+    name: 'SetUnirouter',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'vault',
+        type: 'address',
+      },
+    ],
+    name: 'SetVault',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'harvester',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'wantHarvested',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'tvl',
+        type: 'uint256',
+      },
+    ],
+    name: 'StratHarvest',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
+    ],
+    name: 'Unpaused',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'tvl',
+        type: 'uint256',
+      },
+    ],
+    name: 'Withdraw',
+    type: 'event',
+  },
+  {
+    inputs: [],
+    name: 'DURATION',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_token',
+        type: 'address',
+      },
+      {
+        components: [
+          {
+            internalType: 'bytes32',
+            name: 'poolId',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetInIndex',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetOutIndex',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct BalancerStructs.BatchSwapStruct[]',
+        name: '_swapInfo',
+        type: 'tuple[]',
+      },
+      {
+        internalType: 'address[]',
+        name: '_assets',
+        type: 'address[]',
+      },
+      {
+        internalType: 'bytes',
+        name: '_routeToNative',
+        type: 'bytes',
+      },
+      {
+        internalType: 'uint256',
+        name: '_minAmount',
+        type: 'uint256',
+      },
+    ],
+    name: 'addRewardToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'balanceOf',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'balanceOfPool',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'balanceOfWant',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'beforeDeposit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'booster',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_bal',
+        type: 'uint256',
+      },
+    ],
+    name: 'calcSwapAmount',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'lp0Amt',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'lp1Amt',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'callReward',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'composable',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'deposit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'earmark',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'feeConfig',
+    outputs: [
+      {
+        internalType: 'contract IFeeConfig',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'feeRecipient',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'funds',
+    outputs: [
+      {
+        internalType: 'address',
+        name: 'sender',
+        type: 'address',
+      },
+      {
+        internalType: 'bool',
+        name: 'fromInternalBalance',
+        type: 'bool',
+      },
+      {
+        internalType: 'address payable',
+        name: 'recipient',
+        type: 'address',
+      },
+      {
+        internalType: 'bool',
+        name: 'toInternalBalance',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getAllFees',
+    outputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: 'uint256',
+                name: 'total',
+                type: 'uint256',
+              },
+              {
+                internalType: 'uint256',
+                name: 'batcher',
+                type: 'uint256',
+              },
+              {
+                internalType: 'uint256',
+                name: 'call',
+                type: 'uint256',
+              },
+              {
+                internalType: 'uint256',
+                name: 'strategist',
+                type: 'uint256',
+              },
+              {
+                internalType: 'string',
+                name: 'label',
+                type: 'string',
+              },
+              {
+                internalType: 'bool',
+                name: 'active',
+                type: 'bool',
+              },
+            ],
+            internalType: 'struct IFeeConfig.FeeCategory',
+            name: 'performance',
+            type: 'tuple',
+          },
+          {
+            internalType: 'uint256',
+            name: 'deposit',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'withdraw',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct IFeeConfig.AllFees',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getFunds',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'sender',
+            type: 'address',
+          },
+          {
+            internalType: 'bool',
+            name: 'fromInternalBalance',
+            type: 'bool',
+          },
+          {
+            internalType: 'address payable',
+            name: 'recipient',
+            type: 'address',
+          },
+          {
+            internalType: 'bool',
+            name: 'toInternalBalance',
+            type: 'bool',
+          },
+        ],
+        internalType: 'struct IBalancerVault.FundManagement',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getInputAddress',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getLp0ToLp1Assets',
+    outputs: [
+      {
+        internalType: 'address[]',
+        name: '',
+        type: 'address[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getLp0ToLp1Route',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'bytes32',
+            name: 'poolId',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetInIndex',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetOutIndex',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct BalancerStructs.BatchSwapStruct[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getNative',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getNativeToLp0Assets',
+    outputs: [
+      {
+        internalType: 'address[]',
+        name: '',
+        type: 'address[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getNativeToLp0Route',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'bytes32',
+            name: 'poolId',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetInIndex',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetOutIndex',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct BalancerStructs.BatchSwapStruct[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getOutputToNativeAssets',
+    outputs: [
+      {
+        internalType: 'address[]',
+        name: '',
+        type: 'address[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getOutputToNativeRoute',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'bytes32',
+            name: 'poolId',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetInIndex',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetOutIndex',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct BalancerStructs.BatchSwapStruct[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getStratFeeId',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getStrategist',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getSwapKind',
+    outputs: [
+      {
+        internalType: 'enum IBalancerVault.SwapKind',
+        name: '',
+        type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getUniRouter',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getWant',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'callFeeRecipient',
+        type: 'address',
+      },
+    ],
+    name: 'harvest',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'harvest',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'harvestOnDeposit',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_want',
+        type: 'address',
+      },
+      {
+        components: [
+          {
+            internalType: 'bytes32',
+            name: 'poolId',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetInIndex',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetOutIndex',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct BalancerStructs.BatchSwapStruct[]',
+        name: '_nativeToLp0Route',
+        type: 'tuple[]',
+      },
+      {
+        components: [
+          {
+            internalType: 'bytes32',
+            name: 'poolId',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetInIndex',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetOutIndex',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct BalancerStructs.BatchSwapStruct[]',
+        name: '_lp0ToLp1Route',
+        type: 'tuple[]',
+      },
+      {
+        components: [
+          {
+            internalType: 'bytes32',
+            name: 'poolId',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetInIndex',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'assetOutIndex',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct BalancerStructs.BatchSwapStruct[]',
+        name: '_outputToNativeRoute',
+        type: 'tuple[]',
+      },
+      {
+        internalType: 'address',
+        name: '_booster',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_pid',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address[]',
+        name: '_nativeToLp0',
+        type: 'address[]',
+      },
+      {
+        internalType: 'address[]',
+        name: '_lp0ToLp1',
+        type: 'address[]',
+      },
+      {
+        internalType: 'address[]',
+        name: '_outputToNative',
+        type: 'address[]',
+      },
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'vault',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'unirouter',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'ac',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'feeRecipient',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'feeConfig',
+            type: 'address',
+          },
+        ],
+        internalType:
+          'struct StratFeeManagerAccessableInitializable.CommonAddressesAccessable',
+        name: '_commonAddresses',
+        type: 'tuple',
+      },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'input',
+    outputs: [
+      {
+        internalType: 'address',
+        name: 'input',
+        type: 'address',
+      },
+      {
+        internalType: 'bool',
+        name: 'isComposable',
+        type: 'bool',
+      },
+      {
+        internalType: 'bool',
+        name: 'isBeets',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'isComposable',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'keeper',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'lastHarvest',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'lockedProfit',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'lp0',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'lp0ToLp1Route',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: 'poolId',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'assetInIndex',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'assetOutIndex',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'lp0Tolp1Assets',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'lp1',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'managerHarvest',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'native',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'nativeToLp0Assets',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'nativeToLp0Route',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: 'poolId',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'assetInIndex',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'assetOutIndex',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'output',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'outputToNativeAssets',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'outputToNativeRoute',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: 'poolId',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'assetInIndex',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'assetOutIndex',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'panic',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'pause',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'paused',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'pid',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'resetRewardTokens',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'retireStrat',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'rewardPool',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'rewardTokens',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'rewards',
+    outputs: [
+      {
+        internalType: 'enum BalancerStructs.RouterType',
+        name: 'routerType',
+        type: 'uint8',
+      },
+      {
+        internalType: 'address',
+        name: 'router',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes',
+        name: 'routeToNative',
+        type: 'bytes',
+      },
+      {
+        internalType: 'uint256',
+        name: 'minAmount',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'rewardsAvailable',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bool',
+        name: '_earmark',
+        type: 'bool',
+      },
+    ],
+    name: 'setEarmark',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_feeConfig',
+        type: 'address',
+      },
+    ],
+    name: 'setFeeConfig',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_feeRecipient',
+        type: 'address',
+      },
+    ],
+    name: 'setFeeRecipient',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bool',
+        name: '_harvestOnDeposit',
+        type: 'bool',
+      },
+    ],
+    name: 'setHarvestOnDeposit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bool',
+        name: '_shouldSweep',
+        type: 'bool',
+      },
+    ],
+    name: 'setShouldSweep',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_feeId',
+        type: 'uint256',
+      },
+    ],
+    name: 'setStratFeeId',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_unirouter',
+        type: 'address',
+      },
+    ],
+    name: 'setUnirouter',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_vault',
+        type: 'address',
+      },
+    ],
+    name: 'setVault',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'shouldSweep',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'swapKind',
+    outputs: [
+      {
+        internalType: 'enum IBalancerVault.SwapKind',
+        name: '',
+        type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'totalLocked',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'unirouter',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'uniswapRouter',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'unpause',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'role',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+    ],
+    name: 'userHasRole',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'vault',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'want',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'withdraw',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+] as const;
