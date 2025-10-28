@@ -92,7 +92,7 @@ export const PromotionalPoolCard = ({
       <div
         onClick={handleClick}
         style={{ backgroundSize: '200% 200%' }}
-        className="block rounded-[16px] border-2 border-light-purple bg-gradient-to-b from-[rgba(255,255,255,0.38)] via-[rgba(255,255,255,0.28)] bg-pos-100 p-[16px] text-base font-bold transition-all hover:cursor-pointer group-hover/card:bg-pos-0"
+        className="border-light-purple block rounded-[16px] border-2 bg-gradient-to-b from-[rgba(255,255,255,0.38)] via-[rgba(255,255,255,0.28)] bg-pos-100 p-[16px] text-base font-bold transition-all hover:cursor-pointer group-hover/card:bg-pos-0"
       >
         <div className="mb-[12px]">{vault.name}</div>
         <div className="flex items-center justify-between rounded-[8px] bg-gradient-to-r from-gray-200 px-[12px] py-[10px] text-[16px] font-semibold">
@@ -127,21 +127,21 @@ export const PromotionalPoolCard = ({
               variant="ghost"
               onClick={onPrev}
             >
-              <ArrowLeft className="cursor-pointer fill-light-purple transition-all group-hover:fill-white" />
+              <ArrowLeft className="fill-light-purple cursor-pointer transition-all group-hover:fill-white" />
             </Button>
             <Button
               className="group px-0 hover:bg-transparent"
               variant="ghost"
               onClick={onNext}
             >
-              <ArrowRight className="cursor-pointer fill-light-purple transition-all group-hover:fill-white" />
+              <ArrowRight className="fill-light-purple cursor-pointer transition-all group-hover:fill-white" />
             </Button>
           </div>
         </div>
         {isAdmin && type === 'hot' ? (
           <Button
             onClick={handlePromotedVaultsClick}
-            className="mt-4 w-full bg-light-purple text-white hover:bg-light-purple-hover"
+            className="bg-light-purple hover:bg-light-purple-hover mt-4 w-full text-white"
           >
             Promote
           </Button>

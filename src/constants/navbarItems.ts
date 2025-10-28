@@ -2,7 +2,6 @@ import {
   CircleDollarSign,
   LayoutDashboard,
   BadgeDollarSign,
-  TrendingUp,
   File,
   DropdownMore,
 } from '@/components/ui/icons';

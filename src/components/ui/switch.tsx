@@ -12,7 +12,7 @@ const Switch = React.forwardRef<
   <SwitchMenu.Root
     ref={ref}
     className={cn(
-      'relative block h-[20px] w-[36px] rounded-full bg-light-grey transition-all data-[state=checked]:bg-light-purple',
+      'data-[state=checked]:bg-light-purple relative block h-[20px] w-[36px] rounded-full bg-light-grey transition-all',
       className,
     )}
     {...props}

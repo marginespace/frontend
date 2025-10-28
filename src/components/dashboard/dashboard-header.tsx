@@ -21,7 +21,7 @@ const DashboardHeader = ({ addressFromUrl }: DashboardHeaderProps) => {
         <h1 className="text-4xl font-semibold">Dashboard</h1>
         {isConnected && isMounted && addressFromUrl && (
           <div className="flex items-center gap-2">
-            <span className="text-base font-medium text-light-purple">
+            <span className="text-light-purple text-base font-medium">
               ({parseAddress(addressFromUrl || '')})
             </span>
             <TooltipItem>

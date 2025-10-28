@@ -108,7 +108,7 @@ export default function EarnInteraction({ cube, tokens }: EarnProps) {
 
   return (
     <div className="col-span-6 rounded-[18px] p-0.5 lg:col-span-2">
-      <div className="flex h-full flex-col gap-[16px] rounded-[16px] border-2   border-light-purple bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-[16px]">
+      <div className="border-light-purple flex h-full flex-col gap-[16px] rounded-[16px]   border-2 bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-[16px]">
         <div className="flex flex-row items-center justify-center">
           <div className="flex-[1] text-2xl font-medium">Interaction</div>
           <FavoritesButton cube={cube} />

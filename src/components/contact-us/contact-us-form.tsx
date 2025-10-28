@@ -42,7 +42,7 @@ export const ContactUsForm = () => {
   };
 
   return (
-    <div className="flex w-full max-w-[620px] flex-col gap-[24px] rounded-[16px] border-2 border-light-purple bg-linear-white p-[24px] backdrop-blur-[35px]">
+    <div className="border-light-purple flex w-full max-w-[620px] flex-col gap-[24px] rounded-[16px] border-2 bg-linear-white p-[24px] backdrop-blur-[35px]">
       <div className="text-[24px] font-semibold">Contact us</div>
       <Form {...contactUsForm}>
         <form

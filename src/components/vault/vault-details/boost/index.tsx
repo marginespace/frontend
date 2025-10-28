@@ -47,7 +47,7 @@ export const Boost = ({ vault }: BoostProps) => {
           <Button
             className={cn(
               buttonVariants(),
-              'flex w-full bg-light-purple text-white hover:bg-[#7f75cb]',
+              'bg-light-purple flex w-full text-white hover:bg-[#7f75cb]',
             )}
           >
             Switch network
@@ -65,7 +65,7 @@ export const Boost = ({ vault }: BoostProps) => {
               href="#"
               className={cn(
                 buttonVariants({ variant: 'default' }),
-                'border border-white bg-transparent-bg font-semibold text-white hover:border-light-purple hover:bg-transparent-bg',
+                'hover:border-light-purple border border-white bg-transparent-bg font-semibold text-white hover:bg-transparent-bg',
               )}
             >
               Website
@@ -102,7 +102,7 @@ export const Boost = ({ vault }: BoostProps) => {
               href="#"
               className={cn(
                 buttonVariants({ variant: 'default' }),
-                'border border-white bg-transparent-bg font-semibold text-white hover:border-light-purple hover:bg-transparent-bg',
+                'hover:border-light-purple border border-white bg-transparent-bg font-semibold text-white hover:bg-transparent-bg',
               )}
             >
               Explore <ArrowRightCircle className="ml-2 h-[20px] w-[20px]" />

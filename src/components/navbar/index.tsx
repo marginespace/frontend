@@ -18,11 +18,17 @@ import { Button } from '@/ui/button';
 
 export const Navbar = () => {
   return (
-    <nav className="container m-0 flex min-h-fit min-w-[calc(100%+20px)] flex-row flex-wrap items-center justify-between bg-linear-white backdrop-blur-[58px] px-[24px] py-[16px] lg:px-[48px] lg:py-[20px]">
+    <nav className="container m-0 flex min-h-fit min-w-[calc(100%+20px)] flex-row flex-wrap items-center justify-between bg-linear-white px-[24px] py-[16px] backdrop-blur-[58px] lg:px-[48px] lg:py-[20px]">
       {/* Logo */}
       <div className="order-1 flex items-center lg:order-1">
         <Link href="/">
-          <Image alt="logo" src="/icons/logo.svg" width={140} height={48} className="lg:w-[160px] lg:h-[54px]" />
+          <Image
+            alt="logo"
+            src="/icons/logo.svg"
+            width={140}
+            height={48}
+            className="lg:h-[54px] lg:w-[160px]"
+          />
         </Link>
       </div>
 
@@ -61,7 +67,9 @@ export const Navbar = () => {
               className="group flex items-center gap-2 text-[16px] font-medium text-white transition-all hover:text-primary"
             >
               <item.icon className="h-[20px] w-[20px] fill-white transition-all group-hover:fill-primary" />
-              {item.label && <span className="whitespace-nowrap">{item.label}</span>}
+              {item.label && (
+                <span className="whitespace-nowrap">{item.label}</span>
+              )}
             </Link>
           ),
         )}

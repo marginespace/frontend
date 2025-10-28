@@ -29,7 +29,7 @@ export const DropdownItem = ({ item }: DropdownItemProps) => {
           <DropdownMenuItem key={nestedItem.id} asChild>
             <Link
               href={nestedItem.link}
-              className="flex cursor-pointer items-center px-3 py-2 text-sm font-medium text-white hover:bg-white hover:bg-opacity-20 rounded-sm"
+              className="flex cursor-pointer items-center rounded-sm px-3 py-2 text-sm font-medium text-white hover:bg-white hover:bg-opacity-20"
             >
               {nestedItem.icon ? (
                 <nestedItem.icon className="mr-2 h-[18px] w-[18px] fill-white" />

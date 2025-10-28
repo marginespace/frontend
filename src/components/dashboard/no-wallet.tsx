@@ -5,7 +5,7 @@ import { EmptyWallet } from '@/ui/icons';
 
 export const NoWalletDashboard = () => {
   return (
-    <div className="container mb-12 flex h-full items-center justify-center rounded-[16px] border-2 border-light-purple bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-3 backdrop-blur-[35px]">
+    <div className="border-light-purple container mb-12 flex h-full items-center justify-center rounded-[16px] border-2 bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-3 backdrop-blur-[35px]">
       <div className="flex flex-col items-center gap-6">
         <EmptyWallet />
         <div className="text-center">
@@ -14,7 +14,7 @@ export const NoWalletDashboard = () => {
             No wallet connected. Connect your wallet or search for an address
           </h5>
         </div>
-        <ConnectWalletButton className="w-[320px] bg-light-purple text-base font-semibold text-white hover:bg-light-purple-hover" />
+        <ConnectWalletButton className="bg-light-purple hover:bg-light-purple-hover w-[320px] text-base font-semibold text-white" />
       </div>
     </div>
   );

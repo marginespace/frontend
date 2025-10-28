@@ -48,7 +48,7 @@ export const columns: ColumnDef<
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Amount
-          <CaretSortIcon className="ml-2 h-4 w-4 fill-light-purple" />
+          <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
         </button>
       );
     },
@@ -75,7 +75,7 @@ export const columns: ColumnDef<
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Balance
-          <CaretSortIcon className="ml-2 h-4 w-4 fill-light-purple" />
+          <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
         </button>
       );
     },
@@ -100,7 +100,7 @@ export const columns: ColumnDef<
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Date
-          <CaretSortIcon className="ml-2 h-4 w-4 fill-light-purple" />
+          <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
         </button>
       );
     },

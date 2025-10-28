@@ -285,7 +285,7 @@ export const Filter = ({ className }: FilterProps) => {
                       <div className="flex items-center">
                         <label
                           htmlFor="filter-chains-all"
-                          className="text-[14px] font-medium text-light-purple"
+                          className="text-light-purple text-[14px] font-medium"
                         >
                           All
                         </label>
@@ -337,7 +337,7 @@ export const Filter = ({ className }: FilterProps) => {
                       <div className="flex items-center">
                         <label
                           htmlFor="filter-platforms-all"
-                          className="text-[14px] font-medium text-light-purple"
+                          className="text-light-purple text-[14px] font-medium"
                         >
                           All
                         </label>

@@ -100,7 +100,7 @@ export function PromotedVaultsModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <div className="flex min-h-[221px] flex-col rounded-[10px] border border-light-purple bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-2 lg:p-4 xl:min-h-[232px]">
+      <div className="border-light-purple flex min-h-[221px] flex-col rounded-[10px] border bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-2 lg:p-4 xl:min-h-[232px]">
         <div className="border-b border-dashed border-[rgba(255,255,255,0.2)] pb-2 text-base font-semibold">
           {total}
         </div>

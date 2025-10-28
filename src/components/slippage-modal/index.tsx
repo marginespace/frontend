@@ -96,7 +96,7 @@ export function SlippageModal({
   return (
     <Dialog>
       <DialogTrigger className="group  flex gap-1 self-end p-1 underline-offset-4 ">
-        <span className="text-sm font-semibold transition-all group-hover:text-light-purple group-hover:underline">
+        <span className="group-hover:text-light-purple text-sm font-semibold transition-all group-hover:underline">
           Settings
         </span>
         <Settings className="fill-light-purple" />
@@ -201,7 +201,7 @@ export function SlippageModal({
           </div>
           <Close
             type="submit"
-            className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-md bg-light-purple px-3 py-2 text-base font-medium transition-colors hover:bg-light-purple-hover"
+            className="bg-light-purple hover:bg-light-purple-hover inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-base font-medium transition-colors"
           >
             Save changes
           </Close>

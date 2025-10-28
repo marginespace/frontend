@@ -203,7 +203,7 @@ export const AllPoolCard = memo(
         <AccordionItem
           onClick={handleClick}
           value={`item-${vault.id}`}
-          className="block rounded-[16px] border-2 border-[rgba(255,255,255,0.05)] bg-linear-white backdrop-blur-[16px] p-[16px] pb-0 transition-all hover:border-[rgba(255,255,255,0.1)]"
+          className="block rounded-[16px] border-2 border-[rgba(255,255,255,0.05)] bg-linear-white p-[16px] pb-0 backdrop-blur-[16px] transition-all hover:border-[rgba(255,255,255,0.1)]"
         >
           <div className="mb-[12px] flex gap-[2px]">
             {vault.assets.map((asset) => (
@@ -229,7 +229,7 @@ export const AllPoolCard = memo(
                   {apyFormatter(vault.apy.totalApy)}
                 </h4>
                 {vault.boost && (
-                  <div className="flex items-center gap-1 rounded-lg bg-light-purple px-2 py-[2px] text-xs text-primary">
+                  <div className="bg-light-purple flex items-center gap-1 rounded-lg px-2 py-[2px] text-xs text-primary">
                     Boost <InfoCircle light />
                   </div>
                 )}
@@ -294,7 +294,7 @@ export const AllPoolCard = memo(
             ) : null}
             {vault.boost && (
               <div>
-                <h1 className="text-center text-sm font-semibold text-light-purple">
+                <h1 className="text-light-purple text-center text-sm font-semibold">
                   Active BOOST:
                 </h1>
                 <div className="mb-[4px] flex gap-[4px]">

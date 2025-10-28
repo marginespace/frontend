@@ -76,7 +76,7 @@ export const EarnVaultTableRow = ({
         <TableCell className="col-span-2 flex items-center justify-end gap-6">
           {!vault.isArchived && (
             <Link
-              className="ml-auto rounded-[8px] bg-light-purple px-2 py-1 text-center text-xs font-medium transition-colors hover:bg-light-purple-hover"
+              className="bg-light-purple hover:bg-light-purple-hover ml-auto rounded-[8px] px-2 py-1 text-center text-xs font-medium transition-colors"
               target="_blank"
               href={`/vault/${vault.oracleId}`}
             >

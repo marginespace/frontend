@@ -88,31 +88,31 @@ const DashboardContent = ({
         label: 'Strategies',
         text: cubes.length,
         icon: (
-          <BadgeDollarSign className="h-[18px] w-[18px] fill-light-purple" />
+          <BadgeDollarSign className="fill-light-purple h-[18px] w-[18px]" />
         ),
       },
       {
         label: 'Vaults',
         text: vaults.length,
         icon: (
-          <CircleDollarSign className="h-[18px] w-[18px] fill-light-purple" />
+          <CircleDollarSign className="fill-light-purple h-[18px] w-[18px]" />
         ),
       },
       {
         label: 'Deposit',
         text: `$${totalDeposit.toFixed(2)}`,
-        icon: <WalletAdd className="h-[18px] w-[18px] fill-light-purple" />,
+        icon: <WalletAdd className="fill-light-purple h-[18px] w-[18px]" />,
       },
       {
         label: 'Rewards',
         text: `$${totalRewards.toFixed(2)}`,
-        icon: <Rewards className="h-[18px] w-[18px] fill-light-purple" />,
+        icon: <Rewards className="fill-light-purple h-[18px] w-[18px]" />,
       },
       {
         label: 'Estimated Daily Rewards',
         text: `$${dailyRewards.toFixed(2)}`,
         icon: (
-          <BadgeDollarSign className="h-[18px] w-[18px] fill-light-purple" />
+          <BadgeDollarSign className="fill-light-purple h-[18px] w-[18px]" />
         ),
       },
     ];
@@ -153,7 +153,7 @@ const DashboardContent = ({
               </div>
             ))}
       </div>
-      <div className="col-span-7 flex flex-col gap-4 rounded-[12px] border-2 border-light-purple bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-4 backdrop-blur-[35px]">
+      <div className="border-light-purple col-span-7 flex flex-col gap-4 rounded-[12px] border-2 bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-4 backdrop-blur-[35px]">
         {usedBefore ? (
           <Tabs defaultValue="chain" className="flex h-full flex-col">
             <div className="flex items-center gap-1 pb-4">
@@ -168,7 +168,7 @@ const DashboardContent = ({
             <TabsList className="h-fit w-fit gap-2 !rounded-b-none bg-transparent-bg text-white">
               {overviewTabs.map(({ label, value }) => (
                 <TabsTrigger
-                  className="rounded-b-none last:rounded data-[state=active]:!rounded-b-none data-[state=active]:!bg-light-purple data-[state=active]:!text-white"
+                  className="data-[state=active]:!bg-light-purple rounded-b-none last:rounded data-[state=active]:!rounded-b-none data-[state=active]:!text-white"
                   key={value}
                   value={value}
                 >
@@ -193,7 +193,7 @@ const DashboardContent = ({
               <p className="text-sm font-semibold">
                 Oops, this address has not been used on our platform yet
               </p>
-              <p className="mt-2 text-sm font-semibold text-light-purple">
+              <p className="text-light-purple mt-2 text-sm font-semibold">
                 {addressFromUrl}
               </p>
               <p className="mt-2 text-base font-semibold">
@@ -201,7 +201,7 @@ const DashboardContent = ({
                 enter another wallet address
               </p>
             </div>
-            <Button className="w-[320px] bg-light-purple text-base font-semibold text-white hover:bg-light-purple-hover">
+            <Button className="bg-light-purple hover:bg-light-purple-hover w-[320px] text-base font-semibold text-white">
               <Link href="/">View All Vaults</Link>
             </Button>
           </div>
