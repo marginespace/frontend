@@ -20,12 +20,12 @@ export const ConnectWalletButton = ({
   const { open } = useWeb3Modal();
 
   if (!isMounted) {
-    return <Button className={className}>Connect Wallet</Button>;
+    return <Button variant="outline-primary" className={className}>Connect Wallet</Button>;
   }
 
   if (!isConnected || !address) {
     return (
-      <Button className={className} onClick={() => open({ view: 'Connect' })}>
+      <Button variant="outline-primary" className={className} onClick={() => open({ view: 'Connect' })}>
         Connect Wallet
       </Button>
     );
@@ -33,14 +33,14 @@ export const ConnectWalletButton = ({
 
   if (chain?.unsupported) {
     return (
-      <Button className={className} onClick={() => open({ view: 'Networks' })}>
+      <Button variant="outline-primary" className={className} onClick={() => open({ view: 'Networks' })}>
         Unsupported Network
       </Button>
     );
   }
 
   return (
-    <Button className={className} onClick={() => open({ view: 'Account' })}>
+    <Button variant="outline-primary" className={className} onClick={() => open({ view: 'Account' })}>
       {shortenAddress(address)}
     </Button>
   );

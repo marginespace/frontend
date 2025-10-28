@@ -24,6 +24,8 @@ const buttonVariants = cva(
         'transparent-active': 'bg-light-purple border-[1px] border-light-grey',
         outlined:
           'text-[14px] border border-[#D46B30] text-white rounded-[10px] shadow-[0_1px_2px_rgba(16,24,40,0.05)]',
+        'outline-primary':
+          'bg-transparent border-2 border-primary text-white hover:border-primary-hover transition-colors',
         contained: 'text-[16px] bg-[#D46B30] text-white rounded-[8px] hover:bg-[#B85A26]',
       },
       size: {
