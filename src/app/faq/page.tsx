@@ -3,6 +3,9 @@ import { faqConfig } from '@/components/faq/config';
 import { FaqDropdownItem } from '@/components/faq/faq-dropdown-item';
 import { FaqList } from '@/components/faq/faq-list';
 
+// Отключаем статическую генерацию для этой страницы
+export const dynamic = 'force-dynamic';
+
 const FAQ = () => {
   return (
     <main className="m-auto flex min-h-[calc(100vh-60px)] max-w-[95%] flex-col gap-[24px] py-[40px] lg:max-w-[588px]">

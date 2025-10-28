@@ -1,6 +1,9 @@
 import { ContactUsForm } from '@/components/contact-us/contact-us-form';
 import { appName } from '@/constants/metadata';
 
+// Отключаем статическую генерацию для этой страницы
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: `${appName}: Contact Us`,
 };

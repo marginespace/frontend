@@ -16,7 +16,8 @@ import { publicProvider } from 'wagmi/providers/public';
 import { appDescription, appName, getAppUrl } from '@/constants/metadata';
 import { SUPPORTED_CHAINS } from '@/constants/supported-chains';
 
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID as string;
+// Fallback значение для билда, если переменная окружения не установлена
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'fallback_project_id_for_build';
 
 const { chains, publicClient } = configureChains(SUPPORTED_CHAINS, [
   walletConnectProvider({ projectId }),

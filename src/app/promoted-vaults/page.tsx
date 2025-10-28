@@ -6,6 +6,9 @@ import { BackButton } from '@/components/back-button';
 import PromotedVaultsGrid from '@/components/promoted-vaults';
 import { appDescription, appName } from '@/constants/metadata';
 
+// Отключаем статическую генерацию для этой страницы
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: `${appName}: Promoted vaults}`,
   description: appDescription,

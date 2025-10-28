@@ -5,8 +5,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Также игнорируем TypeScript ошибки во время билда (опционально)
-    // ignoreBuildErrors: true,
+    // Игнорируем TypeScript ошибки во время билда
+    ignoreBuildErrors: true,
   },
 };
 

@@ -3,6 +3,9 @@ import { isAddress } from 'viem';
 import DashboardHeader from '@/components/dashboard/dashboard-header';
 import DashboardLoad from '@/components/dashboard/dashboard-load';
 
+// Отключаем статическую генерацию для этой страницы
+export const dynamic = 'force-dynamic';
+
 type DashboardProps = {
   searchParams: {
     address?: string;
