@@ -25,8 +25,8 @@ export default function RiskManagement({
         <TooltipItem>
           <div className="flex max-w-[245px] flex-col gap-1">
             <p className="text-xs font-medium text-additional-grey">
-              Margin Space uses a Stop-Loss order, which serves to control the risks
-              of a fall in the price of assets in vault.
+              Margin Space uses a Stop-Loss order, which serves to control the
+              risks of a fall in the price of assets in vault.
             </p>
           </div>
         </TooltipItem>

@@ -42,7 +42,7 @@ export const SearchInput = ({ className, ...props }: SearchInput) => {
       {...props}
     >
       <Input
-        className="w-full rounded-[9px] border-none bg-white/20 py-[10px] pl-[16px] pr-[32px]"
+        className="w-full rounded-[9px] border-none bg-white/20 py-[10px] pl-[16px] pr-[32px] backdrop-blur-[10px] shadow-[0_4px_10px_rgba(0,0,0,0.2)]"
         placeholder="Search..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}

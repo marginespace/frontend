@@ -203,13 +203,9 @@ export const AllPoolCard = memo(
         <AccordionItem
           onClick={handleClick}
           value={`item-${vault.id}`}
-          style={{
-            backgroundSize: '200% 200%',
-            boxShadow: '14px 14px 36px 0px rgba(113, 103, 185, 0.20)',
-          }}
-          className="block rounded-[16px] border-2 border-light-purple bg-gradient-to-b from-[rgba(255,255,255,0.44)] via-[rgba(255,255,255,0.37)] bg-pos-100 p-[16px] pb-0 transition-all group-hover/card:bg-pos-0"
+          className="block rounded-[16px] border-2 border-[rgba(255,255,255,0.05)] bg-linear-white backdrop-blur-[16px] p-[16px] pb-0 transition-all hover:border-[rgba(255,255,255,0.1)]"
         >
-          <div className="mb-[12px] flex gap-1">
+          <div className="mb-[12px] flex gap-[2px]">
             {vault.assets.map((asset) => (
               <Image
                 key={asset}
@@ -220,7 +216,7 @@ export const AllPoolCard = memo(
               />
             ))}
           </div>
-          <div className="mb-[12px] flex items-center rounded-[8px] bg-gradient-to-r from-primary px-[12px] py-[10px] text-[16px] font-semibold text-black">
+          <div className="mb-[12px] flex items-center rounded-[8px] bg-[#0B0B0B] px-[12px] py-[10px] text-[16px] font-semibold text-[#D46B30]">
             {vault.name}
           </div>
           <div className="flex justify-between border-b-2 border-dashed border-additional-grey pb-[12px]">
@@ -286,11 +282,11 @@ export const AllPoolCard = memo(
             <VaultInfoBlock vault={vault} />
             {vault.deposited ? (
               <div className="flex gap-[4px]">
-                <div className="flex w-full justify-between rounded-[6px] bg-[#352852] bg-opacity-[0.4] p-[8px]">
-                  <h4 className="text-[12px] font-medium leading-[18px] text-light-grey">
-                    Deposit
+                <div className="flex w-full justify-between rounded-[6px] bg-[#0B0B0B] p-[8px]">
+                  <h4 className="text-[12px] font-medium leading-[18px] text-[#D46B30]">
+                    Deposited
                   </h4>
-                  <h5 className="text-[14px] font-semibold leading-[20px] text-primary">
+                  <h5 className="text-[14px] font-semibold leading-[20px] text-white">
                     ${vault.deposited.toFixed(2)}
                   </h5>
                 </div>
@@ -302,19 +298,19 @@ export const AllPoolCard = memo(
                   Active BOOST:
                 </h1>
                 <div className="mb-[4px] flex gap-[4px]">
-                  <div className="w-full rounded-[6px] bg-[#352852] bg-opacity-[0.4] p-[8px]">
-                    <h4 className="text-[12px] font-medium leading-[18px] text-light-grey">
+                  <div className="w-full rounded-[6px] bg-[#0B0B0B] p-[8px]">
+                    <h4 className="text-[12px] font-medium leading-[18px] text-[#D46B30]">
                       Rewards
                     </h4>
-                    <h5 className="text-[14px] font-semibold leading-[20px] text-primary">
+                    <h5 className="text-[14px] font-semibold leading-[20px] text-white">
                       0 WKAVA
                     </h5>
                   </div>
-                  <div className="w-full rounded-[6px] bg-[#352852] bg-opacity-[0.4] p-[8px]">
-                    <h4 className="text-[12px] font-medium leading-[18px] text-light-grey">
+                  <div className="w-full rounded-[6px] bg-[#0B0B0B] p-[8px]">
+                    <h4 className="text-[12px] font-medium leading-[18px] text-[#D46B30]">
                       Ends
                     </h4>
-                    <h5 className="text-[14px] font-semibold leading-[20px] text-primary">
+                    <h5 className="text-[14px] font-semibold leading-[20px] text-white">
                       11d 03h 58m
                     </h5>
                   </div>

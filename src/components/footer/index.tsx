@@ -8,7 +8,7 @@ import X from '@/ui/icons/x';
 
 export const Footer = () => {
   return (
-    <footer className="container m-0 flex min-w-full flex-row flex-wrap items-end justify-between gap-[24px] bg-gradient-to-r from-[#282236] to-[#25214b] py-[16px] text-[14px] font-semibold text-white lg:flex-row lg:items-center">
+    <footer className="container m-0 flex min-w-full flex-row flex-wrap items-end justify-between gap-[24px] bg-linear-white backdrop-blur-[20px] shadow-[0_-6px_10px_rgba(0,0,0,0.08)] py-[16px] text-[14px] font-semibold text-white lg:flex-row lg:items-center">
       <div className="flex w-full flex-row gap-[10px] lg:w-auto">
         <Link href="https://x.com/margin_space" target="_blank">
           <X />

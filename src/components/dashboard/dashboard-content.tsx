@@ -85,7 +85,7 @@ const DashboardContent = ({
 
     return [
       {
-        label: 'Cubes',
+        label: 'Strategies',
         text: cubes.length,
         icon: (
           <BadgeDollarSign className="h-[18px] w-[18px] fill-light-purple" />

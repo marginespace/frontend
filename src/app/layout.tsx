@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: PropsWithChildren) => {
   return (
-    <html lang="en">
-      <body className="flex min-h-screen flex-col overflow-hidden bg-[url('/main-bg.jpg')] bg-[length:120vw] bg-fixed bg-[-4rem_30%] lg:bg-[-8rem_30%]">
+    <html lang="en" style={{ zoom: '0.8' }}>
+      <body className="flex min-h-screen flex-col overflow-hidden bg-[url('/margin-background.svg')] bg-cover bg-fixed bg-top bg-no-repeat">
         <ClientProviders>
           <div className="flex h-full flex-col overflow-y-auto overflow-x-hidden">
             <Navbar />

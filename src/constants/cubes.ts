@@ -6,7 +6,7 @@ type CubesTabDataItem = {
 };
 
 export const cubesTabsData: CubesTabDataItem[] = [
-  { value: 'all', label: 'All Cubes' },
-  { value: 'my', label: 'My Cubes' },
-  { value: 'saved', label: 'Saved Cubes' },
+  { value: 'all', label: 'All Strategies' },
+  { value: 'my', label: 'My Strategies' },
+  { value: 'saved', label: 'Saved Strategies' },
 ];

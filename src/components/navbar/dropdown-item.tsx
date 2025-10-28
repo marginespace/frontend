@@ -1,10 +1,8 @@
 'use client';
 
-import clsx from 'clsx';
 import Link from 'next/link';
-import { useState } from 'react';
 
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,29 +16,26 @@ interface DropdownItemProps {
 }
 
 export const DropdownItem = ({ item }: DropdownItemProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="link"
-          className={clsx('group', buttonVariants({ variant: 'link' }))}
-        >
+        <Button variant="link" className="group">
           <item.icon className="h-[18px] w-[18px] fill-white group-hover:fill-current" />
           {item.label ? <span className="ml-2">{item.label}</span> : null}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="flex w-[240px] flex-col gap-2 rounded-lg border-none bg-white bg-opacity-10 p-4 shadow-md backdrop-blur-lg">
+      <DropdownMenuContent className="w-[200px] rounded-lg bg-white bg-opacity-10 p-2 shadow-lg backdrop-blur-lg">
         {item.nestedItems?.map((nestedItem) => (
-          <DropdownMenuItem
-            key={nestedItem.id}
-            className="cursor-pointer px-3 py-2 text-base font-semibold text-white hover:!bg-light-purple"
-          >
-            {nestedItem.icon ? (
-              <nestedItem.icon className="mr-2 h-[18px] w-[18px] fill-white group-hover:fill-current" />
-            ) : null}
-            <Link href={nestedItem.link}>{nestedItem.label}</Link>
+          <DropdownMenuItem key={nestedItem.id} asChild>
+            <Link
+              href={nestedItem.link}
+              className="flex cursor-pointer items-center px-3 py-2 text-sm font-medium text-white hover:bg-white hover:bg-opacity-20 rounded-sm"
+            >
+              {nestedItem.icon ? (
+                <nestedItem.icon className="mr-2 h-[18px] w-[18px] fill-white" />
+              ) : null}
+              {nestedItem.label}
+            </Link>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

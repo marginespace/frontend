@@ -43,7 +43,7 @@ export default function EarnWrapper({
       <div className="container flex min-w-full flex-col gap-[24px]">
         <div className="flex items-end justify-between">
           <div className="flex flex-col gap-[16px] pt-[16px] md:flex-row">
-            <div className="text-[32px] font-semibold">Cubes</div>
+            <div className="text-[32px] font-semibold">Strategies</div>
             <EarnTitleInfo />
           </div>
           <NewCube
@@ -51,7 +51,7 @@ export default function EarnWrapper({
             vaults={!vaults || isVaultsLoading ? [] : vaults}
           >
             <Button variant="transparent" className="ml-[10px]">
-              Create new cube
+              Create new strategy
             </Button>
           </NewCube>
         </div>

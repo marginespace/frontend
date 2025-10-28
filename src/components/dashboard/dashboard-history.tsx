@@ -25,7 +25,7 @@ type DashboardHistoryProps = {
 
 enum HistoryTabs {
   VAULTS = 'vaults',
-  CUBES = 'cubes',
+  STRATEGIES = 'strategies',
 }
 
 const DashboardHistory = ({
@@ -47,8 +47,8 @@ const DashboardHistory = ({
               <p>History</p>
               <TooltipItem>
                 <p className="text-base font-medium text-text-light">
-                  Detailed history of actions and interactions with
-                  Margin Space&apos;s vaults and cubes
+                  Detailed history of actions and interactions with Margin
+                  Space&apos;s vaults and strategies
                 </p>
               </TooltipItem>
             </div>
@@ -64,10 +64,10 @@ const DashboardHistory = ({
                 Vaults
               </TabsTrigger>
               <TabsTrigger
-                value={HistoryTabs.CUBES}
+                value={HistoryTabs.STRATEGIES}
                 className="rounded-[8px] px-[24px] py-[8px] text-[14px] font-semibold !text-white data-[state=active]:!bg-light-purple"
               >
-                Cubes
+                Strategies
               </TabsTrigger>
             </TabsList>
             <div className="pt-[24px]">
@@ -76,7 +76,7 @@ const DashboardHistory = ({
                   <HistoryTable vaults={vaults} />
                 </div>
               </TabsContent>
-              <TabsContent value={HistoryTabs.CUBES} asChild>
+              <TabsContent value={HistoryTabs.STRATEGIES} asChild>
                 <div className="mb-4 rounded-t-[16px] border-2 border-none bg-white bg-opacity-11 backdrop-blur-2lg [&>div]:rounded-[16px]">
                   <EarnHistoryTable cubes={cubes} />
                 </div>

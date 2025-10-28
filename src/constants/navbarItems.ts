@@ -24,17 +24,10 @@ export const navbarItems = [
   },
   {
     id: 3,
-    label: 'Cubes',
+    label: 'Strategies',
     icon: BadgeDollarSign,
     link: '/earn?sortOrder=DESC&sortBy=APY&tag=all',
     pathname: '/earn',
-  },
-  {
-    id: 4,
-    label: 'Strategies',
-    icon: TrendingUp,
-    link: '#',
-    pathname: '#',
   },
   {
     id: 6,
