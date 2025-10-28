@@ -8,13 +8,13 @@ import { Profile } from './profile';
 
 import { Menu } from '@/components/ui/icons';
 import { navbarItems } from '@/constants/navbarItems';
+import { Button } from '@/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/ui/dropdown-menu';
-import { Button } from '@/ui/button';
 
 export const Navbar = () => {
   return (
