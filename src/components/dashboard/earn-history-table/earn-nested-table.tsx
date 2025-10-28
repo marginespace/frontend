@@ -44,11 +44,11 @@ const columns: ColumnDef<EarnNestedHistoryTableProps['actions'][number]>[] = [
         className="flex items-center text-[12px] font-semibold"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        Amount <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+        Amount <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
       </button>
     ),
     cell: ({ row }) => (
-      <span className="text-light-purple text-[14px] font-medium underline underline-offset-2">
+      <span className="text-primary text-[14px] font-medium underline underline-offset-2">
         {usdFormatter(row.original.amount)}
       </span>
     ),
@@ -60,7 +60,7 @@ const columns: ColumnDef<EarnNestedHistoryTableProps['actions'][number]>[] = [
         className="flex items-center text-[12px] font-semibold"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        Balance <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+        Balance <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
       </button>
     ),
     cell: ({ row }) => (
@@ -76,7 +76,7 @@ const columns: ColumnDef<EarnNestedHistoryTableProps['actions'][number]>[] = [
         className="flex items-center text-[12px] font-semibold"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        Date <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+        Date <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
       </button>
     ),
     cell: ({ row }) => (

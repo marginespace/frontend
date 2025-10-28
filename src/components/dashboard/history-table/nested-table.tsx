@@ -48,7 +48,7 @@ export const columns: ColumnDef<
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Amount
-          <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+          <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
         </button>
       );
     },
@@ -60,7 +60,7 @@ export const columns: ColumnDef<
       );
 
       return (
-        <div className="underline-offset-3 text-light-purple underline">
+        <div className="underline-offset-3 text-primary underline">
           ${(price * formattedAmount).toFixed(2)}
         </div>
       );
@@ -75,7 +75,7 @@ export const columns: ColumnDef<
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Balance
-          <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+          <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
         </button>
       );
     },
@@ -100,7 +100,7 @@ export const columns: ColumnDef<
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Date
-          <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+          <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
         </button>
       );
     },

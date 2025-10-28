@@ -29,7 +29,7 @@ export const FilterItem = ({
       <div className="flex items-center">
         <label
           htmlFor={name}
-          className="mr-[4px] text-[14px] font-medium text-text"
+          className="mr-[4px] text-[14px] font-medium text-[#0B0B0B]"
         >
           {title}
         </label>
@@ -41,7 +41,7 @@ export const FilterItem = ({
                   <InfoCircle />
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="border-0 bg-primary text-additional-grey">
+              <TooltipContent className="border-0 bg-[#0B0B0B] text-white">
                 {tooltip}
               </TooltipContent>
             </Tooltip>

@@ -104,7 +104,7 @@ export const EarnHistoryTableRow = ({ cube }: EarnHistoryTableRowProps) => {
         </TableCell>
         <TableCell className="flex items-center justify-end gap-2">
           <Link
-            className="bg-light-purple hover:bg-light-purple-hover ml-auto rounded-[8px] px-2 py-1 text-center text-xs font-medium transition-colors"
+            className="bg-primary hover:bg-primary-hover ml-auto rounded-[8px] px-2 py-1 text-center text-xs font-medium text-white transition-colors"
             target="_blank"
             href={`/earn/${cube.id}`}
           >

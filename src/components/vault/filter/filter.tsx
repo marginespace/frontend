@@ -221,7 +221,7 @@ export const Filter = ({ className }: FilterProps) => {
             variant={isOpen ? `transparent-active` : 'transparent'}
             className="w-full flex-row justify-between lg:w-[250px]"
           >
-            <h2 className="text-[16px] font-semibold text-primary">
+            <h2 className="text-[16px] font-semibold text-white">
               Filters{' '}
               {Boolean(numberSelected) && `(${numberSelected} selected)`}
             </h2>
@@ -241,19 +241,19 @@ export const Filter = ({ className }: FilterProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuPortal>
-          <DropdownMenuContent className="no-scrollbar max-h-96 w-full overflow-y-auto rounded-[10px] bg-primary p-[16px] shadow-xl md:w-[300px] lg:w-[250px]">
+          <DropdownMenuContent className="no-scrollbar max-h-96 w-full overflow-y-auto rounded-[10px] bg-white p-[16px] shadow-[0px_4px_42px_rgba(0,0,0,0.78)] md:w-[300px] lg:w-[250px]">
             <div className="flex justify-center">
               <Button
                 variant="link"
                 onClick={clearAll}
-                className="text-center font-medium text-additional-grey"
+                className="text-center font-medium text-additional-grey hover:text-primary"
               >
                 Clear all
               </Button>
             </div>
             <div>
-              <div className="border-b-2 border-dashed border-primary ">
-                <div className="text-[16px] font-semibold text-text">
+              <div className="border-b-2 border-dashed border-light-grey">
+                <div className="text-[16px] font-semibold text-[#0B0B0B]">
                   Filters
                 </div>
                 {filters
@@ -274,18 +274,18 @@ export const Filter = ({ className }: FilterProps) => {
               <AccordionItem value="item-1" className="border-0">
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex justify-between">
-                    <div className="text-[16px] font-semibold text-text">
+                    <div className="text-[16px] font-semibold text-[#0B0B0B]">
                       Chain
                     </div>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="border-b-2 border-dashed border-light-grey ">
+                  <div className="border-b-2 border-dashed border-light-grey">
                     <div className="mb-[4px] flex justify-between py-[8px]">
                       <div className="flex items-center">
                         <label
                           htmlFor="filter-chains-all"
-                          className="text-light-purple text-[14px] font-medium"
+                          className="text-[14px] font-medium text-primary"
                         >
                           All
                         </label>
@@ -317,7 +317,7 @@ export const Filter = ({ className }: FilterProps) => {
               <AccordionItem value="item-2" className="border-0">
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex justify-between">
-                    <div className="text-[16px] font-semibold text-text">
+                    <div className="text-[16px] font-semibold text-[#0B0B0B]">
                       Platform
                     </div>
                   </div>
@@ -326,18 +326,18 @@ export const Filter = ({ className }: FilterProps) => {
                   <div className="border-b-2 border-dashed border-light-grey pt-[16px]">
                     <div className="relative mb-[16px] px-[4px]">
                       <Input
-                        className="border-0 bg-[#F1F0F8] text-additional-grey focus-visible:ring-0 focus-visible:ring-offset-additional-grey"
+                        className="border-0 bg-[#F1F0F8] text-[#0B0B0B] placeholder:text-additional-grey focus-visible:ring-0 focus-visible:ring-offset-additional-grey"
                         placeholder="Search..."
                         value={searchValue}
                         onChange={(e) => setSearchValue(e.target.value)}
                       />
-                      <SearchIcon className="absolute right-[16px] top-[12px]" />
+                      <SearchIcon className="absolute right-[16px] top-[12px] fill-primary" />
                     </div>
                     <div className="mb-[4px] flex justify-between py-[8px]">
                       <div className="flex items-center">
                         <label
                           htmlFor="filter-platforms-all"
-                          className="text-light-purple text-[14px] font-medium"
+                          className="text-[14px] font-medium text-primary"
                         >
                           All
                         </label>

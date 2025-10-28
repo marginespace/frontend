@@ -47,7 +47,7 @@ export const FilterChain = ({
           <div className="mr-[8px] h-[24px] w-[24px] rounded-full bg-gray-700"></div>
         )}
 
-        <label htmlFor={name} className=" text-[14px] font-medium text-text">
+        <label htmlFor={name} className="text-[14px] font-medium text-[#0B0B0B]">
           {title}
         </label>
       </div>

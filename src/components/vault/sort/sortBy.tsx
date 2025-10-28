@@ -111,7 +111,7 @@ export const SortBy = ({ className }: SortByProps) => {
             variant={isOpen ? `transparent-active` : 'transparent'}
             className="w-full flex-row justify-between lg:w-[170px]"
           >
-            <h2 className="text-[12px] font-medium text-primary">
+            <h2 className="text-[12px] font-medium text-white">
               Sort By: <span className="text-[14px]">{sortBy}</span>
             </h2>
             <DropdownArrowSVG
@@ -124,7 +124,7 @@ export const SortBy = ({ className }: SortByProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuPortal>
-          <DropdownMenuContent className="w-full rounded-[10px] bg-primary p-[16px] md:w-[300px] lg:w-[170px]">
+          <DropdownMenuContent className="w-full rounded-[10px] bg-white p-[16px] shadow-[0px_4px_42px_rgba(0,0,0,0.78)] md:w-[300px] lg:w-[170px]">
             {sort.map((sortItem, i) => (
               <SortItem
                 title={sortItem.title}

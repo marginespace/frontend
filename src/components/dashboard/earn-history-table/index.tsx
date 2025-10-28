@@ -44,7 +44,7 @@ const columns: ColumnDef<CubeWithApyAndTvl>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
         Network
-        <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+        <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
       </button>
     ),
   },
@@ -57,7 +57,7 @@ const columns: ColumnDef<CubeWithApyAndTvl>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
         AT Deposit
-        <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+        <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
       </button>
     ),
   },
@@ -70,7 +70,7 @@ const columns: ColumnDef<CubeWithApyAndTvl>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
         PNL
-        <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+        <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
       </button>
     ),
   },
@@ -83,7 +83,7 @@ const columns: ColumnDef<CubeWithApyAndTvl>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
         Now
-        <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+        <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
       </button>
     ),
   },
@@ -96,7 +96,7 @@ const columns: ColumnDef<CubeWithApyAndTvl>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
         Stop/Loss
-        <CaretSortIcon className="fill-light-purple ml-2 h-4 w-4" />
+        <CaretSortIcon className="fill-primary ml-2 h-4 w-4" />
       </button>
     ),
   },

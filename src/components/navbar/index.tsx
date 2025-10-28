@@ -38,25 +38,25 @@ export const Navbar = () => {
           item.nestedItems?.length ? (
             // Dropdown для desktop
             <DropdownMenu key={item.id}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="link" className="group p-0">
-                  <item.icon className="h-[20px] w-[20px] fill-white transition-all group-hover:fill-primary" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="mt-2 flex w-[220px] flex-col gap-1 rounded-xl border border-white border-opacity-10 bg-[#0B0B0B] bg-opacity-95 p-3 shadow-lg backdrop-blur-xl">
-                {item.nestedItems.map((nestedItem) => (
-                  <DropdownMenuItem key={nestedItem.id} asChild>
-                    <Link
-                      href={nestedItem.link || '#'}
-                      className="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-[15px] font-medium text-white transition-all hover:bg-white hover:bg-opacity-10"
-                    >
-                      {nestedItem.icon && (
-                        <nestedItem.icon className="h-[18px] w-[18px] fill-white" />
-                      )}
-                      {nestedItem.label}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="link" className="group p-0">
+                      <item.icon className="h-[20px] w-[20px] fill-white transition-all group-hover:fill-primary" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="mt-2 flex w-[220px] flex-col gap-2">
+                    {item.nestedItems.map((nestedItem) => (
+                      <DropdownMenuItem key={nestedItem.id} asChild>
+                        <Link
+                          href={nestedItem.link || '#'}
+                          className="flex cursor-pointer items-center gap-3 rounded-[4px] px-4 py-2 text-[14px] font-medium"
+                        >
+                          {nestedItem.icon && (
+                            <nestedItem.icon className="h-[18px] w-[18px] fill-[#0B0B0B]" />
+                          )}
+                          {nestedItem.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -86,43 +86,43 @@ export const Navbar = () => {
       {/* Мобильное меню - полная ширина под хедером */}
       <div className="order-4 mt-[16px] w-full border-t border-dashed border-white border-opacity-20 pt-[16px] lg:hidden">
         <div className="flex items-center justify-between">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex cursor-pointer items-center gap-2 border-none bg-transparent p-0 text-white outline-none">
-                <Menu className="h-[24px] w-[24px]" />
-                <span className="text-[15px] font-medium">Menu</span>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="mt-2 flex w-[280px] flex-col gap-1 rounded-xl border border-white border-opacity-10 bg-[#0B0B0B] bg-opacity-95 p-3 shadow-lg backdrop-blur-xl">
-              {navbarItems.map((item) =>
-                item.nestedItems?.length ? (
-                  // Вложенное меню
-                  item.nestedItems.map((nestedItem) => (
-                    <DropdownMenuItem key={nestedItem.id} asChild>
-                      <Link
-                        href={nestedItem.link || '#'}
-                        className="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-[15px] font-medium text-white transition-all hover:bg-white hover:bg-opacity-10"
-                      >
-                        {nestedItem.icon && (
-                          <nestedItem.icon className="h-[20px] w-[20px] fill-white" />
-                        )}
-                        {nestedItem.label}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))
-                ) : (
-                  // Обычный пункт меню
-                  <DropdownMenuItem key={item.id} asChild>
-                    <Link
-                      href={item.link || '#'}
-                      className="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-[15px] font-medium text-white transition-all hover:bg-white hover:bg-opacity-10"
-                    >
-                      <item.icon className="h-[20px] w-[20px] fill-white" />
-                      {item.label}
-                    </Link>
-                  </DropdownMenuItem>
-                ),
-              )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex cursor-pointer items-center gap-2 border-none bg-transparent p-0 text-white outline-none">
+                      <Menu className="h-[24px] w-[24px]" />
+                      <span className="text-[15px] font-medium">Menu</span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="mt-2 flex w-[280px] flex-col gap-2">
+                    {navbarItems.map((item) =>
+                      item.nestedItems?.length ? (
+                        // Вложенное меню
+                        item.nestedItems.map((nestedItem) => (
+                          <DropdownMenuItem key={nestedItem.id} asChild>
+                            <Link
+                              href={nestedItem.link || '#'}
+                              className="flex cursor-pointer items-center gap-3 rounded-[4px] px-4 py-2 text-[14px] font-medium"
+                            >
+                              {nestedItem.icon && (
+                                <nestedItem.icon className="h-[20px] w-[20px] fill-[#0B0B0B]" />
+                              )}
+                              {nestedItem.label}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))
+                      ) : (
+                        // Обычный пункт меню
+                        <DropdownMenuItem key={item.id} asChild>
+                          <Link
+                            href={item.link || '#'}
+                            className="flex cursor-pointer items-center gap-3 rounded-[4px] px-4 py-2 text-[14px] font-medium"
+                          >
+                            <item.icon className="h-[20px] w-[20px] fill-[#0B0B0B]" />
+                            {item.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ),
+                    )}
             </DropdownMenuContent>
           </DropdownMenu>
           <div className="lg:hidden">

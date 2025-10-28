@@ -59,13 +59,13 @@ const DashboardHistory = ({
             <TabsList className="h-fit w-full justify-center gap-[8px] bg-transparent">
               <TabsTrigger
                 value={HistoryTabs.VAULTS}
-                className="data-[state=active]:!bg-light-purple rounded-[8px] px-[24px] py-[8px] text-[14px] font-semibold !text-white"
+                className="data-[state=active]:!bg-primary rounded-[8px] px-[24px] py-[8px] text-[14px] font-semibold !text-white"
               >
                 Vaults
               </TabsTrigger>
               <TabsTrigger
                 value={HistoryTabs.STRATEGIES}
-                className="data-[state=active]:!bg-light-purple rounded-[8px] px-[24px] py-[8px] text-[14px] font-semibold !text-white"
+                className="data-[state=active]:!bg-primary rounded-[8px] px-[24px] py-[8px] text-[14px] font-semibold !text-white"
               >
                 Strategies
               </TabsTrigger>

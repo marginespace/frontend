@@ -18,7 +18,7 @@ export const FilterPlatform = ({
   return (
     <div className="mb-[4px] flex justify-between py-[8px]">
       <div className="flex items-center">
-        <label htmlFor={name} className="text-[14px] font-medium  text-text">
+        <label htmlFor={name} className="text-[14px] font-medium text-[#0B0B0B]">
           {title}
         </label>
       </div>
