@@ -39,7 +39,7 @@ const config: Config = {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
+          DEFAULT: '#D46B30',
           foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
@@ -66,20 +66,20 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // Новая цветовая схема из Figma
-        primary: '#D46B30', // Оранжевый акцент
+        // Цветовая схема Margin Space
         'primary-hover': '#B85A26',
-        'light-grey': '#667085',
+        'light-grey': '#C6C6CC',
         'additional-grey': '#667085',
         'background-dark': '#222324',
         text: '#293056',
         danger: '#D85F5A',
         furnace: '#FFF094',
-        'light-grey': '#C6C6CC',
         'text-light': '#667085',
         'text-contrast': '#FFF094',
         'text-grey': '#F1F3F8',
         'text-purple': '#CFC9FF',
+        'light-purple': 'rgba(160, 147, 254, 1)',
+        'light-purple-hover': 'rgba(140, 127, 234, 1)',
         'transparent-bg': 'rgba(255,255,255,0.11)',
         'transparent-bg-80': 'rgba(255,255,255,0.08)',
         'transparent-bg-dark': 'rgba(34,35,36,0.43)',
