@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 import { getChainConfig } from '@/actions/get-chain-config';
 import { type FilterQuery } from '@/lib/filter-vaults';
@@ -6,7 +6,7 @@ import { type FilterQuery } from '@/lib/filter-vaults';
 // Отключаем статическую генерацию для этой страницы
 export const dynamic = 'force-dynamic';
 
-const EarnWrapper = dynamic(() => import('@/components/earn'), {
+const EarnWrapper = dynamicImport(() => import('@/components/earn'), {
   ssr: false,
 });
 

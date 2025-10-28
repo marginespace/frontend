@@ -1,11 +1,11 @@
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
 import { type FilterQuery } from '@/lib/filter-vaults';
 
 // Отключаем статическую генерацию для этой страницы
 export const dynamic = 'force-dynamic';
 
-const VaultsContainer = dynamic(() => import('@/components/vault'), {
+const VaultsContainer = dynamicImport(() => import('@/components/vault'), {
   ssr: false,
 });
 
