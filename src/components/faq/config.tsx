@@ -572,10 +572,9 @@ const supportFaqConfig: IFaqDropdownItem[] = [
           You can reach the Margin Space team through:
         </p>
         <ul className="list-disc list-inside space-y-1 ml-2">
-          <li><strong>Discord:</strong> Join our community for real-time support</li>
           <li><strong>Telegram:</strong> Official announcement channel and support group</li>
-          <li><strong>Twitter:</strong> @MarginSpace for updates and quick questions</li>
-          <li><strong>Email:</strong> support@marginspace.com for detailed inquiries</li>
+          <li><strong>Twitter:</strong> for updates and quick questions</li>
+          <li><strong>Email:</strong> support@marginspace.io for detailed inquiries</li>
           <li><strong>Contact Form:</strong> Fill out the form on our Support page</li>
         </ul>
         <p>

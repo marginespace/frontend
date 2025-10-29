@@ -34,7 +34,7 @@ export const ContactUsForm = () => {
   const onSubmit = ({ message, name }: ContactUsFormSchema) => {
     if (typeof window !== 'undefined') {
       window.location.assign(
-        `mailto:collaborate@cubera.finance?subject=${encodeURIComponent(
+        `mailto:support@marginspace.io?subject=${encodeURIComponent(
           name,
         )}&body=${encodeURIComponent(message)}`,
       );
@@ -42,8 +42,8 @@ export const ContactUsForm = () => {
   };
 
   return (
-    <div className="border-primary flex w-full max-w-[620px] flex-col gap-[24px] rounded-[16px] border-2 bg-linear-white p-[24px] backdrop-blur-[35px]">
-      <div className="text-[24px] font-semibold">Contact us</div>
+    <div className="border-primary flex w-full max-w-[620px] flex-col gap-4 rounded-[16px] border-2 bg-linear-white p-4 backdrop-blur-[35px] md:gap-[24px] md:p-[24px]">
+      <div className="text-[20px] font-semibold md:text-[24px]">Contact us</div>
       <Form {...contactUsForm}>
         <form
           onSubmit={contactUsForm.handleSubmit(onSubmit)}
@@ -56,7 +56,7 @@ export const ContactUsForm = () => {
               <FormItem>
                 <FormControl>
                   <Input
-                    className="rounded-[8px] border-none bg-[#352852] bg-opacity-[0.43] px-[14px] py-[13px] placeholder:text-[#C6C6CC]"
+                    className="w-full rounded-[8px] border-none bg-white/10 px-3 py-3 text-white placeholder:text-white/60 focus:bg-white/15 md:px-[14px] md:py-[13px]"
                     placeholder="Your name"
                     {...field}
                   />
@@ -72,7 +72,7 @@ export const ContactUsForm = () => {
               <FormItem>
                 <FormControl>
                   <Input
-                    className="rounded-[8px] border-none bg-[#352852] bg-opacity-[0.43] px-[14px] py-[13px] placeholder:text-[#C6C6CC]"
+                    className="w-full rounded-[8px] border-none bg-white/10 px-3 py-3 text-white placeholder:text-white/60 focus:bg-white/15 md:px-[14px] md:py-[13px]"
                     placeholder="Email"
                     {...field}
                   />
@@ -88,7 +88,7 @@ export const ContactUsForm = () => {
               <FormItem>
                 <FormControl>
                   <Textarea
-                    className="min-h-[154px] rounded-[8px] border-none bg-[#352852] bg-opacity-[0.43] px-[14px] py-[10px] placeholder:text-[#C6C6CC]"
+                    className="w-full min-h-[120px] rounded-[8px] border-none bg-white/10 px-3 py-3 text-white placeholder:text-white/60 focus:bg-white/15 md:min-h-[154px] md:px-[14px] md:py-[10px]"
                     placeholder="What we can help you with?"
                     {...field}
                   />
@@ -117,17 +117,17 @@ export const ContactUsForm = () => {
                       <CheckboxIndicator />
                     </Checkbox>
                   </FormControl>
-                  <div className="m-0 text-[12px] text-[#F1F3F8]">
+                  <div className="m-0 text-[11px] leading-relaxed text-white/80 md:text-[12px]">
                     By submitting this form, I read the{' '}
                     <Link
-                      href="/docs/privacy-policy.docx"
+                      href="/privacy-policy"
                       className="text-primary underline-offset-2 hover:underline"
                     >
                       Privacy Policy
                     </Link>{' '}
                     and agree with{' '}
                     <Link
-                      href="/docs/terms-and-conditions.docx"
+                      href="/terms-and-conditions"
                       className="text-primary underline-offset-2 hover:underline"
                     >
                       Terms and Conditions
@@ -138,19 +138,19 @@ export const ContactUsForm = () => {
               </FormItem>
             )}
           />
-          <div className="mt-[16px] flex flex-col-reverse items-center justify-end gap-[24px] lg:flex-row">
-            <div className="block self-start text-[12px] font-medium text-[#F1F3F8] lg:hidden">
-              Ask our moderators and community on Discord:
+          <div className="mt-4 flex flex-col gap-4 md:mt-[16px] lg:flex-row lg:items-center lg:justify-end lg:gap-[24px]">
+            <div className="block text-center text-[12px] font-medium text-white/80 lg:hidden">
+              Ask our moderators and community on Discord
             </div>
             <div className="flex w-full items-center gap-[8px] lg:hidden">
-              <div className="h-[1px] w-full bg-[#CFC9FF]" />
-              <div className="text-[12px] font-medium text-[#CFC9FF]">or</div>
-              <div className="h-[1px] w-full  bg-[#CFC9FF]" />
+              <div className="h-[1px] w-full bg-white/20" />
+              <div className="text-[12px] font-medium text-white/60">or</div>
+              <div className="h-[1px] w-full bg-white/20" />
             </div>
             <Button
               type="submit"
               variant="contained"
-              className="h-full w-full px-[48px] py-[10px] lg:w-fit"
+              className="h-full w-full px-6 py-3 md:px-[48px] md:py-[10px] lg:w-fit"
             >
               Send Request
             </Button>

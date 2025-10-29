@@ -58,8 +58,8 @@ export const metadata = {
 
 const ContactUs = () => {
   return (
-    <div className="mt-[40px] flex h-full w-full flex-col items-center gap-[24px] px-[16px]">
-      <div className="text-[32px] font-semibold">Contact Us</div>
+    <div className="flex flex-1 w-full flex-col items-center justify-center gap-6 px-4 py-8 md:gap-[24px] md:px-[16px] md:py-[40px]">
+      <div className="text-center text-[24px] font-semibold md:text-[32px]">Contact Us</div>
       <ContactUsForm />
       {/*<div className="flex w-full max-w-[620px] flex-col gap-[16px] rounded-[16px] border-2 border-light-purple bg-linear-white p-[16px] backdrop-blur-[35px]">*/}
       {/*  {data.map(({ title, description, email }) => (*/}

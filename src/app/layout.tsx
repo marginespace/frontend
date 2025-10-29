@@ -16,11 +16,11 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: PropsWithChildren) => {
   return (
     <html lang="en" style={{ zoom: '0.8' }}>
-      <body className="flex min-h-screen flex-col overflow-hidden bg-[url('/margin-background.svg')] bg-cover bg-fixed bg-top bg-no-repeat">
+      <body className="flex min-h-screen flex-col bg-[url('/margin-background.svg')] bg-cover bg-fixed bg-top bg-no-repeat">
         <ClientProviders>
-          <div className="flex h-full flex-col overflow-y-auto overflow-x-hidden">
+          <div className="flex min-h-screen flex-col">
             <Navbar />
-            <div className="flex-1">{children}</div>
+            <main className="flex-1">{children}</main>
             <Footer />
           </div>
         </ClientProviders>
