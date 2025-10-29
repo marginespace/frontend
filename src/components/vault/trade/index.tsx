@@ -122,7 +122,7 @@ export const Trade = ({ vault, tokens, hiddenIds, admins }: TradeProps) => {
 
   return (
     <div className="col-span-6 rounded-[18px] p-0.5 lg:col-span-2">
-      <div className="border-light-purple flex h-full flex-col gap-2 rounded-[16px] border-2   bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-[16px] sm:gap-4">
+      <div className="border-primary flex h-full flex-col gap-2 rounded-[16px] border-2   bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-[16px] sm:gap-4">
         <div className="flex flex-row items-center justify-center">
           <div className="flex-[1] text-2xl font-medium">Trade</div>
           <FavoritesButton vault={vault} />

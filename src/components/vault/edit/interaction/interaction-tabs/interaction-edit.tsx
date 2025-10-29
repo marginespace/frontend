@@ -129,7 +129,7 @@ export const InteractionEdit = memo(({ vault, tokens }: Props) => {
                     </div>
                     <Checkbox
                       onClick={() => handleTokenClick(token.symbol)}
-                      className="border-light-purple grid place-items-center border"
+                      className="border-primary grid place-items-center border"
                     >
                       <CheckboxIndicator />
                     </Checkbox>

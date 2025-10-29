@@ -36,7 +36,7 @@ export const WithdrawTokensList = memo(
               className="bg-transparent p-0 hover:bg-transparent"
             >
               {loading ? (
-                <Loader2 className="text-light-purple h-[20px] w-[20px] animate-spin" />
+                <Loader2 className="text-primary h-[20px] w-[20px] animate-spin" />
               ) : (
                 <Refresh className="fill-light-purple hover:fill-light-purple-hover transition-colors" />
               )}
@@ -59,7 +59,7 @@ export const WithdrawTokensList = memo(
                   {token.symbol}
                 </Label>
                 <RadioGroupItem
-                  className="border-light-purple text-light-purple"
+                  className="border-primary text-primary"
                   value={token.symbol}
                   id={`${token.address}-${token.symbol}`}
                 />
@@ -68,7 +68,7 @@ export const WithdrawTokensList = memo(
           </RadioGroup>
         </div>
         <div className="flex flex-row justify-between rounded-b-[8px] bg-white p-[16px] text-[14px]">
-          <p className=" text-light-purple text-sm font-semibold">Provider</p>
+          <p className=" text-primary text-sm font-semibold">Provider</p>
           <p className="text-sm font-semibold text-text">1Inch</p>
         </div>
       </div>

@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-[#D46B30] text-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] hover:bg-[#B85A26]',
+          'bg-[#D46B30] text-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] hover:bg-[#B85A26] hover:shadow-[0_0_20px_rgba(212,107,48,0.4)] hover:scale-[1.02] transition-all duration-300 active:scale-[0.98]',
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
@@ -25,8 +25,8 @@ const buttonVariants = cva(
         outlined:
           'text-[14px] border border-[#D46B30] text-white rounded-[10px] shadow-[0_1px_2px_rgba(16,24,40,0.05)]',
         'outline-primary':
-          'bg-transparent border-2 border-primary text-white hover:border-primary-hover transition-colors',
-        contained: 'text-[16px] bg-[#D46B30] text-white rounded-[8px] hover:bg-[#B85A26]',
+          'bg-transparent border border-primary bg-gradient-to-r from-primary/10 via-primary/5 to-transparent text-white hover:border-primary-hover hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(212,107,48,0.5)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]',
+        contained: 'text-[16px] bg-[#D46B30] text-white rounded-[8px] hover:bg-[#B85A26] hover:shadow-[0_0_20px_rgba(212,107,48,0.4)] hover:scale-[1.02] transition-all duration-300 active:scale-[0.98]',
       },
       size: {
         default: 'h-10 px-3 py-2',

@@ -14,7 +14,7 @@ export const DropdownArrowSVG = ({ active, ...props }: Props) => {
     >
       <path
         d="M19.9201 8.9502L13.4001 15.4702C12.6301 16.2402 11.3701 16.2402 10.6001 15.4702L4.08008 8.9502"
-        stroke={active ? '#A093FE' : '#FFFFFF'}
+        stroke={active ? '#D46B30' : '#FFFFFF'}
         strokeWidth="1.5"
         strokeMiterlimit="10"
         strokeLinecap="round"

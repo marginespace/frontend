@@ -16,17 +16,18 @@ export const FilterPlatform = ({
   checked,
 }: Props) => {
   return (
-    <div className="mb-[4px] flex justify-between py-[8px]">
-      <div className="flex items-center">
-        <label htmlFor={name} className="text-[14px] font-medium text-[#0B0B0B]">
-          {title}
-        </label>
-      </div>
+    <div className="group flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-primary/10">
+      <label 
+        htmlFor={name} 
+        className="cursor-pointer text-[14px] font-medium text-[#374151] transition-colors group-hover:text-[#111827]"
+      >
+        {title}
+      </label>
       <Checkbox
         checked={checked}
         onCheckedChange={(val) => handleChange(name, Boolean(val))}
         id={name}
-        className="flex items-center justify-center"
+        className="flex items-center justify-center border-primary data-[state=checked]:bg-primary"
       >
         <CheckboxIndicator />
       </Checkbox>

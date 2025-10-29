@@ -30,7 +30,7 @@ export const NavbarItem = ({ item }: NavbarItemProps) => {
       className={clsx(
         'group relative !rounded-[10px]',
         buttonVariants({ variant: 'link' }),
-        pathname === item.pathname ? 'bg-light-purple hover:!text-white' : '',
+        pathname === item.pathname ? 'bg-primary/20 hover:!text-primary' : '',
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

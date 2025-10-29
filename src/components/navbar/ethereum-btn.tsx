@@ -16,13 +16,13 @@ export const EthereumButton: FC<{ className?: string }> = ({ className }) => {
   return isMounted && chain ? (
     <div
       className={cn(
-        'bg-transparent inline-flex cursor-pointer items-center gap-2 rounded-[10px] border-2 border-primary px-3 py-2 text-white hover:border-primary-hover',
+        'bg-transparent inline-flex cursor-pointer items-center justify-center rounded-[10px] border border-primary bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-2 text-white transition-all hover:border-primary-hover hover:shadow-[0_0_15px_rgba(212,107,48,0.5)]',
         className,
       )}
       onClick={() => open({ view: 'Networks' })}
+      title={chain.name}
     >
       {chainImages[networkIdToName[chain.id]]}
-      <span className="text-xs font-semibold leading-[18px]">{chain.name}</span>
     </div>
   ) : null;
 };

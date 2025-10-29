@@ -96,7 +96,7 @@ export function SlippageModal({
   return (
     <Dialog>
       <DialogTrigger className="group  flex gap-1 self-end p-1 underline-offset-4 ">
-        <span className="group-hover:text-light-purple text-sm font-semibold transition-all group-hover:underline">
+        <span className="group-hover:text-primary text-sm font-semibold transition-all group-hover:underline">
           Settings
         </span>
         <Settings className="fill-light-purple" />

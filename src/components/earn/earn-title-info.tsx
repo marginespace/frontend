@@ -24,7 +24,7 @@ export const EarnTitleInfo = () => {
       <h2 className="mr-3 text-base text-primary">
         All vaults posted here use our platform{' '}
         <Link
-          className="text-light-purple underline underline-offset-[3px]"
+          className="text-white underline underline-offset-[3px]"
           href={'/'}
         >
           Margin Space

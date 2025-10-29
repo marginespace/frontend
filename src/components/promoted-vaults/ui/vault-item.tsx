@@ -62,10 +62,10 @@ export const VaultItem = forwardRef<HTMLDivElement, VaultItemProps>(
     return (
       <div
         className={cn(
-          'border-light-purple z-0 flex select-none flex-col rounded-[10px] border p-4',
+          'border-primary z-0 flex select-none flex-col rounded-[10px] border p-4',
           className,
           selected
-            ? 'bg-gradient-to-b from-[rgba(160,147,254,0.50)] via-[rgba(255,255,255,0)]'
+            ? 'bg-gradient-to-b from-[rgba(212,107,48,0.50)] via-[rgba(255,255,255,0)]'
             : 'bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)]',
         )}
         ref={ref}

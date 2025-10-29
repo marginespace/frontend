@@ -37,17 +37,20 @@ export const FilterChain = ({
   imgUrl,
 }: Props) => {
   return (
-    <div className="mb-[4px] flex justify-between py-[8px]">
-      <div className="mr-3 flex items-center">
+    <div className="group flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-primary/10">
+      <div className="flex items-center gap-2.5">
         {imgUrl ? (
-          <div className="next-image-wrapper relative mr-[8px] h-[24px] w-[24px]">
+          <div className="next-image-wrapper relative h-[22px] w-[22px]">
             {chainImages[name.slice(7)]}
           </div>
         ) : (
-          <div className="mr-[8px] h-[24px] w-[24px] rounded-full bg-gray-700"></div>
+          <div className="h-[22px] w-[22px] rounded-full bg-gray-300"></div>
         )}
 
-        <label htmlFor={name} className="text-[14px] font-medium text-[#0B0B0B]">
+        <label 
+          htmlFor={name} 
+          className="cursor-pointer text-[14px] font-medium text-[#374151] transition-colors group-hover:text-[#111827]"
+        >
           {title}
         </label>
       </div>
@@ -55,7 +58,7 @@ export const FilterChain = ({
         checked={checked}
         onCheckedChange={(val) => handleChange(name, Boolean(val))}
         id={name}
-        className="flex items-center justify-center"
+        className="flex items-center justify-center border-primary data-[state=checked]:bg-primary"
       >
         <CheckboxIndicator />
       </Checkbox>

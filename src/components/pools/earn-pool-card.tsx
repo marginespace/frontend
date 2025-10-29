@@ -63,7 +63,7 @@ export const EarnPoolCard = memo(
             backgroundSize: '200% 200%',
             boxShadow: '14px 14px 36px 0px rgba(113, 103, 185, 0.20)',
           }}
-          className="border-light-purple block cursor-pointer rounded-[16px] border-2 bg-gradient-to-b from-[rgba(255,255,255,0.44)] via-[rgba(255,255,255,0.37)] bg-pos-100 p-[16px] pb-0 transition-all group-hover/card:bg-pos-0"
+          className="border-primary block cursor-pointer rounded-[16px] border-2 bg-gradient-to-b from-[rgba(255,255,255,0.44)] via-[rgba(255,255,255,0.37)] bg-pos-100 p-[16px] pb-0 transition-all group-hover/card:bg-pos-0"
         >
           <div className="mb-[12px] truncate">{cube.name || cube.id}</div>
           <div className="mb-[12px] flex items-center rounded-[8px] bg-gradient-to-r from-primary px-[12px] py-[10px] text-[16px] font-semibold text-black">

@@ -5,7 +5,7 @@ import { EmptyWallet } from '@/ui/icons';
 
 export const NoWalletEarnDetails = () => {
   return (
-    <div className="border-light-purple container mb-12 flex h-full items-center justify-center rounded-[16px] border-2 bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-3 backdrop-blur-[35px]">
+    <div className="border-primary container mb-12 flex h-full items-center justify-center rounded-[16px] border-2 bg-gradient-to-b from-[rgba(255,255,255,0.28)] via-[rgba(255,255,255,0.17)] p-3 backdrop-blur-[35px]">
       <div className="flex flex-col items-center gap-6">
         <EmptyWallet />
         <div className="text-center">

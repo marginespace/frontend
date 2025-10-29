@@ -103,16 +103,16 @@ export const SortBy = ({ className }: SortByProps) => {
         className="w-full min-w-[240px] overflow-hidden rounded-[16px] border border-white/10 bg-white p-0 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_0_1px_rgba(0,0,0,0.05)] md:w-[240px]"
         trigger={
           <Button
-            variant="transparent"
-            className="w-full flex-row justify-between border-primary md:w-[170px]"
+            variant={isOpen ? `transparent-active` : 'transparent'}
+            className="w-full flex-row justify-between lg:w-[170px]"
           >
             <h2 className="text-[12px] font-medium text-white">
-              Sort By: <span className="text-[14px] font-semibold text-primary">{sortBy}</span>
+              Sort By: <span className="text-[14px] font-semibold">{sortBy}</span>
             </h2>
             <DropdownArrowSVG
               active={!isOpen}
               className={cn(
-                'ml-2 h-[18px] w-[18px] fill-primary transition-all duration-300',
+                'ml-2 h-[18px] w-[18px] transition-all duration-300',
                 isOpen ? 'rotate-180' : ' ',
               )}
             />

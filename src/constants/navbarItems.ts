@@ -40,10 +40,10 @@ export const navbarItems = [
       },
       {
         id: 5,
-        label: 'Docs',
+        label: 'Support',
         icon: File,
-        link: '#',
-        pathname: '#',
+        link: '/contact-us',
+        pathname: '/contact-us',
       },
     ],
   },

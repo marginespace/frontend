@@ -42,7 +42,7 @@ export const ContactUsForm = () => {
   };
 
   return (
-    <div className="border-light-purple flex w-full max-w-[620px] flex-col gap-[24px] rounded-[16px] border-2 bg-linear-white p-[24px] backdrop-blur-[35px]">
+    <div className="border-primary flex w-full max-w-[620px] flex-col gap-[24px] rounded-[16px] border-2 bg-linear-white p-[24px] backdrop-blur-[35px]">
       <div className="text-[24px] font-semibold">Contact us</div>
       <Form {...contactUsForm}>
         <form
@@ -121,14 +121,14 @@ export const ContactUsForm = () => {
                     By submitting this form, I read the{' '}
                     <Link
                       href="/docs/privacy-policy.docx"
-                      className="text-light-purple underline-offset-2 hover:underline"
+                      className="text-primary underline-offset-2 hover:underline"
                     >
                       Privacy Policy
                     </Link>{' '}
                     and agree with{' '}
                     <Link
                       href="/docs/terms-and-conditions.docx"
-                      className="text-light-purple underline-offset-2 hover:underline"
+                      className="text-primary underline-offset-2 hover:underline"
                     >
                       Terms and Conditions
                     </Link>

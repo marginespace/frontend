@@ -58,14 +58,14 @@ export const Boost = ({ vault }: BoostProps) => {
         <div className="flex items-center justify-between">
           <p className="text-xl font-semibold leading-[30px]">
             Boosted By{' '}
-            <span className="text-light-purple">{vault.boost.name}</span>
+            <span className="text-primary">{vault.boost.name}</span>
           </p>
           <div className="flex items-center gap-[8px]">
             <Link
               href="#"
               className={cn(
                 buttonVariants({ variant: 'default' }),
-                'hover:border-light-purple border border-white bg-transparent-bg font-semibold text-white hover:bg-transparent-bg',
+                'hover:border-primary border border-white bg-transparent-bg font-semibold text-white hover:bg-transparent-bg',
               )}
             >
               Website
@@ -102,7 +102,7 @@ export const Boost = ({ vault }: BoostProps) => {
               href="#"
               className={cn(
                 buttonVariants({ variant: 'default' }),
-                'hover:border-light-purple border border-white bg-transparent-bg font-semibold text-white hover:bg-transparent-bg',
+                'hover:border-primary border border-white bg-transparent-bg font-semibold text-white hover:bg-transparent-bg',
               )}
             >
               Explore <ArrowRightCircle className="ml-2 h-[20px] w-[20px]" />

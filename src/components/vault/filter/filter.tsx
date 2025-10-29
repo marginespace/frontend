@@ -17,12 +17,7 @@ import {
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Checkbox, CheckboxIndicator } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuPortal,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { CustomDropdown } from '@/components/ui/custom-dropdown';
 import { DropdownArrowSVG } from '@/components/ui/icons/dropdown-arrow';
 import { Input } from '@/components/ui/input';
 import { SearchIcon } from '@/components/vault/search/search-icon';
@@ -105,8 +100,12 @@ export const Filter = ({ className }: FilterProps) => {
     [filters, checkedAllChains, checkedAllPlatforms],
   );
 
+  const allPlatforms = usePlatform();
+
   useEffect(() => {
-    if ((filterQuery.chains || '') !== debouncedChains) {
+    if (!filterQuery) return;
+
+    if (filterQuery.chains !== debouncedChains) {
       const newFilterQuery = {
         ...filterQuery,
         chains: debouncedChains || undefined,
@@ -121,7 +120,7 @@ export const Filter = ({ className }: FilterProps) => {
       });
     }
 
-    if ((filterQuery.platforms || '') !== debouncedPlatforms) {
+    if (filterQuery.platforms !== debouncedPlatforms) {
       const newFilterQuery = {
         ...filterQuery,
         platforms: debouncedPlatforms || undefined,
@@ -136,7 +135,7 @@ export const Filter = ({ className }: FilterProps) => {
       });
     }
 
-    if ((filterQuery.vaultsFilters || '') !== debouncedVaultsFilters) {
+    if (filterQuery.vaultsFilters !== debouncedVaultsFilters) {
       const newFilterQuery = {
         ...filterQuery,
         vaultsFilters: debouncedVaultsFilters || undefined,
@@ -151,231 +150,221 @@ export const Filter = ({ className }: FilterProps) => {
       });
     }
   }, [
-    pathname,
-    router,
-    filterQuery,
     debouncedChains,
     debouncedPlatforms,
     debouncedVaultsFilters,
+    pathname,
+    router,
+    filterQuery,
   ]);
 
-  const { data, isLoading } = usePlatform();
-
   useEffect(() => {
-    if (data && !isLoading) {
-      setFilters([...filters, ...data]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
-
-  useEffect(() => {
-    const selectedCount = filters.reduce(
-      (count, filterValue) => (filterValue.value ? count + 1 : count),
-      0,
+    const chainFilters = filters.filter(
+      (filter) => filter.type === 'chain' && filter.value === true,
     );
+    setChains(chainFilters.map((filter) => filter.name).join(','));
 
-    const filteredChains = filters
-      .filter((filter) => filter.type === 'chain' && filter.value)
-      .map((filter) => filter.name);
-    setChains(filteredChains.join(','));
+    const platformFilters = filters.filter(
+      (filter) => filter.type === 'platform' && filter.value === true,
+    );
+    setPlatforms(platformFilters.map((filter) => filter.name).join(','));
 
-    const filteredPlatforms = filters
-      .filter((filter) => filter.type === 'platform' && filter.value)
-      .map((filter) => filter.name);
-    setPlatforms(filteredPlatforms.join(','));
+    const vaultsFilters = filters.filter(
+      (filter) => filter.type === 'switch' && filter.value === true,
+    );
+    setVaultsFilters(vaultsFilters.map((filter) => filter.name).join(','));
 
-    const filteredVaultFilters = filters
-      .filter((filter) => filter.type === 'switch' && filter.value)
-      .map((filter) => filter.name);
-    setVaultsFilters(filteredVaultFilters.join(','));
-
-    setNumberSelected(selectedCount);
-
-    setCheckedAllChains(true);
-
-    for (const filter of filters) {
-      if (filter.type === 'chain' && !filter.value) {
-        setCheckedAllChains(false);
-        break;
+    let count = 0;
+    for (let i = 0; i < filters.length; i++) {
+      if (filters[i].value === true) {
+        count++;
       }
     }
+    setNumberSelected(count);
 
-    setCheckedAllPlatforms(true);
-    for (const filter of filters) {
-      if (filter.type === 'platform' && !filter.value) {
-        setCheckedAllPlatforms(false);
-        break;
+    let countChains = 0;
+    let countPlatforms = 0;
+    for (let i = 0; i < filters.length; i++) {
+      if (filters[i].type === 'chain') {
+        countChains++;
+        if (filters[i].value === false) {
+          setCheckedAllChains(false);
+          break;
+        }
+        if (countChains === filters.filter((f) => f.type === 'chain').length) {
+          setCheckedAllChains(true);
+        }
+      }
+      if (filters[i].type === 'platform') {
+        countPlatforms++;
+        if (filters[i].value === false) {
+          setCheckedAllPlatforms(false);
+          break;
+        }
+        if (
+          countPlatforms === filters.filter((f) => f.type === 'platform').length
+        ) {
+          setCheckedAllPlatforms(true);
+        }
       }
     }
   }, [filters]);
 
   return (
     <div className={className}>
-      <DropdownMenu
-        modal={false}
+      <CustomDropdown
         open={isOpen}
-        onOpenChange={() => setIsOpen(!isOpen)}
-      >
-        <DropdownMenuTrigger asChild>
+        onOpenChange={setIsOpen}
+        align="start"
+        className="no-scrollbar max-h-[500px] w-full overflow-hidden rounded-[16px] border border-white/10 bg-white p-0 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_0_1px_rgba(0,0,0,0.05)] md:w-[400px]"
+        trigger={
           <Button
-            variant={isOpen ? `transparent-active` : 'transparent'}
-            className="w-full flex-row justify-between lg:w-[250px]"
+            variant="transparent"
+            className="w-full flex-row justify-between border-primary md:w-[250px]"
           >
-            <h2 className="text-[16px] font-semibold text-white">
+            <h2 className="text-[15px] font-semibold text-white">
               Filters{' '}
-              {Boolean(numberSelected) && `(${numberSelected} selected)`}
+              {Boolean(numberSelected) && (
+                <span className="text-primary">({numberSelected})</span>
+              )}
             </h2>
             <DropdownArrowSVG
               active={!isOpen}
               className={cn(
-                'ml-2 h-[18px] w-[18px] transition-all',
+                'ml-2 h-[18px] w-[18px] fill-primary transition-all duration-300',
                 isOpen ? 'rotate-180' : ' ',
               )}
             />
-            {/* <ChevronDown
-              className={cn(
-                'ml-2 h-[18px] w-[18px] transition-all',
-                !isOpen ? 'rotate-180 text-primary' : ' text-light-purple',
-              )}
-            /> */}
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuPortal>
-          <DropdownMenuContent className="no-scrollbar max-h-96 w-full overflow-y-auto rounded-[10px] bg-white p-[16px] shadow-[0px_4px_42px_rgba(0,0,0,0.78)] md:w-[300px] lg:w-[250px]">
-            <div className="flex justify-center">
-              <Button
-                variant="link"
-                onClick={clearAll}
-                className="text-center font-medium text-additional-grey hover:text-primary"
-              >
-                Clear all
-              </Button>
-            </div>
-            <div>
-              <div className="border-b-2 border-dashed border-light-grey">
-                <div className="text-[16px] font-semibold text-[#0B0B0B]">
-                  Filters
+        }
+      >
+        <div className="border-b border-gray-100 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-[16px] font-semibold text-[#111827]">Filters</h3>
+            <Button
+              variant="link"
+              onClick={clearAll}
+              className="text-[14px] font-medium text-primary hover:text-primary-hover"
+            >
+              Clear all
+            </Button>
+          </div>
+        </div>
+        <div className="max-h-[400px] overflow-y-auto p-2">
+          <Accordion type="multiple" className="w-full">
+            <AccordionItem value="item-1" className="border-b-0">
+              <AccordionTrigger className="rounded-lg px-3 py-2 hover:bg-primary/10 data-[state=open]:bg-primary/10">
+                <div className="flex items-center justify-between w-full pr-2">
+                  <span className="text-[14px] font-semibold text-[#111827]">
+                    Chains
+                  </span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <Checkbox
+                      checked={checkedAllChains}
+                      onCheckedChange={() => checkAll('chain')}
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-[18px] w-[18px] border-primary data-[state=checked]:bg-primary"
+                    >
+                      <CheckboxIndicator />
+                    </Checkbox>
+                    <span className="text-[12px] text-gray-500 whitespace-nowrap">All</span>
+                  </div>
                 </div>
-                {filters
-                  .filter((filter) => filter.type === 'switch')
-                  .map((filter) => (
-                    <FilterItem
-                      key={filter.name}
-                      checked={filter.value}
-                      name={`filter-${filter.name}`}
-                      title={filter.title}
-                      tooltip={filter.tooltip ? filter.tooltip : ''}
-                      handleChange={handleChange}
-                    />
-                  ))}
-              </div>
-            </div>
-            <Accordion type="multiple">
-              <AccordionItem value="item-1" className="border-0">
-                <AccordionTrigger className="hover:no-underline">
-                  <div className="flex justify-between">
-                    <div className="text-[16px] font-semibold text-[#0B0B0B]">
-                      Chain
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="border-b-2 border-dashed border-light-grey">
-                    <div className="mb-[4px] flex justify-between py-[8px]">
-                      <div className="flex items-center">
-                        <label
-                          htmlFor="filter-chains-all"
-                          className="text-[14px] font-medium text-primary"
-                        >
-                          All
-                        </label>
-                      </div>
-                      <Checkbox
-                        onCheckedChange={() => checkAll('chain')}
-                        checked={checkedAllChains}
-                        id="filter-chains-all"
-                        className="flex items-center justify-center"
-                      >
-                        <CheckboxIndicator />
-                      </Checkbox>
-                    </div>
-                    {filters
-                      .filter((filter) => filter.type === 'chain')
-                      .map((filter) => (
-                        <FilterChain
-                          key={filter.name}
-                          checked={filter.value}
-                          name={`filter-${filter.name}`}
-                          title={filter.title}
-                          handleChange={handleChange}
-                          imgUrl={filter.image}
-                        />
-                      ))}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2" className="border-0">
-                <AccordionTrigger className="hover:no-underline">
-                  <div className="flex justify-between">
-                    <div className="text-[16px] font-semibold text-[#0B0B0B]">
-                      Platform
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="border-b-2 border-dashed border-light-grey pt-[16px]">
-                    <div className="relative mb-[16px] px-[4px]">
-                      <Input
-                        className="border-0 bg-[#F1F0F8] text-[#0B0B0B] placeholder:text-additional-grey focus-visible:ring-0 focus-visible:ring-offset-additional-grey"
-                        placeholder="Search..."
-                        value={searchValue}
-                        onChange={(e) => setSearchValue(e.target.value)}
+              </AccordionTrigger>
+              <AccordionContent className="px-3 pb-2">
+                <div className="relative mb-3">
+                  <Input
+                    className="h-9 rounded-lg border-gray-200 bg-gray-50 pl-9 text-[13px] focus:border-primary focus:ring-1 focus:ring-primary"
+                    placeholder="Search chains..."
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                  />
+                  <SearchIcon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                </div>
+                <div className="space-y-1">
+                  {filters
+                    .filter((filter) => filter.type === 'chain')
+                    .filter((filter) =>
+                      filter.title.toLowerCase().includes(searchValue.toLowerCase()),
+                    )
+                    .map((filter) => (
+                      <FilterChain
+                        key={filter.name}
+                        name={filter.name}
+                        title={filter.title}
+                        handleChange={handleChange}
+                        checked={filter.value}
+                        imgUrl={filter.image}
                       />
-                      <SearchIcon className="absolute right-[16px] top-[12px] fill-primary" />
-                    </div>
-                    <div className="mb-[4px] flex justify-between py-[8px]">
-                      <div className="flex items-center">
-                        <label
-                          htmlFor="filter-platforms-all"
-                          className="text-[14px] font-medium text-primary"
-                        >
-                          All
-                        </label>
-                      </div>
-                      <Checkbox
-                        onCheckedChange={() => checkAll('platform')}
-                        checked={checkedAllPlatforms}
-                        id="filter-platforms-all"
-                        className="flex items-center justify-center"
-                      >
-                        <CheckboxIndicator />
-                      </Checkbox>
-                    </div>
+                    ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
 
-                    {filters
-                      .filter(
-                        (filter) =>
-                          filter.type === 'platform' &&
-                          filter.name
-                            .toLowerCase()
-                            .includes(searchValue.toLowerCase()),
-                      )
-                      .map((filter) => (
-                        <FilterPlatform
-                          key={filter.name}
-                          checked={filter.value}
-                          name={`filter-${filter.name}`}
-                          title={filter.title}
-                          handleChange={handleChange}
-                        />
-                      ))}
+            <AccordionItem value="item-2" className="border-b-0">
+              <AccordionTrigger className="rounded-lg px-3 py-2 hover:bg-primary/10 data-[state=open]:bg-primary/10">
+                <div className="flex items-center justify-between w-full pr-2">
+                  <span className="text-[14px] font-semibold text-[#111827]">
+                    Platforms
+                  </span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <Checkbox
+                      checked={checkedAllPlatforms}
+                      onCheckedChange={() => checkAll('platform')}
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-[18px] w-[18px] border-primary data-[state=checked]:bg-primary"
+                    >
+                      <CheckboxIndicator />
+                    </Checkbox>
+                    <span className="text-[12px] text-gray-500 whitespace-nowrap">All</span>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </DropdownMenuContent>
-        </DropdownMenuPortal>
-      </DropdownMenu>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-3 pb-2">
+                <div className="space-y-1">
+                  {filters
+                    .filter((filter) => filter.type === 'platform')
+                    .map((filter) => (
+                      <FilterPlatform
+                        key={filter.name}
+                        name={filter.name}
+                        title={filter.title}
+                        handleChange={handleChange}
+                        checked={filter.value}
+                        imgUrl={allPlatforms[filter.name] || filter.image}
+                      />
+                    ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-3" className="border-b-0">
+              <AccordionTrigger className="rounded-lg px-3 py-2 hover:bg-primary/10 data-[state=open]:bg-primary/10">
+                <span className="text-[14px] font-semibold text-[#111827]">
+                  Vaults
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="px-3 pb-2">
+                <div className="space-y-1">
+                  {filters
+                    .filter((filter) => filter.type === 'switch')
+                    .map((filter) => (
+                      <FilterItem
+                        key={filter.name}
+                        name={filter.name}
+                        title={filter.title}
+                        handleChange={handleChange}
+                        checked={filter.value}
+                        imgUrl={filter.image}
+                      />
+                    ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </CustomDropdown>
     </div>
   );
 };
+

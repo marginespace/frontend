@@ -10,7 +10,7 @@ interface IAccordionButton {
 
 export const AccordionButton: FC<IAccordionButton> = ({ opened, onClick }) => (
   <div className="flex w-full items-center gap-[26px]">
-    <div className="border-in border-light-purple h-[1px] w-full border-[1px] border-dashed" />
+    <div className="border-in border-primary h-[1px] w-full border-[1px] border-dashed" />
     <div
       className={cn(
         opened ? 'rotate-180' : '',
@@ -21,7 +21,7 @@ export const AccordionButton: FC<IAccordionButton> = ({ opened, onClick }) => (
     >
       <VaultArrow />
     </div>
-    <div className="border-in border-light-purple h-[1px] w-full border-[1px] border-dashed" />
+    <div className="border-in border-primary h-[1px] w-full border-[1px] border-dashed" />
   </div>
 );
 

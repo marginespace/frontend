@@ -92,7 +92,7 @@ export const PromotionalPoolCard = ({
       <div
         onClick={handleClick}
         style={{ backgroundSize: '200% 200%' }}
-        className="border-light-purple block rounded-[16px] border-2 bg-gradient-to-b from-[rgba(255,255,255,0.38)] via-[rgba(255,255,255,0.28)] bg-pos-100 p-[16px] text-base font-bold transition-all hover:cursor-pointer group-hover/card:bg-pos-0"
+        className="border-primary block rounded-[16px] border-2 bg-gradient-to-b from-[rgba(255,255,255,0.38)] via-[rgba(255,255,255,0.28)] bg-pos-100 p-[16px] text-base font-bold transition-all hover:cursor-pointer group-hover/card:bg-pos-0"
       >
         <div className="mb-[12px]">{vault.name}</div>
         <div className="flex items-center justify-between rounded-[8px] bg-gradient-to-r from-gray-200 px-[12px] py-[10px] text-[16px] font-semibold">

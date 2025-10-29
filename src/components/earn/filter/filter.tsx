@@ -8,12 +8,7 @@ import { earnFilters } from './filters';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox, CheckboxIndicator } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuPortal,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { CustomDropdown } from '@/components/ui/custom-dropdown';
 import { DropdownArrowSVG } from '@/components/ui/icons/dropdown-arrow';
 import { FilterChain } from '@/components/vault/filter/filter-chain';
 import { getFilterQuery, setFilterQuery } from '@/lib/filter-vaults';
@@ -62,7 +57,7 @@ export const Filter = ({ className }: FilterProps) => {
   }, [filters]);
 
   const checkAll = useCallback(
-    (type: 'chain' | 'platform' | 'switch') => {
+    (type: 'chain') => {
       const clearedFilters = filters.map((filter) => {
         if (type === 'chain' && filter.type === 'chain') {
           filter.value = !checkedAllChains;
@@ -79,7 +74,9 @@ export const Filter = ({ className }: FilterProps) => {
   );
 
   useEffect(() => {
-    if ((filterQuery.chains || '') !== debouncedChains) {
+    if (!filterQuery) return;
+
+    if (filterQuery.chains !== debouncedChains) {
       const newFilterQuery = {
         ...filterQuery,
         chains: debouncedChains || undefined,
@@ -93,102 +90,105 @@ export const Filter = ({ className }: FilterProps) => {
         scroll: false,
       });
     }
-  }, [pathname, router, filterQuery, debouncedChains]);
+  }, [debouncedChains, pathname, router, filterQuery]);
 
   useEffect(() => {
-    const selectedCount = filters.reduce(
-      (count, filterValue) => (filterValue.value ? count + 1 : count),
-      0,
+    const chainFilters = filters.filter(
+      (filter) => filter.type === 'chain' && filter.value === true,
     );
+    setChains(chainFilters.map((filter) => filter.name).join(','));
 
-    const filteredChains = filters
-      .filter((filter) => filter.type === 'chain' && filter.value)
-      .map((filter) => filter.name);
-    setChains(filteredChains.join(','));
+    let count = 0;
+    for (let i = 0; i < filters.length; i++) {
+      if (filters[i].value === true) {
+        count++;
+      }
+    }
+    setNumberSelected(count);
 
-    setNumberSelected(selectedCount);
-
-    setCheckedAllChains(true);
-
-    for (const filter of filters) {
-      if (filter.type === 'chain' && !filter.value) {
-        setCheckedAllChains(false);
-        break;
+    let countChains = 0;
+    for (let i = 0; i < filters.length; i++) {
+      if (filters[i].type === 'chain') {
+        countChains++;
+        if (filters[i].value === false) {
+          setCheckedAllChains(false);
+          break;
+        }
+        if (countChains === filters.filter((f) => f.type === 'chain').length) {
+          setCheckedAllChains(true);
+        }
       }
     }
   }, [filters]);
 
   return (
     <div className={className}>
-      <DropdownMenu
-        modal={false}
+      <CustomDropdown
         open={isOpen}
-        onOpenChange={() => setIsOpen(!isOpen)}
-      >
-        <DropdownMenuTrigger asChild>
+        onOpenChange={setIsOpen}
+        align="start"
+        className="no-scrollbar max-h-[400px] w-full overflow-hidden rounded-[16px] border border-white/10 bg-white p-0 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_0_1px_rgba(0,0,0,0.05)] md:w-[280px]"
+        trigger={
           <Button
-            variant={isOpen ? `transparent-active` : 'transparent'}
-            className="w-full flex-row justify-between lg:w-[250px]"
+            variant="transparent"
+            className="w-full flex-row justify-between border-primary md:w-[250px]"
           >
-            <h2 className="text-[16px] font-semibold text-primary ">
+            <h2 className="text-[15px] font-semibold text-white">
               Filters{' '}
-              {Boolean(numberSelected) && `(${numberSelected} selected)`}
+              {Boolean(numberSelected) && (
+                <span className="text-primary">({numberSelected})</span>
+              )}
             </h2>
             <DropdownArrowSVG
               active={!isOpen}
               className={cn(
-                'ml-2 h-[18px] w-[18px] transition-all',
+                'ml-2 h-[18px] w-[18px] fill-primary transition-all duration-300',
                 isOpen ? 'rotate-180' : ' ',
               )}
             />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuPortal>
-          <DropdownMenuContent className="no-scrollbar max-h-96 overflow-y-auto rounded-[10px] bg-primary p-[16px] shadow-xl  md:w-[250px]">
-            <div className="flex justify-center">
-              <Button
-                variant="link"
-                onClick={clearAll}
-                className="text-center font-medium text-additional-grey"
-              >
-                Clear all
-              </Button>
-            </div>
-            <div className="border-b-2 border-dashed border-light-grey ">
-              <div className="mb-[4px] flex justify-between py-[8px]">
-                <div className="flex items-center">
-                  <label
-                    htmlFor="filter-chains-all"
-                    className="text-light-purple text-[14px] font-medium"
-                  >
-                    All
-                  </label>
-                </div>
-                <Checkbox
-                  onCheckedChange={() => checkAll('chain')}
-                  checked={checkedAllChains}
-                  id="filter-chains-all"
-                  className="flex items-center justify-center"
-                >
-                  <CheckboxIndicator />
-                </Checkbox>
-              </div>
-              {filters
-                .filter((filter) => filter.type === 'chain')
-                .map((filter, i) => (
-                  <FilterChain
-                    key={i}
-                    checked={filter.value}
-                    name={`filter-${filter.name}`}
-                    title={filter.title}
-                    handleChange={handleChange}
-                    imgUrl={filter.image}
-                  />
-                ))}
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenuPortal>
-      </DropdownMenu>
+        }
+      >
+        <div className="border-b border-gray-100 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-[16px] font-semibold text-[#111827]">Chains</h3>
+            <Button
+              variant="link"
+              onClick={clearAll}
+              className="text-[14px] font-medium text-primary hover:text-primary-hover"
+            >
+              Clear all
+            </Button>
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <Checkbox
+              checked={checkedAllChains}
+              onCheckedChange={() => checkAll('chain')}
+              className="h-[18px] w-[18px] border-primary data-[state=checked]:bg-primary"
+            >
+              <CheckboxIndicator />
+            </Checkbox>
+            <span className="text-[12px] text-gray-500 whitespace-nowrap">Select all</span>
+          </div>
+        </div>
+        <div className="max-h-[300px] overflow-y-auto p-2">
+          <div className="space-y-1">
+            {filters
+              .filter((filter) => filter.type === 'chain')
+              .map((filter) => (
+                <FilterChain
+                  key={filter.name}
+                  name={filter.name}
+                  title={filter.title}
+                  handleChange={handleChange}
+                  checked={filter.value}
+                  imgUrl={filter.image}
+                />
+              ))}
+          </div>
+        </div>
+      </CustomDropdown>
     </div>
   );
 };
+
