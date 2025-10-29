@@ -10,9 +10,10 @@ export const FaqDropdownItem: FC<IFaqDropdownItem> = ({ question, answer }) => {
     <div className="flex w-full flex-col">
       <div
         className={cn(
-          'flex w-full items-center justify-between gap-2 rounded-[10px] px-4 py-2 transition-all',
-          opened ? 'bg-light-purple' : 'bg-transparent',
+          'flex w-full items-center justify-between gap-2 rounded-[10px] px-4 py-2 transition-all hover:bg-primary/10 cursor-pointer',
+          opened ? 'bg-primary/20' : 'bg-transparent',
         )}
+        onClick={() => setOpened((prev) => !prev)}
       >
         <div
           className={cn(
@@ -24,12 +25,11 @@ export const FaqDropdownItem: FC<IFaqDropdownItem> = ({ question, answer }) => {
         </div>
         <div
           className={cn(
-            'relative h-[24px] w-[24px] rounded-full transition-all',
-            opened ? 'bg-white' : 'bg-light-purple',
+            'relative h-[24px] w-[24px] rounded-full transition-all flex items-center justify-center',
+            opened ? 'bg-white' : 'bg-primary',
           )}
-          onClick={() => setOpened((prev) => !prev)}
         >
-          <div className="absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 cursor-pointer text-[22px] font-semibold leading-[24px] text-[rgb(91,69,115)]">
+          <div className="text-[18px] font-semibold leading-[24px] text-[#0B0B0B]">
             {opened ? '-' : '+'}
           </div>
         </div>
