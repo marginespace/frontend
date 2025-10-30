@@ -57,7 +57,7 @@ export const Filter = ({ className }: FilterProps) => {
   const handleChange = useCallback(
     (name: string, value: boolean) => {
       const updatedFilters = filters.map((filter) => {
-        if (filter.name === name.slice(7)) {
+        if (filter.name === name) {
           filter.value = value;
         }
         return filter;

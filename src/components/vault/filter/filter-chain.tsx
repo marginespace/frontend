@@ -41,7 +41,7 @@ export const FilterChain = ({
       <div className="flex items-center gap-2.5">
         {imgUrl ? (
           <div className="next-image-wrapper relative h-[22px] w-[22px]">
-            {chainImages[name.slice(7)]}
+            {chainImages[name]}
           </div>
         ) : (
           <div className="h-[22px] w-[22px] rounded-full bg-gray-300"></div>
