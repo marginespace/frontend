@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Button } from '@/ui/button';
+import { useState } from 'react';
+import { useCreateContactUsRequest } from '@/lib/api/contact-us/create-contact-us-request';
 import { Checkbox, CheckboxIndicator } from '@/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/ui/form';
 import { Input } from '@/ui/input';
@@ -21,6 +23,8 @@ const contactUsFormSchema = z.object({
 type ContactUsFormSchema = z.infer<typeof contactUsFormSchema>;
 
 export const ContactUsForm = () => {
+  const { createContactUsRequestAsync } = useCreateContactUsRequest();
+  const [submitting, setSubmitting] = useState(false);
   const contactUsForm = useForm<ContactUsFormSchema>({
     resolver: zodResolver(contactUsFormSchema),
     defaultValues: {
@@ -31,12 +35,23 @@ export const ContactUsForm = () => {
     },
   });
 
-  const onSubmit = ({ message, name }: ContactUsFormSchema) => {
+  const onSubmit = async ({ message, name, email }: ContactUsFormSchema) => {
+    try {
+      setSubmitting(true);
+      // 1) Отправляем на backend (сохранить заявку)
+      await createContactUsRequestAsync({ name, email, message });
+    } catch (e) {
+      // ignore; перейдем к почтовому фоллбэку
+    } finally {
+      setSubmitting(false);
+    }
+
+    // 2) Фоллбэк: открываем письмо на marginespace@gmail.com
     if (typeof window !== 'undefined') {
       window.location.assign(
-        `mailto:support@marginspace.io?subject=${encodeURIComponent(
-          name,
-        )}&body=${encodeURIComponent(message)}`,
+        `mailto:marginespace@gmail.com?subject=${encodeURIComponent(name)}&body=${encodeURIComponent(
+          `From: ${email}\n\n${message}`,
+        )}`,
       );
     }
   };
@@ -150,9 +165,10 @@ export const ContactUsForm = () => {
             <Button
               type="submit"
               variant="contained"
-              className="h-full w-full px-6 py-3 md:px-[48px] md:py-[10px] lg:w-fit"
+              disabled={submitting}
+              className="h-full w-full px-6 py-3 md:px-[48px] md:py-[10px] lg:w-fit disabled:opacity-60"
             >
-              Send Request
+              {submitting ? 'Sending…' : 'Send Request'}
             </Button>
           </div>
         </form>

@@ -17,7 +17,8 @@ import { appDescription, appName, getAppUrl } from '@/constants/metadata';
 import { SUPPORTED_CHAINS } from '@/constants/supported-chains';
 
 // Fallback значение для билда, если переменная окружения не установлена
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'fallback_project_id_for_build';
+const projectId =
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'fallback_project_id_for_build';
 
 const { chains, publicClient } = configureChains(SUPPORTED_CHAINS, [
   walletConnectProvider({ projectId }),
@@ -28,7 +29,8 @@ const metadata = {
   name: appName,
   description: appDescription,
   url: getAppUrl(),
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  // используем хостed-иконку проекта, чтобы избежать 403 на api.web3modal
+  icons: ['https://earn.marginspace.io/icons/logo.svg'],
 } satisfies Parameters<typeof defaultWagmiConfig>[0]['metadata'];
 
 const wagmiConfig = createConfig({
