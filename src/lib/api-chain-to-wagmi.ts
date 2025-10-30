@@ -5,6 +5,7 @@ import {
   mainnet,
   metis,
   optimism,
+  avalanche,
   polygon,
   type Chain,
 } from 'viem/chains';
@@ -16,12 +17,14 @@ export const bscWithoutAnkrChain = {
   rpcUrls: {
     public: {
       http: [
-        'https://bsc-mainnet.nodereal.io/v1/b5a248cf168c4ec2b2dd113e949c6ccd',
+        process.env.NEXT_PUBLIC_RPC_BSC ||
+          'https://bsc-mainnet.nodereal.io/v1/b5a248cf168c4ec2b2dd113e949c6ccd',
       ],
     },
     default: {
       http: [
-        'https://bsc-mainnet.nodereal.io/v1/b5a248cf168c4ec2b2dd113e949c6ccd',
+        process.env.NEXT_PUBLIC_RPC_BSC ||
+          'https://bsc-mainnet.nodereal.io/v1/b5a248cf168c4ec2b2dd113e949c6ccd',
       ],
     },
   },
@@ -32,12 +35,14 @@ export const arbitrumWithNormalRpc = {
   rpcUrls: {
     public: {
       http: [
-        'https://arbitrum-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+        process.env.NEXT_PUBLIC_RPC_ARBITRUM ||
+          'https://arbitrum-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
       ],
     },
     default: {
       http: [
-        'https://arbitrum-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+        process.env.NEXT_PUBLIC_RPC_ARBITRUM ||
+          'https://arbitrum-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
       ],
     },
   },
@@ -48,12 +53,14 @@ export const polygonWithNormalRpc = {
   rpcUrls: {
     public: {
       http: [
-        'https://polygon-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+        process.env.NEXT_PUBLIC_RPC_POLYGON ||
+          'https://polygon-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
       ],
     },
     default: {
       http: [
-        'https://polygon-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+        process.env.NEXT_PUBLIC_RPC_POLYGON ||
+          'https://polygon-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
       ],
     },
   },
@@ -64,12 +71,14 @@ export const optimismWithNormalRpc = {
   rpcUrls: {
     public: {
       http: [
-        'https://optimism-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+        process.env.NEXT_PUBLIC_RPC_OPTIMISM ||
+          'https://optimism-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
       ],
     },
     default: {
       http: [
-        'https://optimism-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+        process.env.NEXT_PUBLIC_RPC_OPTIMISM ||
+          'https://optimism-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
       ],
     },
   },
@@ -80,12 +89,50 @@ export const baseWithNormalRpc = {
   rpcUrls: {
     public: {
       http: [
-        'https://open-platform.nodereal.io/b5a248cf168c4ec2b2dd113e949c6ccd/base',
+        process.env.NEXT_PUBLIC_RPC_BASE ||
+          'https://open-platform.nodereal.io/b5a248cf168c4ec2b2dd113e949c6ccd/base',
       ],
     },
     default: {
       http: [
-        'https://open-platform.nodereal.io/b5a248cf168c4ec2b2dd113e949c6ccd/base',
+        process.env.NEXT_PUBLIC_RPC_BASE ||
+          'https://open-platform.nodereal.io/b5a248cf168c4ec2b2dd113e949c6ccd/base',
+      ],
+    },
+  },
+};
+
+export const avalancheWithNormalRpc = {
+  ...avalanche,
+  rpcUrls: {
+    public: {
+      http: [
+        process.env.NEXT_PUBLIC_RPC_AVALANCHE ||
+          'https://api.avax.network/ext/bc/C/rpc',
+      ],
+    },
+    default: {
+      http: [
+        process.env.NEXT_PUBLIC_RPC_AVALANCHE ||
+          'https://api.avax.network/ext/bc/C/rpc',
+      ],
+    },
+  },
+};
+
+export const mainnetWithCorsFriendlyRpc = {
+  ...mainnet,
+  rpcUrls: {
+    public: {
+      http: [
+        process.env.NEXT_PUBLIC_RPC_ETHEREUM ||
+          'https://mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+      ],
+    },
+    default: {
+      http: [
+        process.env.NEXT_PUBLIC_RPC_ETHEREUM ||
+          'https://mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
       ],
     },
   },
@@ -95,11 +142,12 @@ const chains: Record<string, Chain> = {
   ...(isForks
     ? forks
     : {
-        ethereum: mainnet,
+        ethereum: mainnetWithCorsFriendlyRpc,
         metis: metis,
         base: baseWithNormalRpc,
         bsc: bscWithoutAnkrChain,
         arbitrum: arbitrumWithNormalRpc,
+        avax: avalancheWithNormalRpc,
         polygon: polygonWithNormalRpc,
         optimism: optimismWithNormalRpc,
       }),
