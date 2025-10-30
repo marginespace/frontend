@@ -28,7 +28,7 @@ export const earnFilters: Filter[] = [
     value: false,
     type: 'chain',
     name: 'bsc',
-    title: 'BNB',
+    title: 'BSC',
     image: '/chain_bsc.png',
   },
   {
