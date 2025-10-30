@@ -72,20 +72,20 @@ export const poolFilters: IFilter[] = [
     tooltip: 'Add',
   },
   // Chains
-  {
-    value: false,
-    type: 'chain',
-    name: 'ethereum',
-    title: 'Ethereum',
-    image: '/chain_eth.png',
-  },
-  {
-    value: false,
-    type: 'chain',
-    name: 'polygon',
-    title: 'Polygon PoS',
-    image: '/chain_polygon.png',
-  },
+  // {
+  //   value: false,
+  //   type: 'chain',
+  //   name: 'ethereum',
+  //   title: 'Ethereum',
+  //   image: '/chain_eth.png',
+  // },
+  // {
+  //   value: false,
+  //   type: 'chain',
+  //   name: 'polygon',
+  //   title: 'Polygon PoS',
+  //   image: '/chain_polygon.png',
+  // },
   {
     value: false,
     type: 'chain',
@@ -114,13 +114,13 @@ export const poolFilters: IFilter[] = [
     title: 'Avalanche',
     image: '/chain_avax.png',
   },
-  {
-    value: false,
-    type: 'chain',
-    name: 'zkevm',
-    title: 'Polygon zkEVM',
-    image: '/chain_zkEvm.png',
-  },
+  // {
+  //   value: false,
+  //   type: 'chain',
+  //   name: 'zkevm',
+  //   title: 'Polygon zkEVM',
+  //   image: '/chain_zkEvm.png',
+  // },
   {
     value: false,
     type: 'chain',

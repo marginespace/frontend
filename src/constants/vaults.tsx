@@ -73,6 +73,9 @@ export const networkIdToName: Record<number, string> = {
   56: 'bsc',
   137: 'polygon',
   42161: 'arbitrum',
+  43114: 'avax',
+  8453: 'base',
+  10: 'optimism',
 };
 
 export const chainImages: Record<string, ReactNode> = {

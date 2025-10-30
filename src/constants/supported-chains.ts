@@ -4,9 +4,8 @@ import {
   bsc,
   // mainnet,
   optimism,
-  polygon,
   base,
-  // avalanche,
+  avalanche,
   type Chain,
 } from 'viem/chains';
 
@@ -172,9 +171,9 @@ export const forks = {
 export const SUPPORTED_CHAINS: Chain[] = [
   ...(isForks ? Object.values(forks) : []),
   arbitrum,
-  bsc,
+  avalanche,
   base,
-  polygon,
+  bsc,
   optimism,
 ];
 
@@ -182,7 +181,7 @@ export const earliestBlocks: Record<string, bigint | BlockTag> = {
   ethereum: 'earliest',
   bsc: BigInt(35864141), // 33888428
   arbitrum: BigInt(177617726), // 154537254
-  polygon: BigInt(53144883), // 50616384
+  // polygon: BigInt(53144883), // 50616384 (temporarily hidden)
   avalanche: BigInt(41273022), // 38921921
   base: BigInt(10165326), // 7924196
   optimism: BigInt(115760611), // 113440044
