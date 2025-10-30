@@ -85,11 +85,14 @@ export const oneInchEstimate = async (
       params.receiver?.toString() ?? params.from,
     );
 
+    const headers: Record<string, string> = {};
+    if (API_URL.includes('ngrok') || API_URL.includes('localhost')) {
+      headers['ngrok-skip-browser-warning'] = '69420';
+    }
+
     const response = await fetch(url.toString(), {
       signal: params.signal,
-      headers: {
-        'ngrok-skip-browser-warning': '69420',
-      },
+      headers,
     });
     await new Promise((resolve) => setTimeout(resolve, 1000));
     const parseResponse =

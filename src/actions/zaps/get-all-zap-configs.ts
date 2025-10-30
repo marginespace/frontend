@@ -32,11 +32,12 @@ export type ZapConfigsResponse = {
 
 export const getAllZapConfigs = async (): Promise<ZapConfigsResponse> => {
   try {
-    const response = await fetch(ZAP_CONFIGS_URL, {
-      headers: {
-        'ngrok-skip-browser-warning': '69420',
-      },
-    });
+    const headers: Record<string, string> = {};
+    if (API_URL.includes('ngrok') || API_URL.includes('localhost')) {
+      headers['ngrok-skip-browser-warning'] = '69420';
+    }
+
+    const response = await fetch(ZAP_CONFIGS_URL, { headers });
 
     return (await response.json()) as ZapConfigsResponse;
   } catch (error) {
