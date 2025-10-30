@@ -68,24 +68,26 @@ export default function VaultsContainer({
 
   return (
     <>
-      <div className="flex flex-col  gap-4 overflow-x-auto rounded-[26px] border border-none border-white bg-white bg-opacity-10 p-4 shadow-md backdrop-blur-lg md:flex-row">
-        <Carousel
-          vaults={vaults
-            .sort((a, b) => b.tvl ?? 0 - a.tvl ?? 0)
-            .filter((vault, i) => i < 12)}
-          type="popular"
-        />
-        <Carousel
-          vaults={promotedVaults.length > 0 ? promotedVaults : []}
-          type="hot"
-        />
-        <Carousel
-          vaults={vaults
-            .sort((a, b) => (b.apy.totalApy ?? 0) - (a.apy.totalApy ?? 0))
-            .filter((vault, i) => i < 12)}
-          type="profitable"
-        />
-      </div>
+      {false && (
+        <div className="flex flex-col  gap-4 overflow-x-auto rounded-[26px] border border-none border-white bg-white bg-opacity-10 p-4 shadow-md backdrop-blur-lg md:flex-row">
+          <Carousel
+            vaults={vaults
+              .sort((a, b) => b.tvl ?? 0 - a.tvl ?? 0)
+              .filter((vault, i) => i < 12)}
+            type="popular"
+          />
+          <Carousel
+            vaults={promotedVaults.length > 0 ? promotedVaults : []}
+            type="hot"
+          />
+          <Carousel
+            vaults={vaults
+              .sort((a, b) => (b.apy.totalApy ?? 0) - (a.apy.totalApy ?? 0))
+              .filter((vault, i) => i < 12)}
+            type="profitable"
+          />
+        </div>
+      )}
       <Tabs
         defaultValue={searchParams.tag ?? 'all'}
         className="flex flex-col gap-[24px]"
