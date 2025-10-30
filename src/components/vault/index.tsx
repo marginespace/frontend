@@ -68,7 +68,7 @@ export default function VaultsContainer({
 
   return (
     <>
-      <div className="flex flex-col  gap-4 overflow-x-auto rounded-[26px] border border-none border-white bg-white bg-opacity-10 p-4 shadow-md backdrop-blur-lg lg:flex-row">
+      <div className="flex flex-col  gap-4 overflow-x-auto rounded-[26px] border border-none border-white bg-white bg-opacity-10 p-4 shadow-md backdrop-blur-lg md:flex-row">
         <Carousel
           vaults={vaults
             .sort((a, b) => b.tvl ?? 0 - a.tvl ?? 0)
@@ -90,10 +90,10 @@ export default function VaultsContainer({
         defaultValue={searchParams.tag ?? 'all'}
         className="flex flex-col gap-[24px]"
       >
-        <div className="flex  flex-wrap items-center justify-between rounded-[15px] border border-white bg-[rgba(255,255,255,0.11)] p-[12px] lg:gap-0">
-          <Filter className="w-1/2 pr-1 lg:w-1/3 lg:pr-0" />
-          <VaultPoolTabs className="order-3 flex w-full items-center justify-center gap-4 pt-4 lg:order-[0] lg:w-1/3 lg:pl-4 lg:pt-0 xl:pl-0" />
-          <SortBy className="w-1/2 justify-end pl-1 lg:flex lg:w-1/3 lg:pl-0" />
+        <div className="flex  flex-wrap items-center justify-between rounded-[15px] border border-white bg-[rgba(255,255,255,0.11)] p-[12px] md:gap-0">
+          <Filter className="w-1/2 pr-1 md:w-1/3 md:pr-0" />
+          <VaultPoolTabs className="order-3 flex w-full items-center justify-center gap-4 pt-4 md:order-[0] md:w-1/3 md:pl-4 md:pt-0 xl:pl-0" />
+          <SortBy className="w-1/2 justify-end pl-1 md:flex md:w-1/3 md:pl-0" />
         </div>
         <SearchInput />
         <Accordion type="multiple" className="container mx-auto p-0">
