@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 const FAQ = () => {
   return (
-    <main className="m-auto flex min-h-[calc(100vh-60px)] max-w-[95%] flex-col gap-[24px] py-[40px] lg:max-w-[588px]">
+    <main className="m-auto flex h-full max-w-[95%] flex-col gap-[24px] py-[40px] lg:max-w-[588px]">
       <div className="w-full text-center text-[24px] font-semibold leading-[32px] md:text-[32px] md:leading-[44px]">
         FAQ
       </div>

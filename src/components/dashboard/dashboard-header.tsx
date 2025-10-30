@@ -16,7 +16,7 @@ const DashboardHeader = ({ addressFromUrl }: DashboardHeaderProps) => {
   const { isConnected } = useAccount();
 
   return (
-    <div className="flex justify-between pt-6">
+    <div className="flex items-end justify-between pt-6">
       <div className="flex items-end gap-2">
         <h1 className="text-4xl font-semibold">Dashboard</h1>
         {isConnected && isMounted && addressFromUrl && (
@@ -32,7 +32,10 @@ const DashboardHeader = ({ addressFromUrl }: DashboardHeaderProps) => {
           </div>
         )}
       </div>
-      <SearchInput className="w-[340px]" />
+      {/* Desktop search (hidden on mobile) */}
+      <div className="hidden md:block">
+        <SearchInput defaultEmpty className="w-[340px]" />
+      </div>
     </div>
   );
 };

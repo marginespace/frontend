@@ -10,16 +10,20 @@ import { SearchIcon } from '@/components/vault/search/search-icon';
 import { getFilterQuery } from '@/lib/filter-vaults';
 import { cn } from '@/lib/utils';
 
-export type SearchInput = Omit<HTMLAttributes<HTMLDivElement>, 'children'>;
+export type SearchInput = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
+  defaultEmpty?: boolean;
+};
 
-export const SearchInput = ({ className, ...props }: SearchInput) => {
+export const SearchInput = ({ className, defaultEmpty, ...props }: SearchInput) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const filterQuery = useMemo(
     () => getFilterQuery(searchParams.toString()),
     [searchParams],
   );
-  const [searchText, setSearchText] = useState(filterQuery?.address ?? '');
+  const [searchText, setSearchText] = useState(
+    defaultEmpty ? '' : (filterQuery?.address ?? ''),
+  );
   const [debouncedSearchText] = useDebounce(searchText, 500);
 
   useEffect(() => {
@@ -32,10 +36,11 @@ export const SearchInput = ({ className, ...props }: SearchInput) => {
   }, [filterQuery, debouncedSearchText, router]);
 
   useEffect(() => {
+    if (defaultEmpty) return;
     if (filterQuery.address && isAddress(filterQuery.address)) {
       setSearchText(filterQuery.address);
     }
-  }, [filterQuery]);
+  }, [filterQuery, defaultEmpty]);
 
   return (
     <div
