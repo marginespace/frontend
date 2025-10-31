@@ -7,6 +7,7 @@ import {
   optimism,
   avalanche,
   polygon,
+  base,
   type Chain,
 } from 'viem/chains';
 
@@ -18,13 +19,13 @@ export const bscWithoutAnkrChain = {
     public: {
       http: [
         process.env.NEXT_PUBLIC_RPC_BSC ||
-          'https://bsc-mainnet.nodereal.io/v1/b5a248cf168c4ec2b2dd113e949c6ccd',
+          'https://bsc-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
     default: {
       http: [
         process.env.NEXT_PUBLIC_RPC_BSC ||
-          'https://bsc-mainnet.nodereal.io/v1/b5a248cf168c4ec2b2dd113e949c6ccd',
+          'https://bsc-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
   },
@@ -36,13 +37,13 @@ export const arbitrumWithNormalRpc = {
     public: {
       http: [
         process.env.NEXT_PUBLIC_RPC_ARBITRUM ||
-          'https://arbitrum-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+          'https://arbitrum-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
     default: {
       http: [
         process.env.NEXT_PUBLIC_RPC_ARBITRUM ||
-          'https://arbitrum-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+          'https://arbitrum-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
   },
@@ -72,31 +73,31 @@ export const optimismWithNormalRpc = {
     public: {
       http: [
         process.env.NEXT_PUBLIC_RPC_OPTIMISM ||
-          'https://optimism-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+          'https://optimism-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
     default: {
       http: [
         process.env.NEXT_PUBLIC_RPC_OPTIMISM ||
-          'https://optimism-mainnet.infura.io/v3/294b02c6ce6a4c4c92ff7e3e95beeb29',
+          'https://optimism-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
   },
 };
 
 export const baseWithNormalRpc = {
-  ...optimism,
+  ...base,
   rpcUrls: {
     public: {
       http: [
         process.env.NEXT_PUBLIC_RPC_BASE ||
-          'https://open-platform.nodereal.io/b5a248cf168c4ec2b2dd113e949c6ccd/base',
+          'https://base-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
     default: {
       http: [
         process.env.NEXT_PUBLIC_RPC_BASE ||
-          'https://open-platform.nodereal.io/b5a248cf168c4ec2b2dd113e949c6ccd/base',
+          'https://base-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
   },
@@ -108,13 +109,13 @@ export const avalancheWithNormalRpc = {
     public: {
       http: [
         process.env.NEXT_PUBLIC_RPC_AVALANCHE ||
-          'https://api.avax.network/ext/bc/C/rpc',
+          'https://avalanche-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
     default: {
       http: [
         process.env.NEXT_PUBLIC_RPC_AVALANCHE ||
-          'https://api.avax.network/ext/bc/C/rpc',
+          'https://avalanche-mainnet.infura.io/v3/80792385aff54a83afe1368e2d719ec0',
       ],
     },
   },
