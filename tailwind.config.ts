@@ -99,7 +99,7 @@ const config: Config = {
         'linear-white':
           'var(--bg-linear-white, linear-gradient(181deg, rgba(255, 255, 255, 0.37) 1.19%, rgba(255, 255, 255, 0.00) 102.31%))',
         'linear-black':
-          'linear-gradient(181.4deg, rgba(0, 0, 0, 0.1) 1.19%, rgba(0, 0, 0, 0) 102.31%)',
+          'linear-gradient(181.4deg, rgba(0, 0, 0, 0.25) 1.19%, rgba(0, 0, 0, 0.15) 102.31%)',
         'linear-transparent-white':
           'var(--bg-linear-transparent-white ,linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 50%, rgba(255,255,255,0.1) 100%))',
         'gradient-orange':
