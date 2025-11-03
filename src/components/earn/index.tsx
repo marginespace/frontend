@@ -68,10 +68,11 @@ export default function EarnWrapper({
             </div>
           </div>
           <SearchInput />
-          <Accordion
-            type="multiple"
-            className="flex flex-wrap items-stretch justify-between gap-[24px]"
-          >
+          <div className="flex justify-center">
+            <Accordion
+              type="multiple"
+              className="flex flex-wrap items-stretch justify-between gap-[24px]"
+            >
             <Suspense fallback={<div>Loading...</div>}>
               <CubesRenderer
                 tab={searchParams.tag || 'all'}
@@ -80,6 +81,7 @@ export default function EarnWrapper({
               />
             </Suspense>
           </Accordion>
+          </div>
         </Tabs>
       </div>
     </div>

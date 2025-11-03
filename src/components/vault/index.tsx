@@ -98,10 +98,11 @@ export default function VaultsContainer({
           <SortBy className="w-1/2 justify-end pl-1 md:flex md:w-1/3 md:pl-0" />
         </div>
         <SearchInput />
-        <Accordion
-          type="multiple"
-          className="mx-auto w-full max-w-[95%] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12 xl:max-w-[1535px] 2xl:max-w-[1535px]"
-        >
+        <div className="flex justify-center">
+          <Accordion
+            type="multiple"
+            className="mx-auto w-full max-w-[95%] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12 xl:max-w-[1535px] 2xl:max-w-[1535px]"
+          >
           <Suspense
             fallback={
               <div className="mx-auto mt-4 flex text-xl font-semibold">
@@ -114,8 +115,9 @@ export default function VaultsContainer({
               vaults={vaults}
               address={searchParams.address}
             />
-          </Suspense>
-        </Accordion>
+            </Suspense>
+          </Accordion>
+        </div>
       </Tabs>
     </>
   );
