@@ -29,7 +29,7 @@ export const VaultRenderer = memo(
 
     return (
       <div
-        className="grid grid-cols-1 gap-4 px-2 sm:grid-cols-1 sm:gap-6 sm:px-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-3 xl:gap-8 xl:justify-items-center 2xl:grid-cols-4 2xl:gap-8 2xl:justify-items-center"
+        className="grid grid-cols-1 gap-4 px-2 sm:grid-cols-1 sm:gap-6 sm:px-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-3 xl:gap-8 2xl:grid-cols-4 2xl:gap-8"
         style={style}
       >
         {data.vaults[index].map((vault, columnIndex) => (
