@@ -40,7 +40,7 @@ export default function EarnWrapper({
 
   return (
     <div>
-      <div className="mx-auto flex w-full max-w-[95%] flex-col gap-[24px] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12">
+      <div className="mx-auto flex w-full max-w-[95%] flex-col gap-[24px] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12 xl:max-w-[1535px] 2xl:max-w-[1535px]">
         <div className="flex items-end justify-between">
           <div className="flex flex-col gap-[16px] pt-[16px] md:flex-row">
             <div className="text-[32px] font-semibold">Strategies</div>

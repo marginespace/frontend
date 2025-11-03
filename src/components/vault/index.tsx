@@ -100,7 +100,7 @@ export default function VaultsContainer({
         <SearchInput />
         <Accordion
           type="multiple"
-          className="mx-auto w-full max-w-[95%] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12"
+          className="mx-auto w-full max-w-[95%] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12 xl:max-w-[1535px] 2xl:max-w-[1535px]"
         >
           <Suspense
             fallback={
