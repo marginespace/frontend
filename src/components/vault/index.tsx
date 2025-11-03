@@ -98,7 +98,10 @@ export default function VaultsContainer({
           <SortBy className="w-1/2 justify-end pl-1 md:flex md:w-1/3 md:pl-0" />
         </div>
         <SearchInput />
-        <Accordion type="multiple" className="container mx-auto p-0">
+        <Accordion
+          type="multiple"
+          className="mx-auto w-full max-w-[95%] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12"
+        >
           <Suspense
             fallback={
               <div className="mx-auto mt-4 flex text-xl font-semibold">

@@ -15,7 +15,7 @@ type HomeProps = {
 
 const Home = async ({ searchParams }: HomeProps) => {
   return (
-    <main className="container flex h-full min-w-full flex-col gap-[24px]">
+    <main className="mx-auto flex h-full w-full max-w-[95%] flex-col gap-[24px] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12">
       <h1 className="pt-6 text-4xl font-semibold">Vaults</h1>
       <VaultsContainer searchParams={searchParams} />
     </main>
