@@ -43,16 +43,6 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
     router.refresh();
   }, [router]);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('[FRONTEND] CubesRenderer:', {
-      cubesCount: cubes?.length || 0,
-      tab,
-      address,
-      savedCubesIdsCount: savedCubesIds?.length || 0,
-      cubes: cubes?.slice(0, 3), // First 3 for debugging
-    });
-  }, [cubes, tab, address, savedCubesIds]);
 
   const isSmallDevice = useMediaQuery('(max-width: 767px)');
   const isMediumDevice = useMediaQuery(
@@ -119,17 +109,6 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
       ? cubes
       : [];
   
-  // Debug logging
-  useEffect(() => {
-    console.log('[FRONTEND] CubesRenderer - itemData calculation:', {
-      tab,
-      address,
-      cubesCount: cubes?.length || 0,
-      savedCubesCount: savedCubes?.length || 0,
-      itemDataCount: itemData?.length || 0,
-      itemData: itemData?.slice(0, 3)?.map(c => ({ id: c?.id, name: c?.name, status: c?.status })),
-    });
-  }, [tab, address, cubes, savedCubes, itemData]);
 
   const columnCount = isSmallDevice
     ? 1
@@ -140,16 +119,6 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
     : 4;
   const rowCount = Math.ceil(itemData.length / columnCount);
   const cubesRow = convertArrayTo2DArray(itemData, columnCount);
-  
-  // Debug logging for rendering
-  useEffect(() => {
-    console.log('[FRONTEND] CubesRenderer - rendering setup:', {
-      rowCount,
-      columnCount,
-      cubesRowLength: cubesRow?.length || 0,
-      cubesRow: cubesRow?.slice(0, 2)?.map(row => row?.length || 0),
-    });
-  }, [rowCount, columnCount, cubesRow]);
 
   const getMinHeight = () => {
     if (rowCount === 1) return ROW_HEIGHT_EXPANDED;
@@ -157,70 +126,32 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
     return 2 * ROW_HEIGHT_EXPANDED;
   };
 
-  const minHeight = getMinHeight();
-  
-  // Debug logging
-  useEffect(() => {
-    console.log('[FRONTEND] CubesRenderer - render setup:', {
-      minHeight,
-      rowCount,
-      itemCount: rowCount,
-      cubesRowLength: cubesRow?.length || 0,
-      hasCubesRow: !!cubesRow,
-    });
-  }, [minHeight, rowCount, cubesRow]);
-
   return (
-    <div style={{ width: '100%', height: minHeight }}>
+    <div style={{ width: '100%', height: getMinHeight() }}>
       <AutoSizer>
-        {({ width, height }) => {
-          // Debug logging
-          if (rowCount > 0) {
-            console.log('[FRONTEND] CubesRenderer - AutoSizer:', {
-              width,
-              height,
-              rowCount,
-              itemCount: rowCount,
-              minHeight,
-            });
-          }
-          
-          return (
-            <List
-              className="no-scrollbar"
-              ref={listRef}
-              itemSize={calcItemSize}
-              width={width || 100}
-              height={height || minHeight}
-              itemCount={rowCount}
-              itemData={{
-                cubes: cubesRow,
-              }}
-            >
-              {({ data, index, style }) => {
-                // Debug logging for first render
-                if (index === 0 || index === 1) {
-                  console.log(`[FRONTEND] CubesRenderer - List render[${index}]:`, {
-                    hasData: !!data,
-                    hasCubes: !!data?.cubes,
-                    cubesLength: data?.cubes?.length || 0,
-                    style: style ? { height: style.height, top: style.top } : null,
-                  });
-                }
-                
-                return (
-                  <CubeRenderer
-                    data={data}
-                    index={index}
-                    style={style}
-                    onClick={handleClick}
-                    activeRow={selectedRows[index] || {}}
-                  />
-                );
-              }}
-            </List>
-          );
-        }}
+        {({ width, height }) => (
+          <List
+            className="no-scrollbar"
+            ref={listRef}
+            itemSize={calcItemSize}
+            width={width}
+            height={height}
+            itemCount={rowCount}
+            itemData={{
+              cubes: cubesRow,
+            }}
+          >
+            {({ data, index, style }) => (
+              <CubeRenderer
+                data={data}
+                index={index}
+                style={style}
+                onClick={handleClick}
+                activeRow={selectedRows[index] || {}}
+              />
+            )}
+          </List>
+        )}
       </AutoSizer>
     </div>
   );

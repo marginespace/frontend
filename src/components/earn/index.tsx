@@ -33,22 +33,6 @@ export default function EarnWrapper({
     queryFn: () => getAllCubes(searchParams),
   });
 
-  // Debug logging
-  useEffect(() => {
-    if (dataCubes) {
-      const cubes = dataCubes?.[0] || [];
-      console.log('[FRONTEND] EarnWrapper - Earn pools data:', {
-        dataCubesLength: dataCubes?.length,
-        cubesArrayLength: cubes?.length || 0,
-        vaultsArrayLength: dataCubes?.[1]?.length || 0,
-        isCubesLoading,
-        cubes: cubes?.slice(0, 3)?.map(c => ({ id: c?.id, name: c?.name, status: c?.status, network: c?.network })),
-        allCubeIds: cubes?.map(c => c?.id),
-      });
-    } else {
-      console.log('[FRONTEND] EarnWrapper - dataCubes is null/undefined, isLoading:', isCubesLoading);
-    }
-  }, [dataCubes, isCubesLoading]);
 
   const { data: vaults, isLoading: isVaultsLoading } = useQuery({
     queryKey: ['vaults', searchParams],
@@ -57,7 +41,7 @@ export default function EarnWrapper({
 
   return (
     <div>
-      <div className="mx-auto flex w-full max-w-[95%] flex-col gap-[24px] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12 xl:max-w-[1535px] 2xl:max-w-[1535px]">
+      <div className="container flex min-w-full flex-col gap-[24px]">
         <div className="flex items-end justify-between">
           <div className="flex flex-col gap-[16px] pt-[16px] md:flex-row">
             <div className="text-[32px] font-semibold">Strategies</div>
@@ -85,31 +69,18 @@ export default function EarnWrapper({
             </div>
           </div>
           <SearchInput />
-          <div className="flex justify-center">
-            <Accordion
-              type="multiple"
-              className="flex flex-wrap items-stretch justify-between gap-[24px]"
-            >
+          <Accordion
+            type="multiple"
+            className="flex flex-wrap items-stretch justify-between gap-[24px]"
+          >
             <Suspense fallback={<div>Loading...</div>}>
               <CubesRenderer
                 tab={searchParams.tag || 'all'}
-                cubes={(() => {
-                  const cubes = !dataCubes || isCubesLoading || !Array.isArray(dataCubes) || !dataCubes[0] ? [] : dataCubes[0];
-                  console.log('[FRONTEND] EarnWrapper - Passing cubes to CubesRenderer:', {
-                    cubesCount: cubes?.length || 0,
-                    isCubesLoading,
-                    hasDataCubes: !!dataCubes,
-                    dataCubesType: Array.isArray(dataCubes) ? 'array' : typeof dataCubes,
-                    dataCubes0Type: dataCubes?.[0] ? (Array.isArray(dataCubes[0]) ? 'array' : typeof dataCubes[0]) : 'undefined',
-                    cubeIds: cubes?.map(c => c?.id) || [],
-                  });
-                  return cubes;
-                })()}
+                cubes={!dataCubes || isCubesLoading ? [] : dataCubes[0]}
                 address={searchParams.address}
               />
             </Suspense>
           </Accordion>
-          </div>
         </Tabs>
       </div>
     </div>
