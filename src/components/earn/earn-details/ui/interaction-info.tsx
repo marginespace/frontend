@@ -23,7 +23,7 @@ export const InteractionInfo = ({
           </TooltipItem>
         </div>
         <div className="text-[14px]">
-          {isLoading ? '...' : `${data?.depositFee}%`}
+          {isLoading ? '...' : `${(data?.depositFee || 0).toFixed(2)}%`}
         </div>
       </div>
       <div className="flex items-center justify-between">
@@ -34,7 +34,7 @@ export const InteractionInfo = ({
           </TooltipItem>
         </div>
         <div className="text-[14px]">
-          {isLoading ? '...' : `${data?.withdrawFee}%`}
+          {isLoading ? '...' : `${(data?.withdrawFee || 0).toFixed(2)}%`}
         </div>
       </div>
       <p className="text-[12px] [&>span]:ml-[2px] [&>span]:mr-1">

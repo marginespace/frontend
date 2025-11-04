@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAddress, getContract } from 'viem';
+import { formatUnits, getAddress, getContract } from 'viem';
 import { type PublicClient } from 'wagmi';
 
 import { earnAbi } from '@/abi/earn/EarnAbi';
@@ -21,9 +21,13 @@ export const useEarnFees = (
     queryKey: [getEarnFeesKey(cube.id)],
     queryFn: async () => {
       const [depositFee, withdrawFee] = await earnContract.read.fees();
+      // Fees are stored in wei (18 decimals), convert to percentage
+      // Example: 2000000000000000 wei = 0.002 = 0.2%
+      const depositFeePercent = Number(formatUnits(depositFee, 18)) * 100;
+      const withdrawFeePercent = Number(formatUnits(withdrawFee, 18)) * 100;
       return {
-        depositFee: Number(depositFee) / 100,
-        withdrawFee: Number(withdrawFee) / 100,
+        depositFee: depositFeePercent,
+        withdrawFee: withdrawFeePercent,
       };
     },
   });

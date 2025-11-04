@@ -37,7 +37,7 @@ export const EarnInfoBlock = memo(({ cube }: { cube: CubeWithApyAndTvl }) => {
             Deposit fee
           </h4>
           <h5 className="text-[14px] font-semibold leading-[20px] text-primary">
-            {isLoading ? '...' : `${data?.depositFee}%`}
+            {isLoading ? '...' : `${(data?.depositFee || 0).toFixed(2)}%`}
           </h5>
         </div>
         <div className="flex w-full justify-between rounded-[6px] bg-[#352852] bg-opacity-[0.4] p-[8px]">
@@ -45,7 +45,7 @@ export const EarnInfoBlock = memo(({ cube }: { cube: CubeWithApyAndTvl }) => {
             Withdraw fee
           </h4>
           <h5 className="text-[14px] font-semibold leading-[20px] text-primary">
-            {isLoading ? '...' : `${data?.withdrawFee}%`}
+            {isLoading ? '...' : `${(data?.withdrawFee || 0).toFixed(2)}%`}
           </h5>
         </div>
       </div>
