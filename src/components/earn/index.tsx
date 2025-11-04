@@ -36,13 +36,17 @@ export default function EarnWrapper({
   // Debug logging
   useEffect(() => {
     if (dataCubes) {
-      console.log('[FRONTEND] Earn pools data:', {
+      const cubes = dataCubes?.[0] || [];
+      console.log('[FRONTEND] EarnWrapper - Earn pools data:', {
         dataCubesLength: dataCubes?.length,
-        cubesArray: dataCubes?.[0]?.length || 0,
-        vaultsArray: dataCubes?.[1]?.length || 0,
-        firstCube: dataCubes?.[0]?.[0],
+        cubesArrayLength: cubes?.length || 0,
+        vaultsArrayLength: dataCubes?.[1]?.length || 0,
         isCubesLoading,
+        cubes: cubes?.slice(0, 3)?.map(c => ({ id: c?.id, name: c?.name, status: c?.status, network: c?.network })),
+        allCubeIds: cubes?.map(c => c?.id),
       });
+    } else {
+      console.log('[FRONTEND] EarnWrapper - dataCubes is null/undefined, isLoading:', isCubesLoading);
     }
   }, [dataCubes, isCubesLoading]);
 
@@ -89,7 +93,18 @@ export default function EarnWrapper({
             <Suspense fallback={<div>Loading...</div>}>
               <CubesRenderer
                 tab={searchParams.tag || 'all'}
-                cubes={!dataCubes || isCubesLoading || !Array.isArray(dataCubes) || !dataCubes[0] ? [] : dataCubes[0]}
+                cubes={(() => {
+                  const cubes = !dataCubes || isCubesLoading || !Array.isArray(dataCubes) || !dataCubes[0] ? [] : dataCubes[0];
+                  console.log('[FRONTEND] EarnWrapper - Passing cubes to CubesRenderer:', {
+                    cubesCount: cubes?.length || 0,
+                    isCubesLoading,
+                    hasDataCubes: !!dataCubes,
+                    dataCubesType: Array.isArray(dataCubes) ? 'array' : typeof dataCubes,
+                    dataCubes0Type: dataCubes?.[0] ? (Array.isArray(dataCubes[0]) ? 'array' : typeof dataCubes[0]) : 'undefined',
+                    cubeIds: cubes?.map(c => c?.id) || [],
+                  });
+                  return cubes;
+                })()}
                 address={searchParams.address}
               />
             </Suspense>

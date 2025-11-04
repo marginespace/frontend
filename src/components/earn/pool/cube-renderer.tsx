@@ -23,11 +23,29 @@ export type CubeRendererProps = ListChildComponentProps<CubesRendererProps> & {
 
 export const CubeRenderer = memo(
   ({ data, style, index, onClick, activeRow }: CubeRendererProps) => {
-    if (!data.cubes || !Array.isArray(data.cubes)) return null;
+    // Debug logging
+    if (index === 0 || index === 1) {
+      console.log(`[FRONTEND] CubeRenderer[${index}]:`, {
+        hasDataCubes: !!data.cubes,
+        isArray: Array.isArray(data.cubes),
+        dataCubesLength: data.cubes?.length || 0,
+        rowCubes: data.cubes?.[index],
+        rowCubesLength: data.cubes?.[index]?.length || 0,
+        rowCubesIds: data.cubes?.[index]?.map(c => c?.id) || [],
+      });
+    }
+
+    if (!data.cubes || !Array.isArray(data.cubes)) {
+      if (index === 0) console.warn('[FRONTEND] CubeRenderer: data.cubes is invalid');
+      return null;
+    }
     
     // Protect against undefined row
     const rowCubes = data.cubes[index];
-    if (!rowCubes || !Array.isArray(rowCubes)) return null;
+    if (!rowCubes || !Array.isArray(rowCubes)) {
+      if (index === 0) console.warn(`[FRONTEND] CubeRenderer[${index}]: rowCubes is invalid`);
+      return null;
+    }
 
     return (
       <div
