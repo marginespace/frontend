@@ -157,32 +157,70 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
     return 2 * ROW_HEIGHT_EXPANDED;
   };
 
+  const minHeight = getMinHeight();
+  
+  // Debug logging
+  useEffect(() => {
+    console.log('[FRONTEND] CubesRenderer - render setup:', {
+      minHeight,
+      rowCount,
+      itemCount: rowCount,
+      cubesRowLength: cubesRow?.length || 0,
+      hasCubesRow: !!cubesRow,
+    });
+  }, [minHeight, rowCount, cubesRow]);
+
   return (
-    <div style={{ width: '100%', height: getMinHeight() }}>
+    <div style={{ width: '100%', height: minHeight }}>
       <AutoSizer>
-        {({ width, height }) => (
-          <List
-            className="no-scrollbar"
-            ref={listRef}
-            itemSize={calcItemSize}
-            width={width}
-            height={height}
-            itemCount={rowCount}
-            itemData={{
-              cubes: cubesRow,
-            }}
-          >
-            {({ data, index, style }) => (
-              <CubeRenderer
-                data={data}
-                index={index}
-                style={style}
-                onClick={handleClick}
-                activeRow={selectedRows[index] || {}}
-              />
-            )}
-          </List>
-        )}
+        {({ width, height }) => {
+          // Debug logging
+          if (rowCount > 0) {
+            console.log('[FRONTEND] CubesRenderer - AutoSizer:', {
+              width,
+              height,
+              rowCount,
+              itemCount: rowCount,
+              minHeight,
+            });
+          }
+          
+          return (
+            <List
+              className="no-scrollbar"
+              ref={listRef}
+              itemSize={calcItemSize}
+              width={width || 100}
+              height={height || minHeight}
+              itemCount={rowCount}
+              itemData={{
+                cubes: cubesRow,
+              }}
+            >
+              {({ data, index, style }) => {
+                // Debug logging for first render
+                if (index === 0 || index === 1) {
+                  console.log(`[FRONTEND] CubesRenderer - List render[${index}]:`, {
+                    hasData: !!data,
+                    hasCubes: !!data?.cubes,
+                    cubesLength: data?.cubes?.length || 0,
+                    style: style ? { height: style.height, top: style.top } : null,
+                  });
+                }
+                
+                return (
+                  <CubeRenderer
+                    data={data}
+                    index={index}
+                    style={style}
+                    onClick={handleClick}
+                    activeRow={selectedRows[index] || {}}
+                  />
+                );
+              }}
+            </List>
+          );
+        }}
       </AutoSizer>
     </div>
   );
