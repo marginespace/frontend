@@ -1,7 +1,7 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 
 import { getAllCubes } from '@/actions/get-all-cubes';
 import { getAllVaultsWithApyAndTvl } from '@/actions/get-all-vaults-with-apy-and-tvl';
@@ -32,6 +32,19 @@ export default function EarnWrapper({
     queryKey: ['cubes', searchParams],
     queryFn: () => getAllCubes(searchParams),
   });
+
+  // Debug logging
+  useEffect(() => {
+    if (dataCubes) {
+      console.log('[FRONTEND] Earn pools data:', {
+        dataCubesLength: dataCubes?.length,
+        cubesArray: dataCubes?.[0]?.length || 0,
+        vaultsArray: dataCubes?.[1]?.length || 0,
+        firstCube: dataCubes?.[0]?.[0],
+        isCubesLoading,
+      });
+    }
+  }, [dataCubes, isCubesLoading]);
 
   const { data: vaults, isLoading: isVaultsLoading } = useQuery({
     queryKey: ['vaults', searchParams],
@@ -76,7 +89,7 @@ export default function EarnWrapper({
             <Suspense fallback={<div>Loading...</div>}>
               <CubesRenderer
                 tab={searchParams.tag || 'all'}
-                cubes={!dataCubes || isCubesLoading ? [] : dataCubes[0]}
+                cubes={!dataCubes || isCubesLoading || !Array.isArray(dataCubes) || !dataCubes[0] ? [] : dataCubes[0]}
                 address={searchParams.address}
               />
             </Suspense>

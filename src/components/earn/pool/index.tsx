@@ -43,6 +43,17 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
     router.refresh();
   }, [router]);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('[FRONTEND] CubesRenderer:', {
+      cubesCount: cubes?.length || 0,
+      tab,
+      address,
+      savedCubesIdsCount: savedCubesIds?.length || 0,
+      cubes: cubes?.slice(0, 3), // First 3 for debugging
+    });
+  }, [cubes, tab, address, savedCubesIds]);
+
   const isSmallDevice = useMediaQuery('(max-width: 767px)');
   const isMediumDevice = useMediaQuery(
     '(min-width: 768px) and (max-width: 1023px)',

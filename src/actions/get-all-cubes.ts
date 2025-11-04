@@ -61,7 +61,7 @@ export const getAllCubes = async (
   filter?: FilterQuery,
 ): Promise<[CubeWithApyAndTvl[], VaultWithApyAndTvl[]]> => {
   try {
-    const [vaults, cubes, zapConfigs, chainConfigs] = await Promise.all([
+    const [vaults, cubesRaw, zapConfigs, chainConfigs] = await Promise.all([
       getAllVaultsWithApyAndTvl(true, undefined, filter?.address),
       fetch(CUBES_URL, { cache: 'no-cache' }).then(
         (response) => response.json() as Promise<Cube[]>,
@@ -69,6 +69,15 @@ export const getAllCubes = async (
       getAllZapConfigs(),
       getChainConfig(),
     ]);
+
+    // Ensure cubes is an array
+    const cubes = Array.isArray(cubesRaw) ? cubesRaw : [];
+    
+    if (!Array.isArray(cubesRaw)) {
+      console.warn('[FRONTEND] getAllCubes: API returned non-array:', typeof cubesRaw, cubesRaw);
+    }
+
+    console.log('[FRONTEND] getAllCubes: fetched', cubes.length, 'cubes from API');
 
     const vaultsMap = vaults.reduce(
       (map, vault) => {
