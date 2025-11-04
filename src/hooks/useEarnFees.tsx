@@ -23,8 +23,8 @@ export const useEarnFees = (
       const [depositFee, withdrawFee] = await earnContract.read.fees();
       // Fees are stored in wei (18 decimals), convert to percentage
       // Example: 2000000000000000 wei = 0.002 = 0.2%
-      const depositFeePercent = Number(formatUnits(depositFee, 18)) * 100;
-      const withdrawFeePercent = Number(formatUnits(withdrawFee, 18)) * 100;
+      const depositFeePercent = Number(formatUnits(depositFee, 18));
+      const withdrawFeePercent = Number(formatUnits(withdrawFee, 18));
       return {
         depositFee: depositFeePercent,
         withdrawFee: withdrawFeePercent,
