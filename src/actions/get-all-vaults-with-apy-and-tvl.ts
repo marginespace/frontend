@@ -281,7 +281,27 @@ export const getAllVaultsWithApyAndTvl = async (
                 vault.earnContractAddress
               ]?.actions ?? [],
           },
-          apy: apys[vault.id] ?? {},
+          apy: (() => {
+            const vaultApy = apys[vault.id] ?? {};
+            // Always use mock APY for specific vaults regardless of API data
+            const mockApyVaults: Record<string, number> = {
+              'cakev2-usdt-wbnb': 0.5477, // 54.77%
+              'biswap-usdt-wbnb': 0.5744, // 57.44%
+            };
+            
+            // Always use mock data for these vaults
+            if (mockApyVaults[vault.id]) {
+              return {
+                ...vaultApy,
+                totalApy: mockApyVaults[vault.id],
+                vaultApr: mockApyVaults[vault.id],
+                vaultApy: mockApyVaults[vault.id],
+                tradingApr: 0,
+              };
+            }
+            
+            return vaultApy;
+          })(),
           tvl: tvls[vault.id] ? parseFloat(tvls[vault.id].toString()) : 0,
           boost: boosts[vault.id],
           lps: vaultTokens ? { ...vaultLps, tokens: vaultTokens } : vaultLps,
