@@ -73,9 +73,9 @@ export const getCubesDashboardInfo = async (
       });
 
       // For dashboard, use recent blocks instead of earliestBlocks to avoid RPC range errors
-      // Use last 100000 blocks (approximately 2-3 weeks) instead of very old blocks
+      // Start with 50000 blocks (approximately 1-2 weeks) instead of very old blocks
       const currentBlock = await publicClient.getBlockNumber();
-      const dashboardStartBlock = currentBlock - BigInt(100000);
+      const dashboardStartBlock = currentBlock - BigInt(50000);
       const fromBlock = dashboardStartBlock > BigInt(0) ? dashboardStartBlock : BigInt(0);
 
       return [
@@ -83,28 +83,94 @@ export const getCubesDashboardInfo = async (
         Object.fromEntries(
           await Promise.all(
             cubes.map(async (cube, index) => {
-              const [depositLogs, withdrawLogs] = await Promise.all([
-                publicClient.getLogs({
-                  address: cube.earn as Address,
-                  event: parseAbiItem(
-                    'event Deposit(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
-                  ),
-                  args: { user: address },
-                  fromBlock: fromBlock,
-                  toBlock: 'latest',
-                  strict: true,
-                }),
-                publicClient.getLogs({
-                  address: cube.earn as Address,
-                  event: parseAbiItem(
-                    'event Withdraw(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
-                  ),
-                  args: { user: address },
-                  fromBlock: fromBlock,
-                  toBlock: 'latest',
-                  strict: true,
-                }),
-              ]);
+              let depositLogs: any[] = [];
+              let withdrawLogs: any[] = [];
+              
+              // Try to fetch logs with error handling and automatic range reduction
+              try {
+                [depositLogs, withdrawLogs] = await Promise.all([
+                  publicClient.getLogs({
+                    address: cube.earn as Address,
+                    event: parseAbiItem(
+                      'event Deposit(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
+                    ),
+                    args: { user: address },
+                    fromBlock: fromBlock,
+                    toBlock: 'latest',
+                    strict: true,
+                  }),
+                  publicClient.getLogs({
+                    address: cube.earn as Address,
+                    event: parseAbiItem(
+                      'event Withdraw(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
+                    ),
+                    args: { user: address },
+                    fromBlock: fromBlock,
+                    toBlock: 'latest',
+                    strict: true,
+                  }),
+                ]);
+              } catch (logsError: any) {
+                // If error is "exceed maximum block range", try with smaller ranges
+                if (logsError?.message?.includes('exceed maximum block range') || logsError?.message?.includes('50000')) {
+                  console.warn(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - block range too large, trying with smaller ranges`);
+                  
+                  // Try progressively smaller ranges: 20000, 10000, 5000
+                  const ranges = [20000, 10000, 5000];
+                  let success = false;
+                  
+                  for (const range of ranges) {
+                    try {
+                      const currentBlockRetry = await publicClient.getBlockNumber();
+                      const fromBlockRetry = currentBlockRetry - BigInt(range);
+                      const retryFromBlock = fromBlockRetry > BigInt(0) ? fromBlockRetry : BigInt(0);
+                      [depositLogs, withdrawLogs] = await Promise.all([
+                        publicClient.getLogs({
+                          address: cube.earn as Address,
+                          event: parseAbiItem(
+                            'event Deposit(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
+                          ),
+                          args: { user: address },
+                          fromBlock: retryFromBlock,
+                          toBlock: 'latest',
+                          strict: true,
+                        }),
+                        publicClient.getLogs({
+                          address: cube.earn as Address,
+                          event: parseAbiItem(
+                            'event Withdraw(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
+                          ),
+                          args: { user: address },
+                          fromBlock: retryFromBlock,
+                          toBlock: 'latest',
+                          strict: true,
+                        }),
+                      ]);
+                      console.log(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - successfully fetched logs with ${range} blocks range, found ${depositLogs.length} deposits, ${withdrawLogs.length} withdrawals`);
+                      success = true;
+                      break;
+                    } catch (retryError: any) {
+                      if (retryError?.message?.includes('exceed maximum block range')) {
+                        console.warn(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - ${range} blocks still too large, trying smaller range`);
+                        continue;
+                      } else {
+                        console.error(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - retry with ${range} blocks failed:`, retryError);
+                        break;
+                      }
+                    }
+                  }
+                  
+                  if (!success) {
+                    console.error(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - all retry attempts failed, using empty logs`);
+                    depositLogs = [];
+                    withdrawLogs = [];
+                  }
+                } else {
+                  console.error(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - getLogs error:`, logsError);
+                  depositLogs = [];
+                  withdrawLogs = [];
+                }
+              }
 
               const deposits = await Promise.all(
                 depositLogs.map(
