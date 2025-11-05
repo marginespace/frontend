@@ -72,6 +72,12 @@ export const getCubesDashboardInfo = async (
         })),
       });
 
+      // For dashboard, use recent blocks instead of earliestBlocks to avoid RPC range errors
+      // Use last 100000 blocks (approximately 2-3 weeks) instead of very old blocks
+      const currentBlock = await publicClient.getBlockNumber();
+      const dashboardStartBlock = currentBlock - BigInt(100000);
+      const fromBlock = dashboardStartBlock > BigInt(0) ? dashboardStartBlock : BigInt(0);
+
       return [
         chain,
         Object.fromEntries(
@@ -84,7 +90,7 @@ export const getCubesDashboardInfo = async (
                     'event Deposit(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
                   ),
                   args: { user: address },
-                  fromBlock: earliestBlocks[chain],
+                  fromBlock: fromBlock,
                   toBlock: 'latest',
                   strict: true,
                 }),
@@ -94,7 +100,7 @@ export const getCubesDashboardInfo = async (
                     'event Withdraw(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
                   ),
                   args: { user: address },
-                  fromBlock: earliestBlocks[chain],
+                  fromBlock: fromBlock,
                   toBlock: 'latest',
                   strict: true,
                 }),

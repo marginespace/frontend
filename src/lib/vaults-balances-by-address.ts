@@ -72,6 +72,12 @@ export const getVaultsBalancesByAddress = async (
             contracts: contractsShares,
           });
 
+          // For dashboard, use recent blocks instead of earliestBlocks to avoid RPC range errors
+          // Use last 100000 blocks (approximately 2-3 weeks) instead of very old blocks
+          const currentBlock = await publicClient.getBlockNumber();
+          const dashboardStartBlock = currentBlock - BigInt(100000);
+          const fromBlock = dashboardStartBlock > BigInt(0) ? dashboardStartBlock : BigInt(0);
+
           const record = Object.fromEntries(
             (
               await Promise.all(
@@ -84,7 +90,7 @@ export const getVaultsBalancesByAddress = async (
                         'event Deposit(address indexed caller, address indexed user, uint256 wantDeposited, uint256 totalVaultDeposited, uint256 rate, uint256 timestamp)',
                       ),
                       args: { user: address as Address },
-                      fromBlock: earliestBlocks[chain],
+                      fromBlock: fromBlock,
                       toBlock: 'latest',
                       strict: true,
                     }),
@@ -94,7 +100,7 @@ export const getVaultsBalancesByAddress = async (
                         'event Withdraw(address indexed caller, address indexed user, uint256 wantWithdrawn, uint256 totalVaultDeposited, uint256 rate, uint256 timestamp)',
                       ),
                       args: { user: address as Address },
-                      fromBlock: earliestBlocks[chain],
+                      fromBlock: fromBlock,
                       toBlock: 'latest',
                       strict: true,
                     }),
