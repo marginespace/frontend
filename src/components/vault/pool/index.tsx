@@ -113,7 +113,9 @@ const VaultsRenderer = ({
       : tab === 'all'
       ? vaults
       : tab === 'my' && address
-      ? vaults
+      ? vaults.filter(
+          (vault) => vault.deposited > 0 && vault.status === 'active',
+        )
       : [];
   const columnCount = isSmallDevice ? 1 : isMediumDevice ? 2 : 3;
   const rowCount = Math.ceil(itemData.length / columnCount);

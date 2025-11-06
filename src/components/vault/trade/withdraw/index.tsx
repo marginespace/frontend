@@ -75,7 +75,7 @@ export const Withdraw = ({
   );
   const price = vault.lps?.price ?? 0;
 
-  const displaySelectedToken = 'USD';
+  const displaySelectedToken = selectedToken;
   const vaultTokens = useVaultTokensWithdraw(vault, tokens);
   const selectedVaultToken = useMemo(
     () => vaultTokens.find((token) => token.symbol === selectedToken),

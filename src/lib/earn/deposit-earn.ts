@@ -40,19 +40,28 @@ export const depositEarn = async ({
   positionCost,
   depositETH = false,
 }: DepositEarnParams) => {
-  const oneInchSwap =
-    tokenIn !== tokenTo
-      ? await oneInchEstimate({
-          src: tokenIn,
-          dst: tokenTo,
-          amount: tokenInAmount,
-          from: cube.earn,
-          receiver: cube.earn,
-          network: cube.network,
-          disableEstimate: true,
-          slippage: parseFloat(formatUnits(slippage, 18)),
-        })
-      : undefined;
+  let oneInchSwap: Awaited<ReturnType<typeof oneInchEstimate>> | undefined;
+  
+  if (tokenIn !== tokenTo) {
+    try {
+      oneInchSwap = await oneInchEstimate({
+        src: tokenIn,
+        dst: tokenTo,
+        amount: tokenInAmount,
+        from: cube.earn,
+        receiver: cube.earn,
+        network: cube.network,
+        disableEstimate: true,
+        slippage: parseFloat(formatUnits(slippage, 18)),
+      });
+    } catch (error) {
+      console.error('[depositEarn] 1inch API error:', error);
+      // Если 1inch API недоступен (например, из-за лимитов бесплатного тарифа),
+      // продолжаем без swap, но это может быть проблемой
+      // В этом случае пользователь должен использовать стабильную монету напрямую
+      throw new Error('1inch API is unavailable. Please try using the stable token directly or try again later.');
+    }
+  }
 
   const amountIn = BigInt(oneInchSwap?.toTokenAmount ?? tokenInAmount);
 

@@ -100,7 +100,54 @@ export const Filter = ({ className }: FilterProps) => {
     [filters, checkedAllChains, checkedAllPlatforms],
   );
 
-  const allPlatforms = usePlatform();
+  const { data: allPlatforms } = usePlatform();
+
+  // Инициализация фильтров из URL параметров при монтировании
+  useEffect(() => {
+    if (filterQuery && filters.length > 0) {
+      const updatedFilters = filters.map((filter) => {
+        if (filter.type === 'chain' && filterQuery.chains) {
+          const selectedChains = filterQuery.chains.split(',');
+          return { ...filter, value: selectedChains.includes(filter.name) };
+        }
+        if (filter.type === 'platform' && filterQuery.platforms) {
+          const selectedPlatforms = filterQuery.platforms.split(',');
+          return { ...filter, value: selectedPlatforms.includes(filter.name) };
+        }
+        if (filter.type === 'switch' && filterQuery.vaultsFilters) {
+          const selectedFilters = filterQuery.vaultsFilters.split(',');
+          return { ...filter, value: selectedFilters.includes(filter.name) };
+        }
+        return filter;
+      });
+      setFilters(updatedFilters);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterQuery?.chains, filterQuery?.platforms, filterQuery?.vaultsFilters]); // Только при изменении URL параметров
+
+  useEffect(() => {
+    if (allPlatforms && allPlatforms.length > 0) {
+      // Добавляем платформы в filters, если их еще нет
+      setFilters((prev) => {
+        const existingPlatformNames = prev
+          .filter((f) => f.type === 'platform')
+          .map((f) => f.name);
+        const newPlatforms = allPlatforms.filter(
+          (p) => !existingPlatformNames.includes(p.name),
+        );
+        if (newPlatforms.length > 0) {
+          // Инициализируем значения платформ из URL
+          const platformsFromUrl = filterQuery?.platforms?.split(',') || [];
+          const initializedPlatforms = newPlatforms.map((p) => ({
+            ...p,
+            value: platformsFromUrl.includes(p.name),
+          }));
+          return [...prev, ...initializedPlatforms];
+        }
+        return prev;
+      });
+    }
+  }, [allPlatforms, filterQuery?.platforms]);
 
   useEffect(() => {
     if (!filterQuery) return;

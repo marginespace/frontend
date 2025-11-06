@@ -106,7 +106,11 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
       : tab === 'all'
       ? cubes
       : tab === 'my' && address
-      ? cubes
+      ? cubes.filter(
+          (cube) =>
+            (cube.received && BigInt(cube.received) > 0n) ||
+            (cube.dashboard?.now && cube.dashboard.now > 0),
+        )
       : [];
   
 

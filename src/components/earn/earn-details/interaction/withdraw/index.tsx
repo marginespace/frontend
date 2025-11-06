@@ -74,7 +74,7 @@ export const EarnWithdraw = ({
     DEFAULT_WITHDRAW_SLIPPAGE,
   );
 
-  const displaySelectedToken = 'USD';
+  const displaySelectedToken = selectedToken;
   const vaultTokens = useCubeTokensWithdraw(cube, tokens);
   const selectedVaultToken = useMemo(
     () => vaultTokens.find((token) => token.symbol === selectedToken),

@@ -136,11 +136,20 @@ export const getAllCubes = async (
           !filter.chains ||
           filter.chains.split(',').includes(cube.network.toLowerCase());
 
+        const byPlatform =
+          !filter.platforms ||
+          cube.vaults.some((vault) =>
+            filter.platforms
+              ?.split(',')
+              .map((p) => p.toLowerCase())
+              .includes(vault.platformId.toLowerCase()),
+          );
+
         const byMyVaults = filter?.address
           ? !!cubesDashboard[cube.network]?.[cube.earn as Address]?.balance
           : true;
 
-        return bySearch && byChain && byMyVaults;
+        return bySearch && byChain && byPlatform && byMyVaults;
       })
       .sort((a, b) => {
         if (filter?.sortBy === 'APY') {

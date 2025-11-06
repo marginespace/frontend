@@ -176,7 +176,7 @@ export const EarnDeposit = ({
   );
 
   const { sendTransactionAsync: sendZapAsync } = useSendTransaction({
-    to: cube.earn,
+    to: cube.earn && zapsData?.calldata ? (cube.earn as Address) : undefined,
     data: zapsData?.calldata,
     value: zapsData?.value,
   });
@@ -215,6 +215,14 @@ export const EarnDeposit = ({
     if (isLoading) {
       return;
     }
+    if (isAllowanceEnough && (!sendZapAsync || !zapsData?.calldata || !cube.earn)) {
+      toast({
+        variant: 'destructive',
+        title: 'Transaction data is not ready.',
+        description: 'Please wait a moment and try again.',
+      });
+      return;
+    }
     setIsLoading(true);
     try {
       const hash = await (isAllowanceEnough ? sendZapAsync : approve)();
@@ -241,6 +249,8 @@ export const EarnDeposit = ({
     approve,
     publicClient,
     toast,
+    zapsData?.calldata,
+    cube.earn,
   ]);
 
   const onSwitchNetworkClick = useCallback(async () => {
@@ -299,7 +309,20 @@ export const EarnDeposit = ({
     }
 
     loadZapsData()
-      .catch(console.error)
+      .catch((error) => {
+        console.error('[EarnDeposit] Error loading zap data:', error);
+        setZapsData(null);
+        // Показываем ошибку только если это не просто отсутствие данных
+        if (error instanceof Error && error.message.includes('1inch')) {
+          toast({
+            variant: 'destructive',
+            title: '1inch API Error',
+            description: error.message.includes('rate limits') || error.message.includes('unavailable')
+              ? '1inch API is temporarily unavailable (possibly due to rate limits). Please try using the stable token directly or try again later.'
+              : error.message,
+          });
+        }
+      })
       .finally(() => setIsZapsLoading(false));
 
     return () => {
@@ -319,6 +342,7 @@ export const EarnDeposit = ({
     positionCost,
     activeRiskOption,
     slippageValue,
+    toast,
   ]);
 
   useEffect(() => {

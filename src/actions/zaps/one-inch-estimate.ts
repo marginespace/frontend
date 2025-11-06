@@ -95,11 +95,28 @@ export const oneInchEstimate = async (
       headers,
     });
     await new Promise((resolve) => setTimeout(resolve, 1000));
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[oneInchEstimate] API error:', response.status, errorText);
+      throw new Error(
+        `1inch API error (${response.status}): ${
+          errorText || 'API request failed. This might be due to rate limits on the free dev plan.'
+        }`,
+      );
+    }
+    
     const parseResponse =
       (await response.json()) as OneInchSwapEstimateResponse;
+    
+    // Проверяем, что ответ содержит необходимые данные
+    if (!parseResponse?.tx?.data || !parseResponse?.tx?.to) {
+      throw new Error('1inch API returned incomplete data. Please try again later.');
+    }
+    
     return parseResponse;
   } catch (error) {
-    console.error(error);
+    console.error('[oneInchEstimate] Error:', error);
     throw error;
   }
 };
