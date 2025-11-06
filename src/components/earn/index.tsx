@@ -40,40 +40,43 @@ export default function EarnWrapper({
   });
 
   return (
-    <div>
-      <div className="container flex min-w-full flex-col gap-[8px] md:gap-[12px] xl:gap-[8px] xl:px-4 xl:pt-0 2xl:gap-[8px] 2xl:px-4 2xl:pt-0">
-        <div className="flex items-end justify-between">
-          <div className="flex flex-col gap-[8px] pt-0 md:flex-row md:gap-[12px] md:pt-0 xl:gap-[8px] xl:pt-0 2xl:gap-[8px] 2xl:pt-0">
-            <div className="text-[32px] font-semibold">Strategies</div>
-            <EarnTitleInfo />
-          </div>
-          <NewCube
-            configs={configs}
-            vaults={!vaults || isVaultsLoading ? [] : vaults}
-          >
-            <Button variant="transparent" className="ml-[10px]">
-              Create new strategy
-            </Button>
-          </NewCube>
+    <>
+      <div className="flex items-end justify-between">
+        <div className="flex flex-col gap-[16px] md:flex-row">
+          <EarnTitleInfo />
         </div>
-
-        <Tabs
-          defaultValue={searchParams.tag ?? 'all'}
-          className="flex flex-col gap-[8px] md:gap-[12px] xl:gap-[8px] 2xl:gap-[8px]"
+        <NewCube
+          configs={configs}
+          vaults={!vaults || isVaultsLoading ? [] : vaults}
         >
-          <div className="flex flex-wrap items-center justify-between rounded-[15px] bg-[rgba(255,255,255,0.11)] p-[8px] md:gap-0 md:p-[12px] xl:p-[8px] 2xl:p-[8px]">
-            <Filter className="w-1/2 pr-1 md:w-1/3 md:pr-0" />
-            <CubePoolTabs className="order-3 flex w-full items-center justify-center gap-4 pt-2 md:order-[0] md:w-1/3 md:pl-4 md:pt-0 xl:pl-0 xl:pt-0 2xl:pl-0 2xl:pt-0" />
-            <div className="w-1/2 justify-end pl-1 md:flex md:w-1/3 md:pl-0">
-              <SortBy />
-            </div>
-          </div>
-          <SearchInput />
+          <Button variant="transparent" className="ml-[10px]">
+            Create new strategy
+          </Button>
+        </NewCube>
+      </div>
+
+      <Tabs
+        defaultValue={searchParams.tag ?? 'all'}
+        className="flex flex-col gap-[24px]"
+      >
+        <div className="flex flex-wrap items-center justify-between rounded-[15px] border border-white bg-[rgba(255,255,255,0.11)] p-[12px] md:gap-0">
+          <Filter className="w-1/2 pr-1 md:w-1/3 md:pr-0" />
+          <CubePoolTabs className="order-3 flex w-full items-center justify-center gap-4 pt-4 md:order-[0] md:w-1/3 md:pl-4 md:pt-0 xl:pl-0" />
+          <SortBy className="w-1/2 justify-end pl-1 md:flex md:w-1/3 md:pl-0" />
+        </div>
+        <SearchInput />
+        <div className="flex justify-center">
           <Accordion
             type="multiple"
-            className="flex flex-wrap items-stretch justify-between gap-[24px]"
+            className="mx-auto w-full max-w-[95%] px-4 sm:max-w-[98%] sm:px-6 md:max-w-[1920px] md:px-8 lg:px-12 xl:max-w-[1535px] 2xl:max-w-[1535px]"
           >
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense
+              fallback={
+                <div className="mx-auto mt-4 flex text-xl font-semibold">
+                  Loading...
+                </div>
+              }
+            >
               <CubesRenderer
                 tab={searchParams.tag || 'all'}
                 cubes={!dataCubes || isCubesLoading ? [] : dataCubes[0]}
@@ -81,8 +84,8 @@ export default function EarnWrapper({
               />
             </Suspense>
           </Accordion>
-        </Tabs>
-      </div>
-    </div>
+        </div>
+      </Tabs>
+    </>
   );
 }
