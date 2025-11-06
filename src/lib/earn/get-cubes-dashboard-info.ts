@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client';
 import groupBy from 'lodash.groupby';
 import { type Address, formatUnits, parseAbiItem } from 'viem';
 
@@ -6,9 +7,35 @@ import { earnPoolCheckerAbi } from '@/abi/earn/EarnPoolChecker';
 import { priceAggregatorAbi } from '@/abi/earn/PriceAggregatorAbi';
 import { type Cube } from '@/actions/get-all-cubes';
 import { type VaultWithApyAndTvl } from '@/actions/get-all-vaults-with-apy-and-tvl';
-import { earliestBlocks } from '@/constants/supported-chains';
+import { createApolloClient } from '@/apollo/client';
 import { getTransactionUrl } from '@/helpers/getTransactionUrl';
 import { apiChainToPublicClient } from '@/lib/api-chain-to-wagmi';
+
+type CubeDepositLog = {
+  amountStable: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  earn: string;
+  id: string;
+  stopLossUsd: string;
+  timestamp: string;
+  totalSize: string;
+  transactionHash: string;
+  user: string;
+};
+
+type CubeWithdrawLog = {
+  amountStable: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  earn: string;
+  id: string;
+  stopLossUsd: string;
+  timestamp: string;
+  totalSize: string;
+  transactionHash: string;
+  user: string;
+};
 
 export type CubeVaultActionInfo = {
   type: 'Deposit' | 'Withdraw';
@@ -78,104 +105,61 @@ export const getCubesDashboardInfo = async (
       const dashboardStartBlock = currentBlock - BigInt(50000);
       const fromBlock = dashboardStartBlock > BigInt(0) ? dashboardStartBlock : BigInt(0);
 
+      const client = createApolloClient(chain);
+
+      const logs = await client.query({
+        query: gql`
+          query MyQuery {
+            earnpoolDeposits(where: {user: "${address}"})  {
+              amountStable
+              blockNumber
+              blockTimestamp
+              earn
+              id
+              stopLossUsd
+              timestamp
+              totalSize
+              transactionHash
+              user
+            }
+            earnpoolWithdraws(where: {user: "${address}"})  {
+              user
+              transactionHash
+              totalSize
+              timestamp
+              stopLossUsd
+              id
+              blockTimestamp
+              earn
+              blockNumber
+              amountStable
+            }
+          }
+        `,
+      });
+      const { earnpoolDeposits, earnpoolWithdraws } = logs.data as any;
+
       return [
         chain,
         Object.fromEntries(
           await Promise.all(
-            cubes.map(async (cube, index) => {
-              let depositLogs: any[] = [];
-              let withdrawLogs: any[] = [];
-              
-              // Try to fetch logs with error handling and automatic range reduction
-              try {
-                [depositLogs, withdrawLogs] = await Promise.all([
-                  publicClient.getLogs({
-                    address: cube.earn as Address,
-                    event: parseAbiItem(
-                      'event Deposit(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
-                    ),
-                    args: { user: address },
-                    fromBlock: fromBlock,
-                    toBlock: 'latest',
-                    strict: true,
-                  }),
-                  publicClient.getLogs({
-                    address: cube.earn as Address,
-                    event: parseAbiItem(
-                      'event Withdraw(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
-                    ),
-                    args: { user: address },
-                    fromBlock: fromBlock,
-                    toBlock: 'latest',
-                    strict: true,
-                  }),
-                ]);
-              } catch (logsError: any) {
-                // If error is "exceed maximum block range", try with smaller ranges
-                if (logsError?.message?.includes('exceed maximum block range') || logsError?.message?.includes('50000')) {
-                  console.warn(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - block range too large, trying with smaller ranges`);
-                  
-                  // Try progressively smaller ranges: 20000, 10000, 5000
-                  const ranges = [20000, 10000, 5000];
-                  let success = false;
-                  
-                  for (const range of ranges) {
-                    try {
-                      const currentBlockRetry = await publicClient.getBlockNumber();
-                      const fromBlockRetry = currentBlockRetry - BigInt(range);
-                      const retryFromBlock = fromBlockRetry > BigInt(0) ? fromBlockRetry : BigInt(0);
-                      [depositLogs, withdrawLogs] = await Promise.all([
-                        publicClient.getLogs({
-                          address: cube.earn as Address,
-                          event: parseAbiItem(
-                            'event Deposit(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
-                          ),
-                          args: { user: address },
-                          fromBlock: retryFromBlock,
-                          toBlock: 'latest',
-                          strict: true,
-                        }),
-                        publicClient.getLogs({
-                          address: cube.earn as Address,
-                          event: parseAbiItem(
-                            'event Withdraw(address indexed user, uint256 indexed timestamp, uint256 amountStable, uint256 totalSize, uint256 stopLossUsd)',
-                          ),
-                          args: { user: address },
-                          fromBlock: retryFromBlock,
-                          toBlock: 'latest',
-                          strict: true,
-                        }),
-                      ]);
-                      console.log(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - successfully fetched logs with ${range} blocks range, found ${depositLogs.length} deposits, ${withdrawLogs.length} withdrawals`);
-                      success = true;
-                      break;
-                    } catch (retryError: any) {
-                      if (retryError?.message?.includes('exceed maximum block range')) {
-                        console.warn(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - ${range} blocks still too large, trying smaller range`);
-                        continue;
-                      } else {
-                        console.error(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - retry with ${range} blocks failed:`, retryError);
-                        break;
-                      }
-                    }
-                  }
-                  
-                  if (!success) {
-                    console.error(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - all retry attempts failed, using empty logs`);
-                    depositLogs = [];
-                    withdrawLogs = [];
-                  }
-                } else {
-                  console.error(`[FRONTEND] getCubesDashboardInfo: ${chain} - cube ${cube.id} - getLogs error:`, logsError);
-                  depositLogs = [];
-                  withdrawLogs = [];
-                }
-              }
+            cubes.map(async (cube, index) => {            
+              const depositLogs: CubeDepositLog[] = earnpoolDeposits.filter(
+                (deposit: CubeDepositLog) =>
+                  deposit.earn === cube.earn.toLowerCase(),
+              );
+
+              const withdrawLogs: CubeWithdrawLog[] = earnpoolWithdraws.filter(
+                (withdraw: CubeWithdrawLog) =>
+                  withdraw.earn === cube.earn.toLowerCase(),
+              );
 
               const deposits = await Promise.all(
                 depositLogs.map(
                   async ({
-                    args: { amountStable, timestamp, totalSize },
+                    totalSize,
+                    amountStable,
+                    timestamp,
                     blockNumber,
                     transactionHash,
                   }) => {
@@ -184,14 +168,14 @@ export const getCubesDashboardInfo = async (
                       address: cube.priceAggregator as Address,
                       functionName: 'getPrice',
                       args: [cube.stableAddress as Address],
-                      blockNumber: blockNumber ?? undefined,
+                      blockNumber: BigInt(blockNumber) ?? undefined,
                     });
                     const totalSizeNumber = +formatUnits(
-                      totalSize,
+                      BigInt(totalSize),
                       cube.stableDecimals,
                     );
                     const amountStableNumber = +formatUnits(
-                      amountStable,
+                      BigInt(amountStable),
                       cube.stableDecimals,
                     );
                     const priceNumber = +formatUnits(price, 18);
@@ -212,7 +196,7 @@ export const getCubesDashboardInfo = async (
                         ],
                       })),
                       allowFailure: false,
-                      blockNumber: blockNumber ?? undefined,
+                      blockNumber: BigInt(blockNumber) ?? undefined,
                     });
 
                     const actionsMap = cube.vaults.reduce(
@@ -249,7 +233,9 @@ export const getCubesDashboardInfo = async (
               const withdrawals = await Promise.all(
                 withdrawLogs.map(
                   async ({
-                    args: { amountStable, timestamp, totalSize },
+                    totalSize,
+                    amountStable,
+                    timestamp,
                     blockNumber,
                     transactionHash,
                   }) => {
@@ -258,14 +244,14 @@ export const getCubesDashboardInfo = async (
                       address: cube.priceAggregator as Address,
                       functionName: 'getPrice',
                       args: [cube.stableAddress as Address],
-                      blockNumber: blockNumber ?? undefined,
+                      blockNumber: BigInt(blockNumber) ?? undefined,
                     });
                     const totalSizeNumber = +formatUnits(
-                      totalSize,
+                      BigInt(totalSize),
                       cube.stableDecimals,
                     );
                     const amountStableNumber = +formatUnits(
-                      amountStable,
+                      BigInt(amountStable),
                       cube.stableDecimals,
                     );
                     const priceNumber = +formatUnits(price, 18);
@@ -285,7 +271,7 @@ export const getCubesDashboardInfo = async (
                         ],
                       })),
                       allowFailure: false,
-                      blockNumber: blockNumber ?? undefined,
+                      blockNumber: BigInt(blockNumber) ?? undefined,
                     });
 
                     const actionsMap = cube.vaults.reduce(
