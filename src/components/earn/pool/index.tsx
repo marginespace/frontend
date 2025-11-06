@@ -125,9 +125,16 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
   const cubesRow = convertArrayTo2DArray(itemData, columnCount);
 
   const getMinHeight = () => {
-    if (rowCount === 1) return ROW_HEIGHT_EXPANDED;
-    if (rowCount === 2) return 2 * ROW_HEIGHT_EXPANDED;
-    return 2 * ROW_HEIGHT_EXPANDED;
+    // Используем максимальную высоту раскрытой строки для расчета
+    const maxExpandedHeight = Math.max(expandedRowHeight, expandedBoostedRowHeight);
+    const minHeightForExpanded = maxExpandedHeight + GUTTER_SIZE;
+    
+    if (rowCount === 0) return minHeightForExpanded;
+    if (rowCount === 1) return minHeightForExpanded;
+    if (rowCount === 2) return 2 * minHeightForExpanded;
+    if (rowCount === 3) return 3 * minHeightForExpanded;
+    // Для большего количества строк используем минимум 4 строки с учетом раскрытых
+    return Math.max(4 * minHeightForExpanded, rowCount * ROW_HEIGHT);
   };
 
   return (
