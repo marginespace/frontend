@@ -81,8 +81,6 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
     columnIndex: number,
     value: selectedRowValue,
   ) => {
-    const isOpening = !selectedRows[rowIndex]?.[columnIndex] && value;
-    
     setSelectedRows((prevRows) => {
       const newRows = JSON.parse(JSON.stringify(prevRows));
 
@@ -100,13 +98,6 @@ const CubesRenderer = ({ cubes, tab, address }: CubesRendererProps) => {
     });
 
     listRef.current?.resetAfterIndex(rowIndex);
-    
-    // Автоматическая прокрутка к раскрытой карточке
-    if (isOpening && listRef.current) {
-      setTimeout(() => {
-        listRef.current?.scrollToItem(rowIndex, 'smart');
-      }, 100);
-    }
   };
 
   const itemData =
