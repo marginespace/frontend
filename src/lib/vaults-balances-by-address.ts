@@ -1,10 +1,39 @@
+import { gql } from '@apollo/client';
 import groupBy from 'lodash.groupby';
 import { type Address, parseAbiItem, parseUnits } from 'viem';
 
 import { vaultV7Abi } from '@/abi/VaultV7';
 import { type Vault } from '@/actions/get-all-vaults';
-import { earliestBlocks } from '@/constants/supported-chains';
+import { createApolloClient } from '@/apollo/client';
 import { apiChainToPublicClient } from '@/lib/api-chain-to-wagmi';
+
+type VaultDepositLog = {
+  id: string;
+  caller: string;
+  vault: string;
+  user: string;
+  rate: string;
+  blockTimestamp: string;
+  blockNumber: string;
+  timestamp: string;
+  transactionHash: string;
+  totalVaultDeposited: string;
+  wantDeposited: string;
+};
+
+type VaultWithdrawLog = {
+  id: string;
+  caller: string;
+  vault: string;
+  user: string;
+  rate: string;
+  blockTimestamp: string;
+  blockNumber: string;
+  timestamp: string;
+  transactionHash: string;
+  totalVaultDeposited: string;
+  wantWithdrawn: string;
+};
 
 type VaultBalanceWithAddressTuple = [
   Address,
@@ -72,6 +101,42 @@ export const getVaultsBalancesByAddress = async (
             contracts: contractsShares,
           });
 
+          const client = createApolloClient(chain);
+
+          const logs = await client.query({
+            query: gql`
+              query MyQuery {
+                deposits(where: {user: "${address}"}) {
+                  id
+                  caller
+                  vault
+                  user
+                  rate
+                  blockTimestamp
+                  blockNumber
+                  timestamp
+                  transactionHash
+                  totalVaultDeposited
+                  wantDeposited
+                }
+                withdraws(where: {user: "${address}"}) {
+                  blockNumber
+                  caller
+                  blockTimestamp
+                  id
+                  rate
+                  timestamp
+                  totalVaultDeposited
+                  transactionHash
+                  user
+                  vault
+                  wantWithdrawn
+                }
+              }
+            `,
+          });
+          const { deposits: depositLogs, withdraws: withdrawLogs } = logs.data as any;
+
           // For dashboard, use recent blocks instead of earliestBlocks to avoid RPC range errors
           // Start with 50000 blocks (approximately 1-2 weeks) instead of very old blocks
           const currentBlock = await publicClient.getBlockNumber();
@@ -82,82 +147,18 @@ export const getVaultsBalancesByAddress = async (
             (
               await Promise.all(
                 earnContractAddresses.map(async (contractAddress, index) => {
-                  const vaultBalance = vaultBalances[index];
-                  let depositLogs: any[] = [];
-                  let withdrawLogs: any[] = [];
-                  
+                  const vaultBalance = vaultBalances[index];                  
                   // Try to fetch logs with error handling
-                  try {
-                    [depositLogs, withdrawLogs] = await Promise.all([
-                      publicClient.getLogs({
-                        address: contractAddress,
-                        event: parseAbiItem(
-                          'event Deposit(address indexed caller, address indexed user, uint256 wantDeposited, uint256 totalVaultDeposited, uint256 rate, uint256 timestamp)',
-                        ),
-                        args: { user: address as Address },
-                        fromBlock: fromBlock,
-                        toBlock: 'latest',
-                        strict: true,
-                      }),
-                      publicClient.getLogs({
-                        address: contractAddress,
-                        event: parseAbiItem(
-                          'event Withdraw(address indexed caller, address indexed user, uint256 wantWithdrawn, uint256 totalVaultDeposited, uint256 rate, uint256 timestamp)',
-                        ),
-                        args: { user: address as Address },
-                        fromBlock: fromBlock,
-                        toBlock: 'latest',
-                        strict: true,
-                      }),
-                    ]);
-                  } catch (logsError: any) {
-                    // If error is "exceed maximum block range", try with smaller ranges
-                    if (logsError?.message?.includes('exceed maximum block range') || logsError?.message?.includes('50000')) {
-                      console.warn(`[FRONTEND] getVaultsBalancesByAddress: ${chain} - vault ${contractAddress} - block range too large, trying with smaller ranges`);
-                      
-                      // Try progressively smaller ranges
-                      for (const range of [50000, 20000, 10000, 5000]) {
-                        try {
-                          const currentBlockRetry = await publicClient.getBlockNumber();
-                          const fromBlockRetry = currentBlockRetry - BigInt(range);
-                          const retryFromBlock = fromBlockRetry > BigInt(0) ? fromBlockRetry : BigInt(0);
-                          [depositLogs, withdrawLogs] = await Promise.all([
-                            publicClient.getLogs({
-                              address: contractAddress,
-                              event: parseAbiItem(
-                                'event Deposit(address indexed caller, address indexed user, uint256 wantDeposited, uint256 totalVaultDeposited, uint256 rate, uint256 timestamp)',
-                              ),
-                              args: { user: address as Address },
-                              fromBlock: retryFromBlock,
-                              toBlock: 'latest',
-                              strict: true,
-                            }),
-                            publicClient.getLogs({
-                              address: contractAddress,
-                              event: parseAbiItem(
-                                'event Withdraw(address indexed caller, address indexed user, uint256 wantWithdrawn, uint256 totalVaultDeposited, uint256 rate, uint256 timestamp)',
-                              ),
-                              args: { user: address as Address },
-                              fromBlock: retryFromBlock,
-                              toBlock: 'latest',
-                              strict: true,
-                            }),
-                          ]);
-                          console.log(`[FRONTEND] getVaultsBalancesByAddress: ${chain} - vault ${contractAddress} - successfully fetched logs with ${range} blocks range, found ${depositLogs.length} deposits, ${withdrawLogs.length} withdrawals`);
-                          break;
-                        } catch (retryError: any) {
-                          if (retryError?.message?.includes('exceed maximum block range')) {
-                            continue; // Try smaller range
-                          } else {
-                            console.error(`[FRONTEND] getVaultsBalancesByAddress: ${chain} - vault ${contractAddress} - retry failed:`, retryError);
-                            break;
-                          }
-                        }
-                      }
-                    } else {
-                      console.error(`[FRONTEND] getVaultsBalancesByAddress: ${chain} - vault ${contractAddress} - getLogs error:`, logsError);
-                    }
-                  }
+                  const deposits = depositLogs.filter(
+                    (deposit: VaultDepositLog) =>
+                      deposit.vault === contractAddress.toLowerCase(),
+                  );
+
+                  const withdraws = withdrawLogs.filter(
+                    (withdraw: VaultWithdrawLog) =>
+                      withdraw.vault === contractAddress.toLowerCase(),
+                  );
+
                   return vaultBalance.status === 'success' &&
                     vaultBalance.result > BigInt(0)
                     ? ([
@@ -168,32 +169,32 @@ export const getVaultsBalancesByAddress = async (
                           shares: (
                             vaultShares[index]?.result ?? BigInt(0)
                           ).toString(),
-                          actions: depositLogs
-                            .map(({ args, transactionHash }) => ({
+                          actions: deposits
+                            .map((deposit: VaultDepositLog) => ({
                               //hash
                               action: 'Deposit',
-                              transactionHash,
-                              amount: args.wantDeposited.toString(),
+                              transactionHash: deposit.transactionHash,
+                              amount: deposit.wantDeposited.toString(),
                               balance: (
-                                (args.totalVaultDeposited * args.rate) /
+                                (BigInt(deposit.totalVaultDeposited) * BigInt(deposit.rate)) /
                                 parseUnits('1', 18)
                               ).toString(),
-                              timestamp: args.timestamp.toString(),
+                              timestamp: deposit.timestamp.toString(),
                             }))
                             .concat(
-                              withdrawLogs.map(({ args, transactionHash }) => ({
+                              withdrawLogs.map((withdraw: VaultWithdrawLog) => ({
                                 action: 'Withdraw',
-                                transactionHash,
-                                amount: args.wantWithdrawn.toString(),
+                                transactionHash: withdraw.transactionHash,
+                                amount: withdraw.wantWithdrawn.toString(),
                                 balance: (
-                                  (args.totalVaultDeposited * args.rate) /
+                                  (BigInt(withdraw.totalVaultDeposited) * BigInt(withdraw.rate)) /
                                   parseUnits('1', 18)
                                 ).toString(),
-                                timestamp: args.timestamp.toString(),
+                                timestamp: withdraw.timestamp.toString(),
                               })),
                             )
                             .sort(
-                              (a, b) =>
+                              (a: VaultDepositLog | VaultWithdrawLog, b: VaultDepositLog | VaultWithdrawLog) =>
                                 +a.timestamp.toString() -
                                 +b.timestamp.toString(),
                             ),
