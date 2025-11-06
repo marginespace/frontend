@@ -41,9 +41,9 @@ export default function EarnWrapper({
 
   return (
     <div>
-      <div className="container flex min-w-full flex-col gap-[24px]">
+      <div className="container flex min-w-full flex-col gap-[16px]">
         <div className="flex items-end justify-between">
-          <div className="flex flex-col gap-[16px] pt-[16px] md:flex-row">
+          <div className="flex flex-col gap-[12px] pt-[8px] md:flex-row md:pt-[12px]">
             <div className="text-[32px] font-semibold">Strategies</div>
             <EarnTitleInfo />
           </div>
@@ -59,7 +59,7 @@ export default function EarnWrapper({
 
         <Tabs
           defaultValue={searchParams.tag ?? 'all'}
-          className="flex flex-col gap-[24px]"
+          className="flex flex-col gap-[16px]"
         >
           <div className="flex flex-wrap items-center justify-between rounded-[15px] bg-[rgba(255,255,255,0.11)] p-[12px] md:gap-0">
             <Filter className="w-1/2 pr-1 md:w-1/3 md:pr-0" />
@@ -71,7 +71,7 @@ export default function EarnWrapper({
           <SearchInput />
           <Accordion
             type="multiple"
-            className="flex flex-wrap items-stretch justify-between gap-[24px]"
+            className="flex flex-wrap items-stretch justify-between gap-[24px] pb-[200px]"
           >
             <Suspense fallback={<div>Loading...</div>}>
               <CubesRenderer
