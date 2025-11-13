@@ -176,9 +176,14 @@ export const Withdraw = ({
 
   const approve = useCallback(async () => {
     try {
-      if (!vault.zapAddress) {
+      // Используем адрес из zapsData, а не из vault.zapAddress
+      const zapAddress = zapsData?.zapsData.zapCalldata.to ?? vault.zapAddress;
+      
+      if (!zapAddress) {
+        console.error('No zap address available for approve');
         return;
       }
+      
       const amount = Math.ceil(
         price ? amountToWithdrawInput / price : amountToWithdrawInput,
       )
@@ -186,7 +191,7 @@ export const Withdraw = ({
         .replace(',', '.');
       const { hash } = await approveAsync({
         to: vaultAddress,
-        args: [vault.zapAddress, parseUnits(amount, vault.tokenDecimals ?? 18)],
+        args: [zapAddress, parseUnits(amount, vault.tokenDecimals ?? 18)],
       });
       return hash;
     } catch (error) {
@@ -206,6 +211,7 @@ export const Withdraw = ({
     vault.tokenDecimals,
     vault.zapAddress,
     vaultAddress,
+    zapsData,
   ]);
 
   const withdraw = useCallback(async () => {
