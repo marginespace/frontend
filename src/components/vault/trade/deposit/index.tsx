@@ -142,40 +142,67 @@ export const Deposit = ({
     );
   }, [selectedVaultToken]);
 
-  // Автоматически выбрать токен с максимальным балансом и заполнить поле
+  // Автоматически выбрать токен с приоритетом: ETH → стейблкоины → максимальный баланс
   useEffect(() => {
-    if (isConnected && vaultBalances.length > 0 && address) {
-      // Найти токен с максимальным балансом
-      const tokenWithMaxBalance = vaultBalances.reduce((max, current) => {
-        const maxBalance = parseFloat(
-          formatUnits(max.balance, max.decimals ?? 18),
-        );
-        const currentBalance = parseFloat(
-          formatUnits(current.balance, current.decimals ?? 18),
-        );
-        return currentBalance > maxBalance ? current : max;
-      });
+    if (!isConnected || !address || vaultBalances.length === 0) {
+      return;
+    }
 
-      const maxBalanceValue = parseFloat(
+    const stablecoins = ['USDT', 'USDC', 'DAI', 'USDC.e', 'USDbC', 'BUSD'];
+    const nativeTokens = ['ETH', 'WETH', 'BNB', 'WBNB', 'MATIC', 'WMATIC'];
+
+    let selectedTokenToUse = null;
+
+    // 1. Приоритет - нативные токены (ETH, BNB и т.д.)
+    const nativeToken = vaultBalances.find((token) =>
+      nativeTokens.some((nt) => token.symbol.toUpperCase().includes(nt)),
+    );
+
+    if (nativeToken && nativeToken.balance > 0n) {
+      selectedTokenToUse = nativeToken;
+    } else {
+      // 2. Если нет ETH - ищем стейблкоин
+      const stablecoin = vaultBalances.find((token) =>
+        stablecoins.some((sc) => token.symbol.toUpperCase().includes(sc)),
+      );
+
+      if (stablecoin && stablecoin.balance > 0n) {
+        selectedTokenToUse = stablecoin;
+      } else {
+        // 3. Если нет стейблкоинов - берем токен с максимальным балансом
+        selectedTokenToUse = vaultBalances.reduce((max, current) => {
+          if (current.balance === 0n) return max;
+          const maxBalance = parseFloat(
+            formatUnits(max.balance, max.decimals ?? 18),
+          );
+          const currentBalance = parseFloat(
+            formatUnits(current.balance, current.decimals ?? 18),
+          );
+          return currentBalance > maxBalance ? current : max;
+        });
+      }
+    }
+
+    if (selectedTokenToUse && selectedTokenToUse.balance > 0n) {
+      const balanceValue = parseFloat(
         formatUnits(
-          tokenWithMaxBalance.balance,
-          tokenWithMaxBalance.decimals ?? 18,
+          selectedTokenToUse.balance,
+          selectedTokenToUse.decimals ?? 18,
         ),
       );
 
-      // Только если баланс больше 0
-      if (maxBalanceValue > 0) {
-        // Установить токен с максимальным балансом
-        if (tokenWithMaxBalance.symbol !== selectedToken) {
-          setSelectedToken(tokenWithMaxBalance.symbol);
-        }
+      // Установить выбранный токен
+      if (selectedTokenToUse.symbol !== selectedToken) {
+        setSelectedToken(selectedTokenToUse.symbol);
+      }
 
-        // Заполнить поле его балансом
-        setAmountToDeposit(maxBalanceValue);
+      // Заполнить поле его балансом
+      if (balanceValue > 0) {
+        setAmountToDeposit(balanceValue);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, address]);
+  }, [isConnected, address, vaultBalances]);
 
   const onDepositInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
