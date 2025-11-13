@@ -45,14 +45,14 @@ export const depositEarn = async ({
   if (tokenIn !== tokenTo) {
     try {
       oneInchSwap = await oneInchEstimate({
-        src: tokenIn,
-        dst: tokenTo,
-        amount: tokenInAmount,
-        from: cube.earn,
-        receiver: cube.earn,
-        network: cube.network,
-        disableEstimate: true,
-        slippage: parseFloat(formatUnits(slippage, 18)),
+          src: tokenIn,
+          dst: tokenTo,
+          amount: tokenInAmount,
+          from: cube.earn,
+          receiver: cube.earn,
+          network: cube.network,
+          disableEstimate: true,
+          slippage: parseFloat(formatUnits(slippage, 18)),
       });
     } catch (error) {
       console.error('[depositEarn] 1inch API error:', error);

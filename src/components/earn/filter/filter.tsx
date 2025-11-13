@@ -265,33 +265,33 @@ export const Filter = ({ className }: FilterProps) => {
                     Chains
                   </span>
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <Checkbox
-                      checked={checkedAllChains}
-                      onCheckedChange={() => checkAll('chain')}
+            <Checkbox
+              checked={checkedAllChains}
+              onCheckedChange={() => checkAll('chain')}
                       onClick={(e) => e.stopPropagation()}
-                      className="h-[18px] w-[18px] border-primary data-[state=checked]:bg-primary"
-                    >
-                      <CheckboxIndicator />
-                    </Checkbox>
+              className="h-[18px] w-[18px] border-primary data-[state=checked]:bg-primary"
+            >
+              <CheckboxIndicator />
+            </Checkbox>
                     <span className="text-[12px] text-gray-500 whitespace-nowrap">All</span>
-                  </div>
-                </div>
+          </div>
+        </div>
               </AccordionTrigger>
               <AccordionContent className="px-3 pb-2">
-                <div className="space-y-1">
-                  {filters
-                    .filter((filter) => filter.type === 'chain')
-                    .map((filter) => (
-                      <FilterChain
-                        key={filter.name}
-                        name={filter.name}
-                        title={filter.title}
-                        handleChange={handleChange}
-                        checked={filter.value}
-                        imgUrl={filter.image}
-                      />
-                    ))}
-                </div>
+          <div className="space-y-1">
+            {filters
+              .filter((filter) => filter.type === 'chain')
+              .map((filter) => (
+                <FilterChain
+                  key={filter.name}
+                  name={filter.name}
+                  title={filter.title}
+                  handleChange={handleChange}
+                  checked={filter.value}
+                  imgUrl={filter.image}
+                />
+              ))}
+          </div>
               </AccordionContent>
             </AccordionItem>
 

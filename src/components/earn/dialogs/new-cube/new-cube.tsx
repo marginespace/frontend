@@ -281,7 +281,7 @@ export const NewCube = ({ children, configs, vaults }: Props) => {
                 setIsLoading(false);
                 toast({
                   variant: 'destructive',
-                  title: 'Failed to create Cube.',
+                  title: 'Failed to create Strategy.',
                   description: 'Try again.',
                 });
               }
@@ -340,7 +340,7 @@ export const NewCube = ({ children, configs, vaults }: Props) => {
                 setIsLoading(false);
                 toast({
                   variant: 'destructive',
-                  title: 'Failed to create Cube.',
+                  title: 'Failed to create Strategy',
                   description: 'Try again.',
                 });
               }
@@ -385,7 +385,7 @@ export const NewCube = ({ children, configs, vaults }: Props) => {
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setOpen}>
-      <SuccessAlert open={successOpen}>Cube successfully created.</SuccessAlert>
+      <SuccessAlert open={successOpen}>Strategy successfully created.</SuccessAlert>
       {isAdmin && <div onClick={() => setOpen(true)}>{children}</div>}
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-[#29305666] backdrop-blur-[10px]" />
@@ -395,7 +395,7 @@ export const NewCube = ({ children, configs, vaults }: Props) => {
             className="fixed flex h-full max-h-[800px] w-full max-w-[545px] flex-col gap-[16px] overflow-y-scroll rounded-[20px] bg-[#272536] p-[24px]"
           >
             <div className="text-[24px] font-semibold text-white">
-              Create a new cube
+              Create a new strategy
             </div>
             <Controller
               control={control}
@@ -404,7 +404,7 @@ export const NewCube = ({ children, configs, vaults }: Props) => {
                   required
                   className="bg-[#3E3C4B]"
                   {...field}
-                  placeholder="Cube name"
+                  placeholder="strategy name"
                 />
               )}
               name="cubeName"
@@ -415,7 +415,7 @@ export const NewCube = ({ children, configs, vaults }: Props) => {
                 <Input
                   className="bg-[#3E3C4B]"
                   {...field}
-                  placeholder="Cube description"
+                  placeholder="Strategy description"
                 />
               )}
               name="cubeDescription"
@@ -625,7 +625,7 @@ export const NewCube = ({ children, configs, vaults }: Props) => {
                 {isLoading && (
                   <Loader2 className="mr-2 h-[20px] w-[20px] animate-spin" />
                 )}
-                Create cube
+                Create Strategy
               </Button>
             ) : (
               <Button
