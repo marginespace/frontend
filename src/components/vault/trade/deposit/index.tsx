@@ -430,7 +430,7 @@ export const Deposit = ({
                   isMounted && selectedVaultToken?.decimals
                     ? selectedVaultToken.decimals
                     : 18,
-                  2,
+                  5,
                 )}
               </div>
               <div>Select token</div>

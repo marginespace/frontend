@@ -357,7 +357,7 @@ export const Withdraw = ({
                     isMounted && available ? available : BigInt(0),
                     isMounted && decimals ? displayDecimals : 18,
                   )
-              ).toFixed(2)}
+              ).toFixed(5)}
             </div>
             <div>Select token</div>
           </div>

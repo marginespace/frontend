@@ -65,7 +65,7 @@ export const TokensList = memo(
                       {formatBigIntComa(
                         asset.balance ?? BigInt(0),
                         asset.decimals ?? 18,
-                        2,
+                        5,
                       )}
                     </p>
                     <RadioGroupItem

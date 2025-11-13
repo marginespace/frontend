@@ -265,7 +265,7 @@ export const EarnWithdraw = ({
               {formatBigIntComa(
                 isMounted && available ? available : BigInt(0),
                 18,
-                2,
+                5,
               )}
             </div>
             <div>Select token</div>
