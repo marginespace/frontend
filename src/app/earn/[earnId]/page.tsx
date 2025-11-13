@@ -33,7 +33,7 @@ export const generateMetadata = async ({
   const vault = await getCubeById(earnId);
 
   return {
-    title: `${appName}: ${vault ? vault.stable : 'Not found'}`,
+    title: `${appName}: ${vault ? vault.name : 'Not found'}`,
     description: appDescription,
   };
 };
@@ -56,7 +56,7 @@ const EarnPage = async ({ params: { earnId } }: EarnPageProps) => {
       <BackButton className="mb-[24px] lg:absolute lg:mb-0" />
       <div className="mx-auto flex max-w-[620px] flex-col gap-[24px]">
         <div className="text-[32px] font-semibold lg:text-center">
-          {cube.name} Cube
+          {cube.name}
         </div>
         <div className="flex items-center gap-3 lg:justify-center">
           <Image
