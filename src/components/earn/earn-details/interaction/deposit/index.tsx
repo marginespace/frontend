@@ -156,44 +156,62 @@ export const EarnDeposit = ({
     );
   }, [selectedVaultToken]);
 
-  // Автоматически выбрать токен с приоритетом: ETH → стейблкоины → максимальный баланс
+  // Автоматически выбрать токен с приоритетом: стейблкоин > 1 → ETH → остальные стейблкоины → максимальный баланс
   useEffect(() => {
     if (!isConnected || !address || vaultBalances.length === 0) {
       return;
     }
 
-    const stablecoins = ['USDT', 'USDC', 'DAI', 'USDC.e', 'USDbC', 'BUSD'];
+    const stablecoins = ['USDT', 'USDC', 'DAI', 'USDC.E', 'USDBC', 'BUSD', 'SUSD'];
     const nativeTokens = ['ETH', 'WETH', 'BNB', 'WBNB', 'MATIC', 'WMATIC'];
 
     let selectedTokenToUse = null;
 
-    // 1. Приоритет - нативные токены (ETH, BNB и т.д.)
-    const nativeToken = vaultBalances.find((token) =>
-      nativeTokens.some((nt) => token.symbol.toUpperCase().includes(nt)),
-    );
+    // 1. ПРИОРИТЕТ: Если есть стейблкоин с балансом > 1, выбираем его
+    const stablecoinWithBalance = vaultBalances.find((token) => {
+      const isStablecoin = stablecoins.some((sc) => 
+        token.symbol.toUpperCase().includes(sc)
+      );
+      if (!isStablecoin) return false;
+      
+      const balance = parseFloat(
+        formatUnits(token.balance, token.decimals ?? 18),
+      );
+      return balance > 1;
+    });
 
-    if (nativeToken && nativeToken.balance > 0n) {
-      selectedTokenToUse = nativeToken;
+    if (stablecoinWithBalance) {
+      selectedTokenToUse = stablecoinWithBalance;
     } else {
-      // 2. Если нет ETH - ищем стейблкоин
-      const stablecoin = vaultBalances.find((token) =>
-        stablecoins.some((sc) => token.symbol.toUpperCase().includes(sc)),
+      // 2. Если нет стейблкоина > 1, приоритет - нативные токены (ETH, BNB и т.д.)
+      const nativeToken = vaultBalances.find((token) =>
+        nativeTokens.some((nt) => token.symbol.toUpperCase().includes(nt)),
       );
 
-      if (stablecoin && stablecoin.balance > 0n) {
-        selectedTokenToUse = stablecoin;
+      if (nativeToken && nativeToken.balance > 0n) {
+        selectedTokenToUse = nativeToken;
       } else {
-        // 3. Если нет стейблкоинов - берем токен с максимальным балансом
-        selectedTokenToUse = vaultBalances.reduce((max, current) => {
-          if (current.balance === 0n) return max;
-          const maxBalance = parseFloat(
-            formatUnits(max.balance, max.decimals ?? 18),
-          );
-          const currentBalance = parseFloat(
-            formatUnits(current.balance, current.decimals ?? 18),
-          );
-          return currentBalance > maxBalance ? current : max;
-        });
+        // 3. Если нет ETH - ищем любой стейблкоин с балансом > 0
+        const anyStablecoin = vaultBalances.find((token) =>
+          stablecoins.some((sc) => token.symbol.toUpperCase().includes(sc)) &&
+          token.balance > 0n
+        );
+
+        if (anyStablecoin) {
+          selectedTokenToUse = anyStablecoin;
+        } else {
+          // 4. Если ничего нет - берем токен с максимальным балансом
+          selectedTokenToUse = vaultBalances.reduce((max, current) => {
+            if (current.balance === 0n) return max;
+            const maxBalance = parseFloat(
+              formatUnits(max.balance, max.decimals ?? 18),
+            );
+            const currentBalance = parseFloat(
+              formatUnits(current.balance, current.decimals ?? 18),
+            );
+            return currentBalance > maxBalance ? current : max;
+          });
+        }
       }
     }
 
