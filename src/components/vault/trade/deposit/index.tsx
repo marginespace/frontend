@@ -142,6 +142,41 @@ export const Deposit = ({
     );
   }, [selectedVaultToken]);
 
+  // Автоматически выбрать токен с максимальным балансом и заполнить поле
+  useEffect(() => {
+    if (isConnected && vaultBalances.length > 0 && address) {
+      // Найти токен с максимальным балансом
+      const tokenWithMaxBalance = vaultBalances.reduce((max, current) => {
+        const maxBalance = parseFloat(
+          formatUnits(max.balance, max.decimals ?? 18),
+        );
+        const currentBalance = parseFloat(
+          formatUnits(current.balance, current.decimals ?? 18),
+        );
+        return currentBalance > maxBalance ? current : max;
+      });
+
+      const maxBalanceValue = parseFloat(
+        formatUnits(
+          tokenWithMaxBalance.balance,
+          tokenWithMaxBalance.decimals ?? 18,
+        ),
+      );
+
+      // Только если баланс больше 0
+      if (maxBalanceValue > 0) {
+        // Установить токен с максимальным балансом
+        if (tokenWithMaxBalance.symbol !== selectedToken) {
+          setSelectedToken(tokenWithMaxBalance.symbol);
+        }
+
+        // Заполнить поле его балансом
+        setAmountToDeposit(maxBalanceValue);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected, address]);
+
   const onDepositInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setIsZapsLoading(true);
