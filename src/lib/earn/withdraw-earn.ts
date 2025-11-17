@@ -67,29 +67,56 @@ export const withdrawEarn = async ({
     ]);
   const costAfterWithdraw = positionCost - withdrawUsd;
 
+  const adjustedCost =
+    costAfterWithdraw - (reserved * price) / BigInt(10 ** cube.stableDecimals);
+  
+  // Ensure stopLossCost is never negative
+  const calculatedStopLossCost =
+    (adjustedCost * BigInt(stopLossPercents)) / BigInt(100);
+  
   const stopLossCost =
-    ((costAfterWithdraw -
-      (reserved * price) / BigInt(10 ** cube.stableDecimals)) *
-      BigInt(stopLossPercents)) /
-    BigInt(100);
+    calculatedStopLossCost < BigInt(0) ? BigInt(0) : calculatedStopLossCost;
 
   const stable = await earn.read.stable();
   const stableWithoutReserved = stableExpected - reserved;
   const stableExpectedWithSlippage =
     stableWithoutReserved - (stableWithoutReserved * slippage) / percents;
-  const oneInchSwap =
-    stable !== tokenTo
-      ? await oneInchEstimate({
-          src: stable,
-          dst: tokenTo,
-          amount: stableExpectedWithSlippage,
-          from: cube.earn,
-          receiver: cube.earn,
-          network: cube.network,
-          disableEstimate: true,
-          slippage: parseFloat(formatUnits(slippage, 18)),
-        })
-      : undefined;
+  
+  let oneInchSwap: Awaited<ReturnType<typeof oneInchEstimate>> | undefined;
+  
+  if (stable !== tokenTo) {
+    // Validate amount is positive and not too small
+    if (stableExpectedWithSlippage <= BigInt(0)) {
+      throw new Error('Withdrawal amount is too small or invalid');
+    }
+    
+    const minAmount = BigInt(100000000000000); // ~0.0001 for 18 decimal tokens
+    if (stableExpectedWithSlippage < minAmount) {
+      throw new Error('Withdrawal amount is too small. Please increase the amount or withdraw to stable token.');
+    }
+    
+    try {
+      oneInchSwap = await oneInchEstimate({
+        src: stable,
+        dst: tokenTo,
+        amount: stableExpectedWithSlippage,
+        from: cube.earn,
+        receiver: cube.earn,
+        network: cube.network,
+        disableEstimate: true,
+        slippage: parseFloat(formatUnits(slippage, 18)),
+      });
+    } catch (error) {
+      console.error('[withdrawEarn] 1inch API error:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      if (errorMessage.includes('insufficient liquidity')) {
+        throw new Error('Insufficient liquidity for this swap. Please try withdrawing to stable token instead.');
+      }
+      
+      throw new Error('1inch API is unavailable. Please try withdrawing to stable token or try again later.');
+    }
+  }
 
   const calldata = encodeEarnWithdrawData({
     withdrawCost,

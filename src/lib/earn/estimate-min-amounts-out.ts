@@ -71,11 +71,15 @@ export const estimateMinAmountsOut = async ({
     amountInStable += reserved;
   }
 
+  const totalPositionValue =
+    (amountInStable * price) / BigInt(10 ** cube.stableDecimals) + positionCost;
+  
+  // Ensure stopLossCost is never negative
+  const calculatedStopLossCost =
+    (totalPositionValue * BigInt(stopLossCostPercents)) / BigInt(100);
+  
   const stopLossCost =
-    (((amountInStable * price) / BigInt(10 ** cube.stableDecimals) +
-      positionCost) *
-      BigInt(stopLossCostPercents)) /
-    BigInt(100);
+    calculatedStopLossCost < BigInt(0) ? BigInt(0) : calculatedStopLossCost;
 
   const amountsOut = (await earnHelperContract.read.estimateAmountsOutDeposit([
     earn.address,

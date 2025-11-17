@@ -40,9 +40,21 @@ export const depositEarn = async ({
   positionCost,
   depositETH = false,
 }: DepositEarnParams) => {
+  // Validate input amount is positive and not too small
+  if (tokenInAmount <= BigInt(0)) {
+    throw new Error('Deposit amount must be greater than 0');
+  }
+  
   let oneInchSwap: Awaited<ReturnType<typeof oneInchEstimate>> | undefined;
   
   if (tokenIn !== tokenTo) {
+    // Check if amount is too small for 1inch (minimum ~$0.1 worth)
+    // This helps avoid "insufficient liquidity" errors
+    const minAmount = BigInt(100000000000000); // ~0.0001 for 18 decimal tokens
+    if (tokenInAmount < minAmount) {
+      throw new Error('Deposit amount is too small. Please increase the amount or use the stable token directly.');
+    }
+    
     try {
       oneInchSwap = await oneInchEstimate({
           src: tokenIn,
@@ -56,6 +68,12 @@ export const depositEarn = async ({
       });
     } catch (error) {
       console.error('[depositEarn] 1inch API error:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      if (errorMessage.includes('insufficient liquidity')) {
+        throw new Error('Insufficient liquidity for this swap. Please try using the stable token directly or increase the amount.');
+      }
+      
       // Если 1inch API недоступен (например, из-за лимитов бесплатного тарифа),
       // продолжаем без swap, но это может быть проблемой
       // В этом случае пользователь должен использовать стабильную монету напрямую

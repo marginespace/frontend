@@ -392,15 +392,38 @@ export const EarnDeposit = ({
       .catch((error) => {
         console.error('[EarnDeposit] Error loading zap data:', error);
         setZapsData(null);
-        // Показываем ошибку только если это не просто отсутствие данных
-        if (error instanceof Error && error.message.includes('1inch')) {
-          toast({
-            variant: 'destructive',
-            title: '1inch API Error',
-            description: error.message.includes('rate limits') || error.message.includes('unavailable')
-              ? '1inch API is temporarily unavailable (possibly due to rate limits). Please try using the stable token directly or try again later.'
-              : error.message,
-          });
+        
+        // Show user-friendly error messages
+        if (error instanceof Error) {
+          const errorMessage = error.message;
+          
+          if (errorMessage.includes('too small')) {
+            toast({
+              variant: 'destructive',
+              title: 'Amount Too Small',
+              description: errorMessage,
+            });
+          } else if (errorMessage.includes('insufficient liquidity')) {
+            toast({
+              variant: 'destructive',
+              title: 'Insufficient Liquidity',
+              description: errorMessage,
+            });
+          } else if (errorMessage.includes('1inch') || errorMessage.includes('unavailable')) {
+            toast({
+              variant: 'destructive',
+              title: '1inch API Error',
+              description: errorMessage.includes('rate limits') || errorMessage.includes('unavailable')
+                ? '1inch API is temporarily unavailable. Please try using the stable token directly or try again later.'
+                : errorMessage,
+            });
+          } else if (errorMessage.includes('IntegerOutOfRange')) {
+            toast({
+              variant: 'destructive',
+              title: 'Invalid Amount',
+              description: 'The calculated amount is invalid. Please adjust your deposit amount or disable stop-loss.',
+            });
+          }
         }
       })
       .finally(() => setIsZapsLoading(false));

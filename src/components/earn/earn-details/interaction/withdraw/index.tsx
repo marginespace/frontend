@@ -230,7 +230,24 @@ export const EarnWithdraw = ({
     }
 
     loadZapsData()
-      .catch(console.error)
+      .catch((error) => {
+        console.error('[EarnWithdraw] Error loading zap data:', error);
+        setZapsData(null);
+        
+        // Show user-friendly error messages
+        if (error instanceof Error) {
+          const errorMessage = error.message;
+          
+          if (errorMessage.includes('too small') || errorMessage.includes('invalid')) {
+            // Don't show toast for small amounts during calculation, user can adjust
+            console.warn('Withdrawal amount validation:', errorMessage);
+          } else if (errorMessage.includes('insufficient liquidity')) {
+            console.warn('1inch liquidity issue:', errorMessage);
+          } else if (errorMessage.includes('1inch') || errorMessage.includes('unavailable')) {
+            console.warn('1inch API issue:', errorMessage);
+          }
+        }
+      })
       .finally(() => setIsZapsLoading(false));
 
     return () => {
