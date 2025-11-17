@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 import CookiePolicy from '@/ui/icons/cookie-policy';
 import PrivacyPolicy from '@/ui/icons/privacy-policy';
@@ -9,6 +10,21 @@ import Telegram from '@/ui/icons/telegram';
 import X from '@/ui/icons/x';
 
 export const Footer = () => {
+  useEffect(() => {
+    // Загрузка скрипта CommonNinja
+    const script = document.createElement('script');
+    script.src = 'https://cdn.commoninja.com/sdk/latest/commonninja.js';
+    script.defer = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Очистка при размонтировании
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
+
   return (
     <footer className="w-full mt-auto bg-linear-white py-4 px-4 text-[14px] font-semibold text-white shadow-[0_-6px_10px_rgba(0,0,0,0.08)] backdrop-blur-[20px] md:py-[16px] md:px-6">
       <div className="mx-auto max-w-[1400px]">
@@ -26,9 +42,11 @@ export const Footer = () => {
               <X />
             </Link>
             <Link 
-              href="mailto:support@marginspace.io"
+              href="https://t.me/marginspacesupportteam"
+              target="_blank"
+              rel="noopener noreferrer"
               className="transition-opacity hover:opacity-80 active:opacity-60"
-              aria-label="Contact support via email"
+              aria-label="Contact support via Telegram"
             >
               <Telegram />
             </Link>
@@ -79,9 +97,11 @@ export const Footer = () => {
               <X />
             </Link>
             <Link 
-              href="mailto:support@marginspace.io"
+              href="https://t.me/marginspacesupportteam"
+              target="_blank"
+              rel="noopener noreferrer"
               className="transition-opacity hover:opacity-80 active:opacity-60"
-              aria-label="Contact support via email"
+              aria-label="Contact support via Telegram"
             >
               <Telegram />
             </Link>
@@ -115,6 +135,9 @@ export const Footer = () => {
           </div>
         </div>
       </div>
+      
+      {/* CommonNinja Popup Widget */}
+      <div className="commonninja_component pid-f0f8e061-66cb-44d6-a767-a594743b49a7"></div>
     </footer>
   );
 };
