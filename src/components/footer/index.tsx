@@ -17,17 +17,96 @@ export const Footer = () => {
     script.defer = true;
     document.body.appendChild(script);
 
+    // Добавление кастомных стилей для виджета
+    const style = document.createElement('style');
+    style.innerHTML = `
+      /* CommonNinja popup widget стили */
+      .commonninja_component {
+        position: fixed !important;
+        z-index: 9999 !important;
+      }
+      
+      /* Кастомизация цветов под красный дизайн */
+      .commonninja_component iframe,
+      .commonninja_component * {
+        --primary-color: #FF4444 !important;
+        --accent-color: #FF6B6B !important;
+        --background-color: rgba(0, 0, 0, 0.95) !important;
+      }
+      
+      /* Overlay backdrop */
+      .commonninja-modal-overlay {
+        background: rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(4px) !important;
+      }
+      
+      /* Кнопка закрытия - красная */
+      .commonninja-close-button,
+      .cn-close-btn {
+        background: #FF4444 !important;
+        color: white !important;
+        border: 2px solid #FF6B6B !important;
+        transition: all 0.3s ease !important;
+      }
+      
+      .commonninja-close-button:hover,
+      .cn-close-btn:hover {
+        background: #FF6B6B !important;
+        transform: scale(1.1) !important;
+      }
+      
+      /* Кнопки внутри виджета */
+      .commonninja_component button,
+      .commonninja_component .cn-button {
+        background: linear-gradient(135deg, #FF4444 0%, #FF6B6B 100%) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+      }
+      
+      .commonninja_component button:hover,
+      .commonninja_component .cn-button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(255, 68, 68, 0.4) !important;
+      }
+      
+      /* Текст и заголовки */
+      .commonninja_component h1,
+      .commonninja_component h2,
+      .commonninja_component h3 {
+        color: #FF4444 !important;
+      }
+      
+      /* Ссылки */
+      .commonninja_component a {
+        color: #FF6B6B !important;
+      }
+      
+      .commonninja_component a:hover {
+        color: #FF4444 !important;
+      }
+    `;
+    document.head.appendChild(style);
+
     return () => {
       // Очистка при размонтировании
       if (script.parentNode) {
         script.parentNode.removeChild(script);
       }
+      if (style.parentNode) {
+        style.parentNode.removeChild(style);
+      }
     };
   }, []);
 
   return (
-    <footer className="w-full mt-auto bg-linear-white py-4 px-4 text-[14px] font-semibold text-white shadow-[0_-6px_10px_rgba(0,0,0,0.08)] backdrop-blur-[20px] md:py-[16px] md:px-6">
-      <div className="mx-auto max-w-[1400px]">
+    <>
+      {/* CommonNinja Popup Widget - вне футера, чтобы не перекрывал текст */}
+      <div className="commonninja_component pid-f0f8e061-66cb-44d6-a767-a594743b49a7"></div>
+      
+      <footer className="w-full mt-auto bg-linear-white py-4 px-4 text-[14px] font-semibold text-white shadow-[0_-6px_10px_rgba(0,0,0,0.08)] backdrop-blur-[20px] md:py-[16px] md:px-6">
+        <div className="mx-auto max-w-[1400px]">
         {/* Mobile Layout: соцсети слева, копирайт по центру, иконки справа */}
         <div className="relative flex flex-row items-center justify-between gap-2 md:hidden">
           {/* Social Links - Left */}
@@ -135,9 +214,7 @@ export const Footer = () => {
           </div>
         </div>
       </div>
-      
-      {/* CommonNinja Popup Widget */}
-      <div className="commonninja_component pid-f0f8e061-66cb-44d6-a767-a594743b49a7"></div>
     </footer>
+    </>
   );
 };
