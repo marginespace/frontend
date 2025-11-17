@@ -38,19 +38,6 @@ export const useCubeTokensWithdraw = (
     () =>
       tokens.concat([
         {
-          address: cube.stableAddress,
-          type: 'lp',
-          isWNative: false,
-          isNative: false,
-          chainId: chainId.toString(),
-          name: cube.stable,
-          symbol: cube.stable,
-          id: 'lp',
-          decimals: cube.stableDecimals,
-          oracle: '',
-          oracleId: '',
-        },
-        {
           address: wNative?.address ?? '',
           type: 'native',
           isNative: true,
@@ -67,9 +54,6 @@ export const useCubeTokensWithdraw = (
     [
       chain.nativeCurrency,
       chainId,
-      cube.stable,
-      cube.stableAddress,
-      cube.stableDecimals,
       tokens,
       wNative,
     ],

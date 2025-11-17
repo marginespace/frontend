@@ -62,28 +62,18 @@ export const useVaultTokensBalances = (
   const balancesContracts = useMemo(
     () =>
       address
-        ? tokens
-            .map(
-              (token) =>
-                ({
-                  address: token.address as `0x${string}`,
-                  abi: erc20ABI,
-                  functionName: 'balanceOf',
-                  chainId,
-                  args: [address],
-                }) as const,
-            )
-            .concat([
-              {
-                address: vault.tokenAddress as `0x${string}`,
+        ? tokens.map(
+            (token) =>
+              ({
+                address: token.address as `0x${string}`,
                 abi: erc20ABI,
                 functionName: 'balanceOf',
                 chainId,
                 args: [address],
-              } as const,
-            ])
+              }) as const,
+          )
         : [],
-    [address, tokens, vault.tokenAddress, chainId],
+    [address, tokens, chainId],
   );
   const allowancesContracts = useMemo(
     () =>
@@ -146,23 +136,6 @@ export const useVaultTokensBalances = (
       }))
       .concat([
         {
-          address: vault.tokenAddress ?? '',
-          type: 'lp',
-          isWNative: false,
-          isNative: false,
-          chainId: chainId.toString(),
-          balance: balances[balances.length - 1],
-          allowance: allowances[allowances.length - 1] as bigint,
-          name: vault.isMultiToken ? 'LP' : vault.assets[0] + ' LP',
-          symbol: vault.isMultiToken ? 'LP' : vault.assets[0] + ' LP',
-          id: 'lp',
-          decimals: decimals ?? 18,
-          oracleId: '',
-          oracle: '',
-        },
-      ])
-      .concat([
-        {
           address: wNative?.address ?? 'native',
           type: 'native',
           isNative: true,
@@ -187,11 +160,7 @@ export const useVaultTokensBalances = (
     balances,
     allowances,
     tokens,
-    vault.tokenAddress,
-    vault.isMultiToken,
-    vault.assets,
     chainId,
-    decimals,
     wNative,
     nativeBalanceData,
   ]);

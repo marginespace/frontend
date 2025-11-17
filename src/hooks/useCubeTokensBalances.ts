@@ -36,28 +36,18 @@ export const useCubeTokensBalances = (
   const balancesContracts = useMemo(
     () =>
       address
-        ? tokens
-            .map(
-              (token) =>
-                ({
-                  address: token.address as Address,
-                  abi: erc20ABI,
-                  functionName: 'balanceOf',
-                  chainId,
-                  args: [address],
-                }) as const,
-            )
-            .concat([
-              {
-                address: cube.stableAddress as Address,
+        ? tokens.map(
+            (token) =>
+              ({
+                address: token.address as Address,
                 abi: erc20ABI,
                 functionName: 'balanceOf',
                 chainId,
                 args: [address],
-              } as const,
-            ])
+              }) as const,
+          )
         : [],
-    [address, tokens, chainId, cube.stableAddress],
+    [address, tokens, chainId],
   );
 
   const allowancesContracts = useMemo(
@@ -107,21 +97,6 @@ export const useCubeTokensBalances = (
       }))
       .concat([
         {
-          address: cube.stableAddress ?? '',
-          type: 'lp',
-          isWNative: false,
-          isNative: false,
-          chainId: chainId?.toString() ?? '1',
-          balance: balances[balances.length - 1] ?? BigInt(0),
-          allowance: (allowances[allowances.length - 1] as bigint) ?? BigInt(0),
-          name: cube.stable,
-          symbol: cube.stable,
-          id: 'lp',
-          decimals: cube.stableDecimals,
-          oracle: '',
-          oracleId: '',
-        },
-        {
           address: wNative?.address ?? '',
           type: 'native',
           isNative: true,
@@ -146,9 +121,6 @@ export const useCubeTokensBalances = (
     allowances,
     balances,
     chainId,
-    cube.stable,
-    cube.stableAddress,
-    cube.stableDecimals,
     nativeBalanceData,
     tokens,
     wNative,

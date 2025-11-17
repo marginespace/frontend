@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { erc20ABI, useContractRead } from 'wagmi';
 
 import { type Token, type TokensByName } from '@/actions/get-all-tokens';
 import { type VaultWithApyAndTvl } from '@/actions/get-all-vaults-with-apy-and-tvl';
@@ -51,28 +50,8 @@ export const useVaultTokensWithdraw = (
   const chain = apiChainToWagmi(vault.chain);
   const chainId = chain.id;
 
-  const { data: decimals } = useContractRead({
-    abi: erc20ABI,
-    address: vault.tokenAddress as `0x${string}`,
-    functionName: 'decimals',
-    chainId,
-  });
-
   return useMemo<Token[]>(() => {
     return tokens.concat([
-      {
-        address: vault.tokenAddress ?? '',
-        type: 'lp',
-        isWNative: false,
-        isNative: false,
-        chainId: chainId.toString(),
-        name: vault.isMultiToken ? 'LP' : vault.assets[0] + ' LP',
-        symbol: vault.isMultiToken ? 'LP' : vault.assets[0] + ' LP',
-        id: 'lp',
-        decimals: decimals ?? 18,
-        oracleId: '',
-        oracle: '',
-      },
       {
         address: wNative?.address ?? 'native',
         type: 'native',
@@ -92,11 +71,7 @@ export const useVaultTokensWithdraw = (
     chain.nativeCurrency.name,
     chain.nativeCurrency.symbol,
     chainId,
-    decimals,
     tokens,
-    vault.assets,
-    vault.isMultiToken,
-    vault.tokenAddress,
     wNative,
   ]);
 };
