@@ -63,6 +63,7 @@ export const EarnWithdraw = ({
   const { isConnected, address } = useAccount();
   const [amountToWithdrawInput, setAmountToWithdraw] = useState(0);
   const [amountToWithdraw] = useDebounce(amountToWithdrawInput, 1000);
+  const [isUserEditing, setIsUserEditing] = useState(false);
   const chainVault = apiChainToWagmi(cube.network);
   const chainId = chainVault.id;
   const publicClient = usePublicClient({ chainId });
@@ -85,6 +86,7 @@ export const EarnWithdraw = ({
     (value: string) => {
       setIsCollapsibleOpen(false);
       setSelectedToken(value);
+      setIsUserEditing(false); // Сброс при смене токена
     },
     [setSelectedToken],
   );
@@ -112,27 +114,40 @@ export const EarnWithdraw = ({
   const available = stableReceived ? stableReceived[1] : BigInt(0);
 
   const availableParsed = useMemo(() => {
-    return parseFloat(formatUnits(available ?? BigInt(0), 18));
+    const fullBalance = parseFloat(formatUnits(available ?? BigInt(0), 18));
+    // ❗ ВСЕГДА округляем до 6 знаков!
+    return Math.floor(fullBalance * 1000000) / 1000000;
   }, [available]);
   const positionCostParsed = useMemo(() => {
-    return parseFloat(formatUnits(positionCost ?? BigInt(0), 18));
+    const fullBalance = parseFloat(formatUnits(positionCost ?? BigInt(0), 18));
+    // ❗ ВСЕГДА округляем до 6 знаков!
+    return Math.floor(fullBalance * 1000000) / 1000000;
   }, [positionCost]);
 
   const onMaxClick = useCallback(() => {
+    // positionCostParsed уже округлен до 6 знаков в useMemo
     setAmountToWithdraw(positionCostParsed);
+    setIsUserEditing(true); // MAX тоже считается редактированием
   }, [positionCostParsed]);
 
   const onWithdrawInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      // Пользователь начал редактировать
+      setIsUserEditing(true);
       setIsZapsLoading(true);
       let value = parseFloat(e.target.value);
       if (isNaN(value)) {
         return setAmountToWithdraw(0);
       }
+
+      // Ограничить до 6 знаков после запятой
+      value = Math.floor(value * 1000000) / 1000000;
+
       if (availableParsed) {
         const parsedBalance = availableParsed;
 
         if (value > parsedBalance) {
+          // availableParsed уже округлен до 6 знаков в useMemo
           value = parsedBalance;
         }
       }
@@ -282,7 +297,7 @@ export const EarnWithdraw = ({
               {formatBigIntComa(
                 isMounted && available ? available : BigInt(0),
                 18,
-                5,
+                6,
               )}
             </div>
             <div>Select token</div>

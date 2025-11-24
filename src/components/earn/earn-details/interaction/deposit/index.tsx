@@ -92,6 +92,7 @@ export const EarnDeposit = ({
   const [amountToDepositInput, setAmountToDeposit] = useState(0);
   const earnAddress = cube.earn as `0x${string}`;
   const [amountToDeposit] = useDebounce(amountToDepositInput, 1000);
+  const [isUserEditing, setIsUserEditing] = useState(false);
 
   const displaySelectedToken = selectedToken;
 
@@ -104,6 +105,7 @@ export const EarnDeposit = ({
     (value: string) => {
       setIsCollapsibleOpen(false);
       setSelectedToken(value);
+      setIsUserEditing(false); // Сброс при смене токена
     },
     [setSelectedToken],
   );
@@ -140,20 +142,26 @@ export const EarnDeposit = ({
   });
 
   const parsedBalance = useMemo(() => {
-    return selectedVaultToken
-      ? +formatUnits(selectedVaultToken.balance, selectedVaultToken.decimals)
-      : 0;
+    if (!selectedVaultToken) return 0;
+    const fullBalance = +formatUnits(
+      selectedVaultToken.balance,
+      selectedVaultToken.decimals,
+    );
+    // ❗ ВСЕГДА округляем до 6 знаков!
+    return Math.floor(fullBalance * 1000000) / 1000000;
   }, [selectedVaultToken]);
 
   const onMaxClick = useCallback(() => {
-    setAmountToDeposit(
-      parseFloat(
-        formatUnits(
-          selectedVaultToken?.balance ?? BigInt(0),
-          selectedVaultToken?.decimals ?? 18,
-        ),
+    const maxValue = parseFloat(
+      formatUnits(
+        selectedVaultToken?.balance ?? BigInt(0),
+        selectedVaultToken?.decimals ?? 18,
       ),
     );
+    // Округлить до 6 знаков после запятой
+    const roundedValue = Math.floor(maxValue * 1000000) / 1000000;
+    setAmountToDeposit(roundedValue);
+    setIsUserEditing(true); // MAX тоже считается редактированием
   }, [selectedVaultToken]);
 
   // Автоматически выбрать токен с приоритетом: стейблкоин > 1 → ETH → остальные стейблкоины → максимальный баланс
@@ -226,26 +234,35 @@ export const EarnDeposit = ({
       // Установить выбранный токен
       if (selectedTokenToUse.symbol !== selectedToken) {
         setSelectedToken(selectedTokenToUse.symbol);
+        setIsUserEditing(false); // Сброс при смене токена
       }
 
-      // Заполнить поле его балансом
-      if (balanceValue > 0) {
-        setAmountToDeposit(balanceValue);
+      // Заполнить поле ТОЛЬКО если пользователь НЕ редактирует
+      if (balanceValue > 0 && !isUserEditing) {
+        // Округлить до 6 знаков после запятой
+        const roundedValue = Math.floor(balanceValue * 1000000) / 1000000;
+        setAmountToDeposit(roundedValue);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, address, vaultBalances]);
+  }, [isConnected, address, vaultBalances, isUserEditing]);
 
   const onDepositInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      // Пользователь начал редактировать - больше не автозаполнять
+      setIsUserEditing(true);
       setIsZapsLoading(true);
       let value = parseFloat(e.target.value);
       if (isNaN(value)) {
         return setAmountToDeposit(0);
       }
 
+      // Ограничить до 6 знаков после запятой
+      value = Math.floor(value * 1000000) / 1000000;
+
       if (selectedVaultToken) {
         if (value > parsedBalance) {
+          // parsedBalance уже округлен до 6 знаков в useMemo
           value = parsedBalance;
         }
       }
@@ -465,7 +482,7 @@ export const EarnDeposit = ({
       <Collapsible className="flex flex-col gap-4" open={isCollapsibleOpen}>
         <div className="rounded-[8px] bg-transparent-bg-dark shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] backdrop-blur-[10px]">
           <div className="flex flex-col gap-[12px] p-[16px]">
-            <div className="flex flex-row justify-between text-[14px] text-[#CFC9FF]">
+              <div className="flex flex-row justify-between text-[14px] text-[#CFC9FF]">
               <div>
                 Available:{' '}
                 {formatBigIntComa(
@@ -475,7 +492,7 @@ export const EarnDeposit = ({
                   isMounted && selectedVaultToken?.decimals
                     ? selectedVaultToken.decimals
                     : 18,
-                  5,
+                  6,
                 )}
               </div>
               <div>Select token</div>
