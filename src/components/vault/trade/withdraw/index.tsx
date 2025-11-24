@@ -186,10 +186,7 @@ export const Withdraw = ({
     [available, displayDecimals, price],
   );
 
-  const { sendTransactionAsync: sendZapAsync } = useSendTransaction({
-    to: zapsData?.zapsData.zapCalldata.to,
-    data: zapsData?.zapsData.zapCalldata.calldata,
-  });
+  const { sendTransactionAsync: sendZapAsync } = useSendTransaction();
 
   const approve = useCallback(async () => {
     try {
@@ -252,17 +249,36 @@ export const Withdraw = ({
     }
   }, [amountWithPrice, withdrawAsync, decimals, toast]);
 
+  const withdrawZap = useCallback(async () => {
+    if (!zapsData?.zapsData.zapCalldata.to || !zapsData?.zapsData.zapCalldata.calldata) {
+      throw new Error('Zap data is not ready');
+    }
+    const { hash } = await sendZapAsync({
+      to: zapsData.zapsData.zapCalldata.to as Address,
+      data: zapsData.zapsData.zapCalldata.calldata as `0x${string}`,
+    });
+    return hash;
+  }, [sendZapAsync, zapsData]);
+
   const onButtonClick = useCallback(async () => {
     if (isLoading) {
+      return;
+    }
+    if (isAllowanceEnough && selectedVaultToken?.id !== 'lp' && (!zapsData?.zapsData.zapCalldata.to || !zapsData?.zapsData.zapCalldata.calldata)) {
+      toast({
+        variant: 'destructive',
+        title: 'Transaction data is not ready.',
+        description: 'Please wait a moment and try again.',
+      });
       return;
     }
     setIsLoading(true);
     try {
       const hash = await (isAllowanceEnough
         ? selectedVaultToken?.id === 'lp'
-          ? withdraw
-          : sendZapAsync
-        : approve)();
+          ? withdraw()
+          : withdrawZap()
+        : approve());
       if (!hash) {
         return;
       }
@@ -284,10 +300,11 @@ export const Withdraw = ({
     isAllowanceEnough,
     selectedVaultToken,
     withdraw,
-    sendZapAsync,
+    withdrawZap,
     approve,
     publicClient,
     toast,
+    zapsData,
   ]);
 
   const onSwitchNetworkClick = useCallback(async () => {
