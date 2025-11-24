@@ -295,6 +295,24 @@ export const EarnWithdraw = ({
     handleRefresh();
   }, [handleRefresh]);
 
+  // Auto-fill balance on wallet/position change
+  useEffect(() => {
+    if (!isConnected || !address || !positionCostParsed) {
+      return;
+    }
+
+    // Only auto-fill if user hasn't started editing
+    if (isUserEditing) {
+      return;
+    }
+
+    if (positionCostParsed > 0) {
+      // positionCostParsed is already rounded to 6 decimals
+      setAmountToWithdraw(positionCostParsed);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected, address, positionCostParsed, isUserEditing]);
+
   return (
     <div className="flex flex-col gap-[16px] rounded-b-[12px] rounded-tr-[12px] bg-white bg-opacity-11 p-[16px]">
       <Collapsible className="flex flex-col gap-4" open={isCollapsibleOpen}>

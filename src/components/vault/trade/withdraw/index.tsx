@@ -380,6 +380,28 @@ export const Withdraw = ({
     handleRefresh();
   }, [handleRefresh]);
 
+  // Auto-fill balance on wallet/token change
+  useEffect(() => {
+    if (!isConnected || !address || !available) {
+      return;
+    }
+
+    // Only auto-fill if user hasn't started editing
+    if (isUserEditing) {
+      return;
+    }
+
+    const fullBalance = parseFloat(formatUnits(available, displayDecimals));
+    if (fullBalance > 0) {
+      // Round to 6 decimals
+      const parsedBalance = Math.floor(fullBalance * 1000000) / 1000000;
+      const maxAmount = price ? parsedBalance * price : parsedBalance;
+      const roundedValue = Math.floor(maxAmount * 1000000) / 1000000;
+      setAmountToWithdraw(roundedValue);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected, address, available, displayDecimals, price, isUserEditing]);
+
   return (
     <div className="flex flex-col gap-[16px] rounded-b-[12px] rounded-tr-[12px] bg-white bg-opacity-11 p-[16px]">
       <Collapsible className="flex flex-col gap-4" open={isCollapsibleOpen}>
