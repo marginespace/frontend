@@ -63,6 +63,7 @@ export const Withdraw = ({
 
   const [amountToWithdrawInput, setAmountToWithdraw] = useState(0);
   const [amountToWithdraw] = useDebounce(amountToWithdrawInput, 1000);
+  const [isUserEditing, setIsUserEditing] = useState(false);
   const chainVault = apiChainToWagmi(vault.chain);
   const chainId = chainVault.id;
   const publicClient = usePublicClient({ chainId });
@@ -85,6 +86,7 @@ export const Withdraw = ({
     (value: string) => {
       setIsCollapsibleOpen(false);
       setSelectedToken(value);
+      setIsUserEditing(false); // Сброс при смене токена
     },
     [setSelectedToken],
   );
@@ -148,10 +150,13 @@ export const Withdraw = ({
     // Округлить до 6 знаков после запятой
     const roundedValue = Math.floor(maxAmount * 1000000) / 1000000;
     setAmountToWithdraw(roundedValue);
+    setIsUserEditing(true); // MAX тоже считается редактированием
   }, [available, displayDecimals, price]);
 
   const onWithdrawInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      // Пользователь начал редактировать
+      setIsUserEditing(true);
       setIsZapsLoading(true);
       let value = parseFloat(e.target.value);
       if (isNaN(value)) {
