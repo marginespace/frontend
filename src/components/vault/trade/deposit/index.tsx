@@ -64,6 +64,7 @@ export const Deposit = ({
   const vaultAddress = vault.earnContractAddress as `0x${string}`;
   const [amountToDepositInput, setAmountToDeposit] = useState(0);
   const [amountToDeposit] = useDebounce(amountToDepositInput, 1000);
+  const [isUserEditing, setIsUserEditing] = useState(false);
 
   const chainVault = apiChainToWagmi(vault.chain);
   const chainId = chainVault.id;
@@ -141,6 +142,7 @@ export const Deposit = ({
     // Округлить до 6 знаков после запятой
     const roundedValue = Math.floor(maxValue * 1000000) / 1000000;
     setAmountToDeposit(roundedValue);
+    setIsUserEditing(true); // MAX тоже считается редактированием
   }, [selectedVaultToken]);
 
   // Автоматически выбрать токен с приоритетом: стейблкоин > 1 → ETH → остальные стейблкоины → максимальный баланс
@@ -203,19 +205,33 @@ export const Deposit = ({
     }
 
     if (selectedTokenToUse && selectedTokenToUse.balance > 0n) {
+      const balanceValue = parseFloat(
+        formatUnits(
+          selectedTokenToUse.balance,
+          selectedTokenToUse.decimals ?? 18,
+        ),
+      );
+
       // Установить выбранный токен
       if (selectedTokenToUse.symbol !== selectedToken) {
         setSelectedToken(selectedTokenToUse.symbol);
+        setIsUserEditing(false); // Сброс при смене токена
       }
 
-      // НЕ заполняем поле автоматически - только при нажатии MAX
-      // Убрано автозаполнение чтобы не мешать ручному вводу
+      // Заполнить поле ТОЛЬКО если пользователь НЕ редактирует
+      if (balanceValue > 0 && !isUserEditing) {
+        // Округлить до 6 знаков после запятой
+        const roundedValue = Math.floor(balanceValue * 1000000) / 1000000;
+        setAmountToDeposit(roundedValue);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, address, vaultBalances]);
 
   const onDepositInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      // Пользователь начал редактировать - больше не автозаполнять
+      setIsUserEditing(true);
       setIsZapsLoading(true);
       let value = parseFloat(e.target.value);
       if (isNaN(value)) {
