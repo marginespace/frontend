@@ -145,9 +145,11 @@ export const Withdraw = ({
 
   const onMaxClick = useCallback(() => {
     if (!available) return;
-    const parsedBalance = +formatUnits(available, displayDecimals);
+    // Сразу округляем parsedBalance до 6 знаков
+    const fullBalance = +formatUnits(available, displayDecimals);
+    const parsedBalance = Math.floor(fullBalance * 1000000) / 1000000;
     const maxAmount = price ? parsedBalance * price : parsedBalance;
-    // Округлить до 6 знаков после запятой
+    // Округлить результат до 6 знаков
     const roundedValue = Math.floor(maxAmount * 1000000) / 1000000;
     setAmountToWithdraw(roundedValue);
     setIsUserEditing(true); // MAX тоже считается редактированием
@@ -167,12 +169,15 @@ export const Withdraw = ({
       value = Math.floor(value * 1000000) / 1000000;
 
       if (available) {
-        const parsedBalance = +formatUnits(available, displayDecimals);
+        // Округляем parsedBalance сразу
+        const fullBalance = +formatUnits(available, displayDecimals);
+        const parsedBalance = Math.floor(fullBalance * 1000000) / 1000000;
         const maxAmount = price ? parsedBalance * price : parsedBalance;
+        // Округляем maxAmount до 6 знаков
+        const roundedMaxAmount = Math.floor(maxAmount * 1000000) / 1000000;
 
-        if (value > maxAmount) {
-          // ❗ ВАЖНО: Округлить maxAmount до 6 знаков!
-          value = Math.floor(maxAmount * 1000000) / 1000000;
+        if (value > roundedMaxAmount) {
+          value = roundedMaxAmount;
         }
       }
 

@@ -124,12 +124,13 @@ export const Deposit = ({
   });
 
   const parsedBalance = useMemo(() => {
-    return selectedVaultToken
-      ? +formatUnits(
-          selectedVaultToken.balance ?? 0,
-          selectedVaultToken.decimals ?? 18,
-        )
-      : 0;
+    if (!selectedVaultToken) return 0;
+    const fullBalance = +formatUnits(
+      selectedVaultToken.balance ?? 0,
+      selectedVaultToken.decimals ?? 18,
+    );
+    // ❗ ВСЕГДА округляем до 6 знаков!
+    return Math.floor(fullBalance * 1000000) / 1000000;
   }, [selectedVaultToken]);
 
   const onMaxClick = useCallback(() => {
@@ -243,8 +244,8 @@ export const Deposit = ({
 
       if (selectedVaultToken) {
         if (value > parsedBalance) {
-          // ❗ ВАЖНО: Округлить parsedBalance до 6 знаков!
-          value = Math.floor(parsedBalance * 1000000) / 1000000;
+          // parsedBalance уже округлен до 6 знаков в useMemo
+          value = parsedBalance;
         }
       }
 
