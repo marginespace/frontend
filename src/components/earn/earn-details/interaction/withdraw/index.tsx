@@ -157,18 +157,26 @@ export const EarnWithdraw = ({
     [availableParsed],
   );
 
-  const { sendTransactionAsync: sendZapAsync } = useSendTransaction({
-    to: cube.earn,
-    data: zapsData?.calldata,
-  });
+  const { sendTransactionAsync: sendZapAsync } = useSendTransaction();
 
   const onButtonClick = useCallback(async () => {
     if (isLoading) {
       return;
     }
+    if (!zapsData?.calldata || !cube.earn) {
+      toast({
+        variant: 'destructive',
+        title: 'Transaction data is not ready.',
+        description: 'Please wait a moment and try again.',
+      });
+      return;
+    }
     setIsLoading(true);
     try {
-      const hash = await sendZapAsync();
+      const hash = await sendZapAsync({
+        to: cube.earn as Address,
+        data: zapsData.calldata,
+      });
       if (!hash) {
         return;
       }
@@ -185,7 +193,7 @@ export const EarnWithdraw = ({
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, sendZapAsync, publicClient, toast]);
+  }, [isLoading, sendZapAsync, publicClient, toast, zapsData, cube.earn]);
 
   const onSwitchNetworkClick = useCallback(async () => {
     setIsLoading(true);

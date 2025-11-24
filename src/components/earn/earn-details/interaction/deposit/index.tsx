@@ -272,11 +272,7 @@ export const EarnDeposit = ({
     [selectedVaultToken, parsedBalance],
   );
 
-  const { sendTransactionAsync: sendZapAsync } = useSendTransaction({
-    to: cube.earn && zapsData?.calldata ? (cube.earn as Address) : undefined,
-    data: zapsData?.calldata,
-    value: zapsData?.value,
-  });
+  const { sendTransactionAsync: sendZapAsync } = useSendTransaction();
 
   const approve = useCallback(async () => {
     try {
@@ -308,11 +304,23 @@ export const EarnDeposit = ({
     earnAddress,
   ]);
 
+  const deposit = useCallback(async () => {
+    if (!zapsData?.calldata || !cube.earn) {
+      throw new Error('Transaction data is not ready');
+    }
+    const { hash } = await sendZapAsync({
+      to: cube.earn as Address,
+      data: zapsData.calldata,
+      value: zapsData.value,
+    });
+    return hash;
+  }, [sendZapAsync, zapsData, cube.earn]);
+
   const onButtonClick = useCallback(async () => {
     if (isLoading) {
       return;
     }
-    if (isAllowanceEnough && (!sendZapAsync || !zapsData?.calldata || !cube.earn)) {
+    if (isAllowanceEnough && (!zapsData?.calldata || !cube.earn)) {
       toast({
         variant: 'destructive',
         title: 'Transaction data is not ready.',
@@ -322,7 +330,7 @@ export const EarnDeposit = ({
     }
     setIsLoading(true);
     try {
-      const hash = await (isAllowanceEnough ? sendZapAsync : approve)();
+      const hash = await (isAllowanceEnough ? deposit() : approve());
       if (!hash) {
         return;
       }
@@ -342,7 +350,7 @@ export const EarnDeposit = ({
   }, [
     isLoading,
     isAllowanceEnough,
-    sendZapAsync,
+    deposit,
     approve,
     publicClient,
     toast,
