@@ -85,14 +85,20 @@ export const withdrawEarn = async ({
   let oneInchSwap: Awaited<ReturnType<typeof oneInchEstimate>> | undefined;
   
   if (stable !== tokenTo) {
-    // Validate amount is positive and not too small
+    // Validate amount is positive
     if (stableExpectedWithSlippage <= BigInt(0)) {
       throw new Error('Withdrawal amount is too small or invalid');
     }
     
-    const minAmount = BigInt(100000000000000); // ~0.0001 for 18 decimal tokens
+    // Minimum ~$0.01 worth (adjusted for different decimals)
+    // For 6 decimals (USDC): 10000 = $0.01
+    // For 18 decimals: 10000000000000000 = $0.01
+    const minAmount = cube.stableDecimals === 6 
+      ? BigInt(10000) 
+      : BigInt(10000000000000000);
+    
     if (stableExpectedWithSlippage < minAmount) {
-      throw new Error('Withdrawal amount is too small. Please increase the amount or withdraw to stable token.');
+      throw new Error('Withdrawal amount is too small (min ~$0.01). Please increase the amount or withdraw to stable token.');
     }
     
     try {
