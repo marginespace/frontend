@@ -171,7 +171,8 @@ export const Withdraw = ({
         const maxAmount = price ? parsedBalance * price : parsedBalance;
 
         if (value > maxAmount) {
-          value = maxAmount;
+          // ❗ ВАЖНО: Округлить maxAmount до 6 знаков!
+          value = Math.floor(maxAmount * 1000000) / 1000000;
         }
       }
 

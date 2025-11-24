@@ -243,7 +243,8 @@ export const Deposit = ({
 
       if (selectedVaultToken) {
         if (value > parsedBalance) {
-          value = parsedBalance;
+          // ❗ ВАЖНО: Округлить parsedBalance до 6 знаков!
+          value = Math.floor(parsedBalance * 1000000) / 1000000;
         }
       }
 
