@@ -132,14 +132,15 @@ export const Deposit = ({
   }, [selectedVaultToken]);
 
   const onMaxClick = useCallback(() => {
-    setAmountToDeposit(
-      parseFloat(
-        formatUnits(
-          selectedVaultToken?.balance ?? BigInt(0),
-          selectedVaultToken?.decimals ?? 18,
-        ),
+    const maxValue = parseFloat(
+      formatUnits(
+        selectedVaultToken?.balance ?? BigInt(0),
+        selectedVaultToken?.decimals ?? 18,
       ),
     );
+    // Округлить до 6 знаков после запятой
+    const roundedValue = Math.floor(maxValue * 1000000) / 1000000;
+    setAmountToDeposit(roundedValue);
   }, [selectedVaultToken]);
 
   // Автоматически выбрать токен с приоритетом: стейблкоин > 1 → ETH → остальные стейблкоины → максимальный баланс
@@ -202,22 +203,13 @@ export const Deposit = ({
     }
 
     if (selectedTokenToUse && selectedTokenToUse.balance > 0n) {
-      const balanceValue = parseFloat(
-        formatUnits(
-          selectedTokenToUse.balance,
-          selectedTokenToUse.decimals ?? 18,
-        ),
-      );
-
       // Установить выбранный токен
       if (selectedTokenToUse.symbol !== selectedToken) {
         setSelectedToken(selectedTokenToUse.symbol);
       }
 
-      // Заполнить поле его балансом
-      if (balanceValue > 0) {
-        setAmountToDeposit(balanceValue);
-      }
+      // НЕ заполняем поле автоматически - только при нажатии MAX
+      // Убрано автозаполнение чтобы не мешать ручному вводу
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, address, vaultBalances]);
@@ -229,6 +221,9 @@ export const Deposit = ({
       if (isNaN(value)) {
         return setAmountToDeposit(0);
       }
+
+      // Ограничить до 6 знаков после запятой
+      value = Math.floor(value * 1000000) / 1000000;
 
       if (selectedVaultToken) {
         if (value > parsedBalance) {
@@ -430,7 +425,7 @@ export const Deposit = ({
                   isMounted && selectedVaultToken?.decimals
                     ? selectedVaultToken.decimals
                     : 18,
-                  5,
+                  6,
                 )}
               </div>
               <div>Select token</div>

@@ -145,7 +145,9 @@ export const Withdraw = ({
     if (!available) return;
     const parsedBalance = +formatUnits(available, displayDecimals);
     const maxAmount = price ? parsedBalance * price : parsedBalance;
-    setAmountToWithdraw(maxAmount);
+    // Округлить до 6 знаков после запятой
+    const roundedValue = Math.floor(maxAmount * 1000000) / 1000000;
+    setAmountToWithdraw(roundedValue);
   }, [available, displayDecimals, price]);
 
   const onWithdrawInputChange = useCallback(
@@ -155,6 +157,10 @@ export const Withdraw = ({
       if (isNaN(value)) {
         return setAmountToWithdraw(0);
       }
+
+      // Ограничить до 6 знаков после запятой
+      value = Math.floor(value * 1000000) / 1000000;
+
       if (available) {
         const parsedBalance = +formatUnits(available, displayDecimals);
         const maxAmount = price ? parsedBalance * price : parsedBalance;
@@ -363,7 +369,7 @@ export const Withdraw = ({
                     isMounted && available ? available : BigInt(0),
                     isMounted && decimals ? displayDecimals : 18,
                   )
-              ).toFixed(5)}
+              ).toFixed(6)}
             </div>
             <div>Select token</div>
           </div>
