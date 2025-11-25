@@ -85,14 +85,9 @@ export const withdrawEarn = async ({
   let oneInchSwap: Awaited<ReturnType<typeof oneInchEstimate>> | undefined;
   
   if (stable !== tokenTo) {
-    // Validate amount is positive and not too small
+    // Validate amount is positive
     if (stableExpectedWithSlippage <= BigInt(0)) {
       throw new Error('Withdrawal amount is too small or invalid');
-    }
-    
-    const minAmount = BigInt(100000000000000); // ~0.0001 for 18 decimal tokens
-    if (stableExpectedWithSlippage < minAmount) {
-      throw new Error('Withdrawal amount is too small. Please increase the amount or withdraw to stable token.');
     }
     
     try {

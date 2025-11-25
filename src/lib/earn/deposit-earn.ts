@@ -48,13 +48,6 @@ export const depositEarn = async ({
   let oneInchSwap: Awaited<ReturnType<typeof oneInchEstimate>> | undefined;
   
   if (tokenIn !== tokenTo) {
-    // Check if amount is too small for 1inch (minimum ~$0.1 worth)
-    // This helps avoid "insufficient liquidity" errors
-    const minAmount = BigInt(100000000000000); // ~0.0001 for 18 decimal tokens
-    if (tokenInAmount < minAmount) {
-      throw new Error('Deposit amount is too small. Please increase the amount or use the stable token directly.');
-    }
-    
     try {
       oneInchSwap = await oneInchEstimate({
           src: tokenIn,
