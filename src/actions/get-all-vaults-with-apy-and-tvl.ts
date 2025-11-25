@@ -179,10 +179,13 @@ export const getAllVaultsWithApyAndTvl = async (
 
       const byRetired = vault.status === 'eol';
 
+      const vaultDepositInfo = vaultsWhereAddressDeposited[vault.chain]?.[
+        vault.earnContractAddress
+      ];
+      const hasBalance = vaultDepositInfo && BigInt(vaultDepositInfo.balance) > BigInt(0);
+      
       const byMyVaults = filter?.address
-        ? !!vaultsWhereAddressDeposited[vault.chain]?.[
-            vault.earnContractAddress
-          ]
+        ? hasBalance
         : true;
 
       return (
