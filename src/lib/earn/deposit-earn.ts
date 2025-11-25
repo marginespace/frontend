@@ -60,7 +60,6 @@ export const depositEarn = async ({
           slippage: parseFloat(formatUnits(slippage, 18)),
       });
     } catch (error) {
-      console.error('[depositEarn] 1inch API error:', error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       
       if (errorMessage.includes('insufficient liquidity')) {

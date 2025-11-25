@@ -92,17 +92,16 @@ export const withdrawEarn = async ({
     
     try {
       oneInchSwap = await oneInchEstimate({
-        src: stable,
-        dst: tokenTo,
-        amount: stableExpectedWithSlippage,
-        from: cube.earn,
-        receiver: cube.earn,
-        network: cube.network,
-        disableEstimate: true,
-        slippage: parseFloat(formatUnits(slippage, 18)),
+          src: stable,
+          dst: tokenTo,
+          amount: stableExpectedWithSlippage,
+          from: cube.earn,
+          receiver: cube.earn,
+          network: cube.network,
+          disableEstimate: true,
+          slippage: parseFloat(formatUnits(slippage, 18)),
       });
     } catch (error) {
-      console.error('[withdrawEarn] 1inch API error:', error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       
       if (errorMessage.includes('insufficient liquidity')) {
