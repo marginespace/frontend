@@ -82,22 +82,33 @@ export const getCubesDashboardInfo = async (
   const settled = await Promise.allSettled(
     Object.entries(cubesByChain).map(async ([chain, cubes]) => {
       const publicClient = apiChainToPublicClient(chain);
-      const nows = await publicClient.multicall({
-        contracts: cubes.map((cube) => ({
-          abi: earnPoolCheckerAbi,
-          address: cube.gelatoChecker as Address,
-          functionName: 'stableReceivedStopLoss',
-          args: [cube.earn as Address, address],
-        })),
-      });
-      const positions = await publicClient.multicall({
-        contracts: cubes.map((cube) => ({
-          abi: earnAbi,
-          address: cube.earn as Address,
-          functionName: 'positions',
-          args: [address],
-        })),
-      });
+      
+      let nows: any[] = [];
+      let positions: any[] = [];
+      
+      try {
+        nows = await publicClient.multicall({
+          contracts: cubes.map((cube) => ({
+            abi: earnPoolCheckerAbi,
+            address: cube.gelatoChecker as Address,
+            functionName: 'stableReceivedStopLoss',
+            args: [cube.earn as Address, address],
+          })),
+        });
+        positions = await publicClient.multicall({
+          contracts: cubes.map((cube) => ({
+            abi: earnAbi,
+            address: cube.earn as Address,
+            functionName: 'positions',
+            args: [address],
+          })),
+        });
+      } catch (error) {
+        console.error(`[getCubesDashboardInfo] Multicall error for ${chain}:`, error);
+        // Return empty arrays - will result in balance = undefined
+        nows = cubes.map(() => ({ result: [BigInt(0)] }));
+        positions = cubes.map(() => ({ result: [BigInt(0), BigInt(0), BigInt(0), BigInt(0), BigInt(0)] }));
+      }
 
       // For dashboard, use recent blocks instead of earliestBlocks to avoid RPC range errors
       // Start with 50000 blocks (approximately 1-2 weeks) instead of very old blocks
@@ -107,37 +118,47 @@ export const getCubesDashboardInfo = async (
 
       const client = createApolloClient(chain);
 
-      const logs = await client.query({
-        query: gql`
-          query MyQuery {
-            earnpoolDeposits(where: {user: "${address}"})  {
-              amountStable
-              blockNumber
-              blockTimestamp
-              earn
-              id
-              stopLossUsd
-              timestamp
-              totalSize
-              transactionHash
-              user
+      let earnpoolDeposits: any[] = [];
+      let earnpoolWithdraws: any[] = [];
+      
+      try {
+        const logs = await client.query({
+          query: gql`
+            query MyQuery {
+              earnpoolDeposits(where: {user: "${address}"})  {
+                amountStable
+                blockNumber
+                blockTimestamp
+                earn
+                id
+                stopLossUsd
+                timestamp
+                totalSize
+                transactionHash
+                user
+              }
+              earnpoolWithdraws(where: {user: "${address}"})  {
+                user
+                transactionHash
+                totalSize
+                timestamp
+                stopLossUsd
+                id
+                blockTimestamp
+                earn
+                blockNumber
+                amountStable
+              }
             }
-            earnpoolWithdraws(where: {user: "${address}"})  {
-              user
-              transactionHash
-              totalSize
-              timestamp
-              stopLossUsd
-              id
-              blockTimestamp
-              earn
-              blockNumber
-              amountStable
-            }
-          }
-        `,
-      });
-      const { earnpoolDeposits, earnpoolWithdraws } = logs.data as any;
+          `,
+        });
+        const data = logs.data as any;
+        earnpoolDeposits = data?.earnpoolDeposits ?? [];
+        earnpoolWithdraws = data?.earnpoolWithdraws ?? [];
+      } catch (error) {
+        console.error(`[getCubesDashboardInfo] The Graph query error for ${chain}:`, error);
+        // Continue with empty arrays - we'll use on-chain data from positions
+      }
 
       return [
         chain,
@@ -372,7 +393,14 @@ export const getCubesDashboardInfo = async (
   );
 
   const mapped = settled
-    .map((promise) => (promise.status === 'fulfilled' ? promise.value : null))
+    .map((promise) => {
+      if (promise.status === 'fulfilled') {
+        return promise.value;
+      } else {
+        console.error('[getCubesDashboardInfo] Error for chain:', promise.reason);
+        return null;
+      }
+    })
     .filter((value) => value !== null) as (readonly [
     string,
     { [p: string]: CubeDashboardInfoTuple[1] },

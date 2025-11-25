@@ -145,8 +145,14 @@ export const getAllCubes = async (
               .includes(vault.platformId.toLowerCase()),
           );
 
+        // Show strategy if:
+        // 1. No address filter (show all)
+        // 2. Has balance > 0 (dashboard.now > 0)
+        // 3. Dashboard data exists for this network (to show strategies even if The Graph is down)
+        const hasBalance = cube.dashboard.now > 0;
+        const hasDashboardData = cubesDashboard[cube.network]?.[cube.earn as Address] !== undefined;
         const byMyVaults = filter?.address
-          ? !!cubesDashboard[cube.network]?.[cube.earn as Address]?.balance
+          ? hasBalance || hasDashboardData
           : true;
 
         return bySearch && byChain && byPlatform && byMyVaults;
