@@ -184,13 +184,25 @@ export const getCubesDashboardInfo = async (
                     blockNumber,
                     transactionHash,
                   }) => {
-                    const price = await publicClient.readContract({
-                      abi: priceAggregatorAbi,
-                      address: cube.priceAggregator as Address,
-                      functionName: 'getPrice',
-                      args: [cube.stableAddress as Address],
-                      blockNumber: BigInt(blockNumber) ?? undefined,
-                    });
+                    let price: bigint;
+                    try {
+                      price = await publicClient.readContract({
+                        abi: priceAggregatorAbi,
+                        address: cube.priceAggregator as Address,
+                        functionName: 'getPrice',
+                        args: [cube.stableAddress as Address],
+                        blockNumber: BigInt(blockNumber) ?? undefined,
+                      });
+                    } catch (error) {
+                      // If historical state is not available, use current block
+                      console.warn(`[getCubesDashboardInfo] Historical price not available for block ${blockNumber}, using current block`);
+                      price = await publicClient.readContract({
+                        abi: priceAggregatorAbi,
+                        address: cube.priceAggregator as Address,
+                        functionName: 'getPrice',
+                        args: [cube.stableAddress as Address],
+                      });
+                    }
                     const totalSizeNumber = +formatUnits(
                       BigInt(totalSize),
                       cube.stableDecimals,
@@ -206,19 +218,37 @@ export const getCubesDashboardInfo = async (
                         ? amountStableNumber / totalSizeNumber
                         : 1;
 
-                    const vaultsDeposits = await publicClient.multicall({
-                      contracts: cube.vaults.map((vault) => ({
-                        abi: earnAbi,
-                        address: cube.earn as Address,
-                        functionName: 'vaultDeposited',
-                        args: [
-                          address,
-                          vaults[vault.vaultId].earnContractAddress as Address,
-                        ],
-                      })),
-                      allowFailure: false,
-                      blockNumber: BigInt(blockNumber) ?? undefined,
-                    });
+                    let vaultsDeposits: bigint[];
+                    try {
+                      vaultsDeposits = await publicClient.multicall({
+                        contracts: cube.vaults.map((vault) => ({
+                          abi: earnAbi,
+                          address: cube.earn as Address,
+                          functionName: 'vaultDeposited',
+                          args: [
+                            address,
+                            vaults[vault.vaultId].earnContractAddress as Address,
+                          ],
+                        })),
+                        allowFailure: false,
+                        blockNumber: BigInt(blockNumber) ?? undefined,
+                      });
+                    } catch (error) {
+                      // If historical state is not available, use current block
+                      console.warn(`[getCubesDashboardInfo] Historical vault deposits not available for block ${blockNumber}, using current block`);
+                      vaultsDeposits = await publicClient.multicall({
+                        contracts: cube.vaults.map((vault) => ({
+                          abi: earnAbi,
+                          address: cube.earn as Address,
+                          functionName: 'vaultDeposited',
+                          args: [
+                            address,
+                            vaults[vault.vaultId].earnContractAddress as Address,
+                          ],
+                        })),
+                        allowFailure: false,
+                      });
+                    }
 
                     const actionsMap = cube.vaults.reduce(
                       (acc, vault, index) => {
@@ -260,13 +290,25 @@ export const getCubesDashboardInfo = async (
                     blockNumber,
                     transactionHash,
                   }) => {
-                    const price = await publicClient.readContract({
-                      abi: priceAggregatorAbi,
-                      address: cube.priceAggregator as Address,
-                      functionName: 'getPrice',
-                      args: [cube.stableAddress as Address],
-                      blockNumber: BigInt(blockNumber) ?? undefined,
-                    });
+                    let price: bigint;
+                    try {
+                      price = await publicClient.readContract({
+                        abi: priceAggregatorAbi,
+                        address: cube.priceAggregator as Address,
+                        functionName: 'getPrice',
+                        args: [cube.stableAddress as Address],
+                        blockNumber: BigInt(blockNumber) ?? undefined,
+                      });
+                    } catch (error) {
+                      // If historical state is not available, use current block
+                      console.warn(`[getCubesDashboardInfo] Historical price not available for block ${blockNumber}, using current block`);
+                      price = await publicClient.readContract({
+                        abi: priceAggregatorAbi,
+                        address: cube.priceAggregator as Address,
+                        functionName: 'getPrice',
+                        args: [cube.stableAddress as Address],
+                      });
+                    }
                     const totalSizeNumber = +formatUnits(
                       BigInt(totalSize),
                       cube.stableDecimals,
@@ -281,19 +323,37 @@ export const getCubesDashboardInfo = async (
                         ? amountStableNumber / totalSizeNumber
                         : 1;
 
-                    const vaultsDeposits = await publicClient.multicall({
-                      contracts: cube.vaults.map((vault) => ({
-                        abi: earnAbi,
-                        address: cube.earn as Address,
-                        functionName: 'vaultDeposited',
-                        args: [
-                          address,
-                          vaults[vault.vaultId].earnContractAddress as Address,
-                        ],
-                      })),
-                      allowFailure: false,
-                      blockNumber: BigInt(blockNumber) ?? undefined,
-                    });
+                    let vaultsDeposits: bigint[];
+                    try {
+                      vaultsDeposits = await publicClient.multicall({
+                        contracts: cube.vaults.map((vault) => ({
+                          abi: earnAbi,
+                          address: cube.earn as Address,
+                          functionName: 'vaultDeposited',
+                          args: [
+                            address,
+                            vaults[vault.vaultId].earnContractAddress as Address,
+                          ],
+                        })),
+                        allowFailure: false,
+                        blockNumber: BigInt(blockNumber) ?? undefined,
+                      });
+                    } catch (error) {
+                      // If historical state is not available, use current block
+                      console.warn(`[getCubesDashboardInfo] Historical vault deposits not available for block ${blockNumber}, using current block`);
+                      vaultsDeposits = await publicClient.multicall({
+                        contracts: cube.vaults.map((vault) => ({
+                          abi: earnAbi,
+                          address: cube.earn as Address,
+                          functionName: 'vaultDeposited',
+                          args: [
+                            address,
+                            vaults[vault.vaultId].earnContractAddress as Address,
+                          ],
+                        })),
+                        allowFailure: false,
+                      });
+                    }
 
                     const actionsMap = cube.vaults.reduce(
                       (acc, vault, index) => {
