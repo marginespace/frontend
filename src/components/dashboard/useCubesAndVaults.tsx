@@ -18,7 +18,13 @@ export function useCubesAndVaults(addressFromUrl: string) {
 
     const [fetchedCubes, fetchedVaultsFromCubes] = data;
     setCubes(fetchedCubes);
-    setVaults(fetchedVaultsFromCubes.filter((vault) => vault.deposited > 0));
+    setVaults(
+      fetchedVaultsFromCubes.filter(
+        (vault) =>
+          vault.deposited > 0 &&
+          BigInt(vault.dashboard.depositedInRaw || '0') > BigInt(0),
+      ),
+    );
   }, [data]);
 
   const usedBefore = vaults.length > 0 || cubes.length > 0;
