@@ -184,7 +184,9 @@ export const getAllVaultsWithApyAndTvl = async (
       ];
       const hasBalance = vaultDepositInfo && BigInt(vaultDepositInfo.balance) > BigInt(0);
       
-      const byMyVaults = filter?.address
+      // Check if we have an address filter (either from filter or addressFromCube)
+      const hasAddressFilter = !!(filter?.address || addressFromCube);
+      const byMyVaults = hasAddressFilter
         ? hasBalance
         : true;
 
@@ -250,22 +252,22 @@ export const getAllVaultsWithApyAndTvl = async (
           ...vault,
           zapsSupported,
           isMultiToken,
-          deposited: vaultsWhereAddressDeposited[vault.chain]?.[
-            vault.earnContractAddress
-          ]
-            ? parseFloat(
+          deposited: (() => {
+            const depositInfo = vaultsWhereAddressDeposited[vault.chain]?.[
+              vault.earnContractAddress
+            ];
+            if (!depositInfo || BigInt(depositInfo.balance) === BigInt(0)) {
+              return 0;
+            }
+            return (
+              parseFloat(
                 formatUnits(
-                  BigInt(
-                    vaultsWhereAddressDeposited[vault.chain][
-                      vault.earnContractAddress
-                    ].balance,
-                  ),
-                  vaultsWhereAddressDeposited[vault.chain][
-                    vault.earnContractAddress
-                  ].decimals,
+                  BigInt(depositInfo.balance),
+                  depositInfo.decimals,
                 ),
               ) * (vaultLps?.price ?? 0)
-            : 0,
+            );
+          })(),
           dashboard: {
             depositedInRaw:
               vaultsWhereAddressDeposited[vault.chain]?.[
