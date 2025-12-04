@@ -53,7 +53,7 @@ export const withdrawEarn = async ({
     address: getAddress(cube.priceAggregator),
     publicClient: provider,
   });
-  const [percents, price, { result: stableExpected }, [, reserved]] =
+  const [percents, price, { result: stableExpected }, position] =
     await Promise.all([
       earn.read.PERCENTS_100(),
       priceAggregator.read.getPrice([getAddress(cube.stableAddress)]),
@@ -65,6 +65,11 @@ export const withdrawEarn = async ({
       ]),
       earn.read.positions([userAddress]),
     ]);
+  
+  // Extract position fields: [automationTaskId, reservedForAutomation, size, stopLossCost, stopLossPercent]
+  const reserved = position[1];
+  const positionSize = position[2];
+  
   const costAfterWithdraw = positionCost - withdrawUsd;
 
   const adjustedCost =
@@ -78,7 +83,22 @@ export const withdrawEarn = async ({
     calculatedStopLossCost < BigInt(0) ? BigInt(0) : calculatedStopLossCost;
 
   const stable = await earn.read.stable();
-  const stableWithoutReserved = stableExpected - reserved;
+  
+  // Check if this is a full withdrawal or stop loss is being set to 0
+  // In these cases, the contract will add back the reserved amount (see EarnPool.sol line 470)
+  // The contract checks: size - params.withdrawCost == 0 (exact match)
+  // We check the same condition, accounting for potential rounding by checking if difference is negligible
+  const remainingAfterWithdraw = positionSize > withdrawCost ? positionSize - withdrawCost : BigInt(0);
+  // Consider it a full withdrawal if remaining is 0 or very small (less than 1e12, accounting for rounding)
+  const isFullWithdrawal = remainingAfterWithdraw === BigInt(0) || remainingAfterWithdraw < BigInt(10 ** 12);
+  const isStopLossZero = stopLossCost === BigInt(0);
+  const shouldReservedBeReturned = (isFullWithdrawal || isStopLossZero) && reserved > BigInt(0);
+  
+  // If reserved should be returned by the contract, don't subtract it from stableExpected
+  // Otherwise, subtract it because it will remain reserved
+  const stableWithoutReserved = shouldReservedBeReturned 
+    ? stableExpected 
+    : stableExpected - reserved;
   const stableExpectedWithSlippage =
     stableWithoutReserved - (stableWithoutReserved * slippage) / percents;
   
