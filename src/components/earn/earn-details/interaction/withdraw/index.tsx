@@ -207,12 +207,50 @@ export const EarnWithdraw = ({
         18,
       );
 
-      const size = position
-        ? (position[2] * parsedAmountToWithdraw) / positionCost
-        : parseUnits(
-            amountToWithdraw.toString().replace(',', '.'),
-            cube.stableDecimals,
-          );
+      // Calculate size (withdrawCost) based on the proportion
+      // If positionCost is 0, we can't calculate proportion, so use direct conversion
+      let size: bigint;
+      let actualWithdrawUsd = parsedAmountToWithdraw; // Default to user's input
+      
+      if (position && positionCost > BigInt(0)) {
+        // Calculate the proportion: size = (positionSize * withdrawUsd) / positionCost
+        // But if user is withdrawing the full available amount (stableWithoutReservedUsd),
+        // we should treat it as a full withdrawal to ensure reserved amount is returned
+        const positionSize = position[2];
+        const calculatedSize = (positionSize * parsedAmountToWithdraw) / positionCost;
+        
+        // Check if user is withdrawing approximately the full available amount
+        // If so, set size = positionSize to ensure it's treated as a full withdrawal
+        // This ensures the reserved amount is returned (see EarnPool.sol line 419)
+        // We use a small tolerance (0.01%) to account for rounding
+        const tolerance = (parsedAmountToWithdraw * BigInt(1)) / BigInt(10000); // 0.01%
+        const isFullAvailableWithdrawal = 
+          parsedAmountToWithdraw >= available - tolerance && 
+          parsedAmountToWithdraw <= available + tolerance;
+        
+        if (isFullAvailableWithdrawal && positionSize > BigInt(0)) {
+          // User is withdrawing full available amount, treat as full withdrawal
+          // This ensures reserved amount is returned
+          size = positionSize;
+          // When doing full withdrawal, use positionCost (which includes reserved) for calculations
+          actualWithdrawUsd = positionCost;
+          console.log('[EarnWithdraw] Full available withdrawal detected, setting size to positionSize:', {
+            positionSize: positionSize.toString(),
+            available: available.toString(),
+            parsedAmountToWithdraw: parsedAmountToWithdraw.toString(),
+            positionCost: positionCost.toString(),
+            actualWithdrawUsd: actualWithdrawUsd.toString(),
+          });
+        } else {
+          size = calculatedSize;
+        }
+      } else {
+        // Fallback: direct conversion (shouldn't happen in normal flow)
+        size = parseUnits(
+          amountToWithdraw.toString().replace(',', '.'),
+          cube.stableDecimals,
+        );
+      }
       
       // Validate that size is not zero (this will be caught by withdrawEarn, but check early for better UX)
       if (size === BigInt(0) && parsedAmountToWithdraw > BigInt(0)) {
@@ -228,7 +266,7 @@ export const EarnWithdraw = ({
         stopLossCostPercent: position ? position[4] : BigInt(0),
         slippage: parseUnits(slippageValue.toString().replace(',', '.'), 18),
         positionCost,
-        withdrawUsd: parsedAmountToWithdraw,
+        withdrawUsd: actualWithdrawUsd,
         unwrapNative: selectedVaultToken.isNative,
       });
       setZapsData(data);
@@ -248,8 +286,25 @@ export const EarnWithdraw = ({
             console.warn('Withdrawal amount validation:', errorMessage);
           } else if (errorMessage.includes('insufficient liquidity')) {
             console.warn('1inch liquidity issue:', errorMessage);
+            toast({
+              variant: 'destructive',
+              title: 'Insufficient Liquidity',
+              description: 'Please try withdrawing to stable token instead.',
+            });
           } else if (errorMessage.includes('1inch') || errorMessage.includes('unavailable')) {
             console.warn('1inch API issue:', errorMessage);
+            toast({
+              variant: 'destructive',
+              title: 'Swap Service Unavailable',
+              description: 'Please try withdrawing to stable token or try again later.',
+            });
+          } else if (errorMessage.includes('Contract simulation failed') || errorMessage.includes('revert')) {
+            console.warn('Withdrawal amount validation:', errorMessage);
+            toast({
+              variant: 'destructive',
+              title: 'Withdrawal Error',
+              description: errorMessage,
+            });
           }
         }
       })
@@ -269,6 +324,7 @@ export const EarnWithdraw = ({
     amountToWithdraw,
     position,
     positionCost,
+    available,
     publicClient,
     slippageValue,
   ]);

@@ -184,15 +184,39 @@ export const withdrawEarn = async ({
   // We check the same condition, accounting for potential rounding by checking if difference is negligible
   const remainingAfterWithdraw = positionSize > withdrawCost ? positionSize - withdrawCost : BigInt(0);
   // Consider it a full withdrawal if remaining is 0 or very small (less than 1e12, accounting for rounding)
-  const isFullWithdrawal = remainingAfterWithdraw === BigInt(0) || remainingAfterWithdraw < BigInt(10 ** 12);
+  // BUT: The contract uses exact match (size - params.withdrawCost == 0), so we should be more strict
+  // However, due to rounding in calculations, we allow a small tolerance
+  const isFullWithdrawal = remainingAfterWithdraw === BigInt(0);
   const isStopLossZero = stopLossCost === BigInt(0);
   const shouldReservedBeReturned = (isFullWithdrawal || isStopLossZero) && reserved > BigInt(0);
   
+  // Log detailed information for debugging
+  console.log('[withdrawEarn] Reserved amount calculation:', {
+    positionSize: positionSize.toString(),
+    withdrawCost: withdrawCost.toString(),
+    remainingAfterWithdraw: remainingAfterWithdraw.toString(),
+    isFullWithdrawal,
+    stopLossCost: stopLossCost.toString(),
+    isStopLossZero,
+    reserved: reserved.toString(),
+    shouldReservedBeReturned,
+    stableExpected: stableExpected.toString(),
+  });
+  
   // If reserved should be returned by the contract, don't subtract it from stableExpected
   // Otherwise, subtract it because it will remain reserved
+  // NOTE: The contract's getWithdrawAmountOut already includes toWithdrawReserved in stableReceived
+  // when it's a full withdrawal or stopLossCost == 0, so we don't need to subtract it in those cases
   const stableWithoutReserved = shouldReservedBeReturned 
     ? stableExpected 
     : stableExpected - reserved;
+  
+  console.log('[withdrawEarn] Stable amount calculation:', {
+    stableExpected: stableExpected.toString(),
+    stableWithoutReserved: stableWithoutReserved.toString(),
+    reserved: reserved.toString(),
+  });
+  
   const stableExpectedWithSlippage =
     stableWithoutReserved - (stableWithoutReserved * slippage) / percents;
   
