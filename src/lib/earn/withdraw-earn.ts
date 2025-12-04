@@ -79,15 +79,24 @@ export const withdrawEarn = async ({
   // Check if withdrawCost is too small - this can cause partToWithdraw to be 0 in the contract
   // The contract calculates: partToWithdraw = (withdrawCost * PERCENTS_100) / size
   // If this results in 0, all amountToWithdraw will be 0, causing stableReceived = 0 and revert
-  // Minimum withdrawCost should be at least size / PERCENTS_100 to ensure partToWithdraw >= 1
-  // PERCENTS_100 is typically 100 * 10^18, so minWithdrawCost = positionSize / (100 * 10^18)
-  const minWithdrawCost = positionSize / percents;
+  // To ensure partToWithdraw >= 1, we need: (withdrawCost * PERCENTS_100) / size >= 1
+  // Which means: withdrawCost * PERCENTS_100 >= size
+  // Or: withdrawCost >= size / PERCENTS_100
+  // But due to integer division, we need: withdrawCost >= ceil(size / PERCENTS_100)
+  // Check if (withdrawCost * percents) < positionSize, which means partToWithdraw will be 0
+  const withdrawCostTimesPercents = withdrawCost * percents;
+  const partToWithdrawCheck = withdrawCostTimesPercents / positionSize;
   
-  // If withdrawCost is less than minimum and not zero, it will cause contract revert
-  if (withdrawCost > BigInt(0) && withdrawCost < minWithdrawCost && minWithdrawCost > BigInt(0)) {
+  console.log(`[withdrawEarn] Validation: withdrawCost=${withdrawCost}, positionSize=${positionSize}, percents=${percents}, partToWithdrawCheck=${partToWithdrawCheck}`);
+  
+  if (partToWithdrawCheck === BigInt(0) && withdrawCost > BigInt(0) && positionSize > BigInt(0)) {
+    // Calculate minimum withdrawCost needed: ceil(positionSize / percents)
+    // Add percents - 1 before division to round up
+    const minWithdrawCost = (positionSize + percents - BigInt(1)) / percents;
     const minWithdrawUsd = (minWithdrawCost * price) / BigInt(10 ** cube.stableDecimals);
     const minWithdrawFormatted = formatUnits(minWithdrawUsd, 18);
-    throw new Error(`Withdrawal amount is too small. Minimum withdrawal is approximately $${parseFloat(minWithdrawFormatted).toFixed(6)}. Please increase the withdrawal amount.`);
+    console.warn(`[withdrawEarn] Withdraw amount too small: withdrawCost=${withdrawCost}, minWithdrawCost=${minWithdrawCost}, minWithdrawUsd=$${minWithdrawFormatted}`);
+    throw new Error(`Withdrawal amount is too small. Minimum withdrawal is approximately $${parseFloat(minWithdrawFormatted).toFixed(6)}. The contract cannot process such a small amount due to rounding limitations.`);
   }
   
   // Also check if withdrawCost is suspiciously small (less than 1e12, which is 0.000001 tokens for 18 decimals)
@@ -139,11 +148,27 @@ export const withdrawEarn = async ({
       // Provide more specific error messages based on the error
       if (fallbackMessage.includes('revert') || fallbackMessage.includes('reverted')) {
         // Check if it's likely due to too small withdrawal amount
-        if (withdrawCost < minWithdrawCost && minWithdrawCost > BigInt(0)) {
+        // Recalculate partToWithdrawCheck to see if that's the issue
+        const withdrawCostTimesPercents = withdrawCost * percents;
+        const partToWithdrawCheckRecalc = withdrawCostTimesPercents / positionSize;
+        
+        if (partToWithdrawCheckRecalc === BigInt(0) && withdrawCost > BigInt(0) && positionSize > BigInt(0)) {
+          // Calculate minimum withdrawCost needed: ceil(positionSize / percents)
+          const minWithdrawCost = (positionSize + percents - BigInt(1)) / percents;
           const minWithdrawUsd = (minWithdrawCost * price) / BigInt(10 ** cube.stableDecimals);
           const minWithdrawFormatted = formatUnits(minWithdrawUsd, 18);
-          throw new Error(`Withdrawal amount is too small. Minimum withdrawal is approximately $${parseFloat(minWithdrawFormatted).toFixed(6)}. The contract cannot process such a small amount due to rounding limitations.`);
+          throw new Error(`Withdrawal amount is too small. Minimum withdrawal is approximately $${parseFloat(minWithdrawFormatted).toFixed(6)}. The contract cannot process such a small amount due to rounding limitations (partToWithdraw would be 0).`);
         }
+        
+        // Log additional info for debugging
+        console.error(`[withdrawEarn] Contract revert details:`, {
+          withdrawCost: withdrawCost.toString(),
+          positionSize: positionSize.toString(),
+          partToWithdrawCheck: partToWithdrawCheckRecalc.toString(),
+          stopLossCost: stopLossCost.toString(),
+          reserved: reserved.toString(),
+        });
+        
         throw new Error(`Contract simulation failed. This usually means the withdrawal amount is too small or there's an issue with the position. Please try a larger withdrawal amount or contact support if the problem persists.`);
       }
       
