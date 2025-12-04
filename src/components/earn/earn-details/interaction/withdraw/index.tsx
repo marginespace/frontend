@@ -213,6 +213,11 @@ export const EarnWithdraw = ({
             amountToWithdraw.toString().replace(',', '.'),
             cube.stableDecimals,
           );
+      
+      // Validate that size is not zero (this will be caught by withdrawEarn, but check early for better UX)
+      if (size === BigInt(0) && parsedAmountToWithdraw > BigInt(0)) {
+        throw new Error('Withdrawal amount is too small. Please increase the withdrawal amount.');
+      }
 
       const data = await withdrawEarn({
         cube,

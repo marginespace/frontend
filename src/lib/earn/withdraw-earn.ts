@@ -56,8 +56,8 @@ export const withdrawEarn = async ({
   
   // First, get position data to calculate stopLossCost
   const [percents, price, position] = await Promise.all([
-    earn.read.PERCENTS_100(),
-    priceAggregator.read.getPrice([getAddress(cube.stableAddress)]),
+      earn.read.PERCENTS_100(),
+      priceAggregator.read.getPrice([getAddress(cube.stableAddress)]),
     earn.read.positions([userAddress]),
   ]);
   
@@ -74,6 +74,27 @@ export const withdrawEarn = async ({
   }
   if (withdrawCost === BigInt(0)) {
     throw new Error('Withdraw amount must be greater than 0');
+  }
+  
+  // Check if withdrawCost is too small - this can cause partToWithdraw to be 0 in the contract
+  // The contract calculates: partToWithdraw = (withdrawCost * PERCENTS_100) / size
+  // If this results in 0, all amountToWithdraw will be 0, causing stableReceived = 0 and revert
+  // Minimum withdrawCost should be at least size / PERCENTS_100 to ensure partToWithdraw >= 1
+  // PERCENTS_100 is typically 100 * 10^18, so minWithdrawCost = positionSize / (100 * 10^18)
+  const minWithdrawCost = positionSize / percents;
+  
+  // If withdrawCost is less than minimum and not zero, it will cause contract revert
+  if (withdrawCost > BigInt(0) && withdrawCost < minWithdrawCost && minWithdrawCost > BigInt(0)) {
+    const minWithdrawUsd = (minWithdrawCost * price) / BigInt(10 ** cube.stableDecimals);
+    const minWithdrawFormatted = formatUnits(minWithdrawUsd, 18);
+    throw new Error(`Withdrawal amount is too small. Minimum withdrawal is approximately $${parseFloat(minWithdrawFormatted).toFixed(6)}. Please increase the withdrawal amount.`);
+  }
+  
+  // Also check if withdrawCost is suspiciously small (less than 1e12, which is 0.000001 tokens for 18 decimals)
+  // This is a heuristic to catch rounding errors
+  const suspiciouslySmall = BigInt(10 ** 12);
+  if (withdrawCost > BigInt(0) && withdrawCost < suspiciouslySmall && positionSize > suspiciouslySmall) {
+    console.warn(`[withdrawEarn] withdrawCost ${withdrawCost} seems suspiciously small compared to positionSize ${positionSize}`);
   }
   
   // Calculate approximate stopLossCost before calling getWithdrawAmountOut
@@ -114,6 +135,18 @@ export const withdrawEarn = async ({
       stableExpected = result.result;
     } catch (fallbackError) {
       const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+      
+      // Provide more specific error messages based on the error
+      if (fallbackMessage.includes('revert') || fallbackMessage.includes('reverted')) {
+        // Check if it's likely due to too small withdrawal amount
+        if (withdrawCost < minWithdrawCost && minWithdrawCost > BigInt(0)) {
+          const minWithdrawUsd = (minWithdrawCost * price) / BigInt(10 ** cube.stableDecimals);
+          const minWithdrawFormatted = formatUnits(minWithdrawUsd, 18);
+          throw new Error(`Withdrawal amount is too small. Minimum withdrawal is approximately $${parseFloat(minWithdrawFormatted).toFixed(6)}. The contract cannot process such a small amount due to rounding limitations.`);
+        }
+        throw new Error(`Contract simulation failed. This usually means the withdrawal amount is too small or there's an issue with the position. Please try a larger withdrawal amount or contact support if the problem persists.`);
+      }
+      
       throw new Error(`Failed to estimate withdrawal amount: ${fallbackMessage}. Please try a different withdrawal amount.`);
     }
   }
