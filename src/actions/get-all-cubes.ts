@@ -63,9 +63,20 @@ export const getAllCubes = async (
   try {
     const [vaults, cubesRaw, zapConfigs, chainConfigs] = await Promise.all([
       getAllVaultsWithApyAndTvl(true, undefined, filter?.address),
-      fetch(CUBES_URL, { cache: 'no-cache' }).then(
-        (response) => response.json() as Promise<Cube[]>,
-      ),
+      fetch(CUBES_URL, { cache: 'no-cache' })
+        .then(async (response) => {
+          if (!response.ok) {
+            const errorText = await response.text().catch(() => 'Unknown error');
+            console.error('[FRONTEND] getAllCubes: API error:', response.status, errorText);
+            throw new Error(`Failed to fetch cubes: ${response.status} ${errorText}`);
+          }
+          return response.json() as Promise<Cube[]>;
+        })
+        .catch((error) => {
+          console.error('[FRONTEND] getAllCubes: Fetch error:', error);
+          // Return empty array on error to prevent breaking the app
+          return [] as Cube[];
+        }),
       getAllZapConfigs(),
       getChainConfig(),
     ]);
@@ -77,7 +88,7 @@ export const getAllCubes = async (
       console.warn('[FRONTEND] getAllCubes: API returned non-array:', typeof cubesRaw, cubesRaw);
     }
 
-    console.log('[FRONTEND] getAllCubes: fetched', cubes.length, 'cubes from API');
+    console.log('[FRONTEND] getAllCubes: fetched', cubes.length, 'cubes from API', CUBES_URL);
 
     const vaultsMap = vaults.reduce(
       (map, vault) => {
@@ -145,8 +156,12 @@ export const getAllCubes = async (
               .includes(vault.platformId.toLowerCase()),
           );
 
+        // Show strategy if:
+        // 1. No address filter (show all)
+        // 2. Has balance > 0 (check both dashboard.now and received balance)
+        const hasBalance = cube.dashboard.now > 0 || (cube.received !== '0' && cube.received !== undefined);
         const byMyVaults = filter?.address
-          ? !!cubesDashboard[cube.network]?.[cube.earn as Address]?.balance
+          ? hasBalance
           : true;
 
         return bySearch && byChain && byPlatform && byMyVaults;

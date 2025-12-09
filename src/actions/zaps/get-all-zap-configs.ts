@@ -39,9 +39,21 @@ export const getAllZapConfigs = async (): Promise<ZapConfigsResponse> => {
 
     const response = await fetch(ZAP_CONFIGS_URL, { headers });
 
+    if (!response.ok) {
+      // If service is unavailable (503), return empty array
+      if (response.status === 503) {
+        console.warn('[getAllZapConfigs] Zap service is not available yet');
+        return [];
+      }
+      // For other errors, try to parse JSON error message
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      console.error('[getAllZapConfigs] API error:', response.status, errorData);
+      return [];
+    }
+
     return (await response.json()) as ZapConfigsResponse;
   } catch (error) {
-    console.error(error);
+    console.error('[getAllZapConfigs] Error:', error);
     return [];
   }
 };

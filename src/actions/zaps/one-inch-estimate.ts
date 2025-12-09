@@ -116,7 +116,6 @@ export const oneInchEstimate = async (
     
     return parseResponse;
   } catch (error) {
-    console.error('[oneInchEstimate] Error:', error);
     throw error;
   }
 };
