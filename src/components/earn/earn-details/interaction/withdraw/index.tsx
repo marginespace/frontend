@@ -56,6 +56,7 @@ export const EarnWithdraw = ({
   selectedToken,
   setSelectedToken,
 }: WithdrawProps) => {
+  const FULL_WITHDRAW_BUFFER = 0.01;
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isZapsLoading, setIsZapsLoading] = useState(false);
@@ -74,6 +75,7 @@ export const EarnWithdraw = ({
   const [slippageValue, setSlippageValue] = useState<number>(
     DEFAULT_WITHDRAW_SLIPPAGE,
   );
+  const [withdrawEntirePosition, setWithdrawEntirePosition] = useState(false);
 
   const displaySelectedToken = selectedToken;
   const vaultTokens = useCubeTokensWithdraw(cube, tokens);
@@ -123,15 +125,32 @@ export const EarnWithdraw = ({
     // ❗ ВСЕГДА округляем до 6 знаков!
     return Math.floor(fullBalance * 1000000) / 1000000;
   }, [positionCost]);
+  const fullWithdrawDisplayAmount = useMemo(() => {
+    if (positionCostParsed <= 0) {
+      return 0;
+    }
+    const buffered = positionCostParsed - FULL_WITHDRAW_BUFFER;
+    return buffered > 0 ? buffered : positionCostParsed;
+  }, [positionCostParsed, FULL_WITHDRAW_BUFFER]);
+  const partialWithdrawDefault = availableParsed;
+  const maxWithdrawableParsed = withdrawEntirePosition
+    ? fullWithdrawDisplayAmount
+    : partialWithdrawDefault;
+  const reservedParsed = Math.max(positionCostParsed - availableParsed, 0);
 
   const onMaxClick = useCallback(() => {
-    // positionCostParsed уже округлен до 6 знаков в useMemo
-    setAmountToWithdraw(positionCostParsed);
-    setIsUserEditing(true); // MAX тоже считается редактированием
-  }, [positionCostParsed]);
+    const targetAmount = withdrawEntirePosition
+      ? fullWithdrawDisplayAmount
+      : availableParsed;
+    setAmountToWithdraw(targetAmount);
+    setIsUserEditing(true);
+  }, [withdrawEntirePosition, fullWithdrawDisplayAmount, availableParsed]);
 
   const onWithdrawInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      if (withdrawEntirePosition) {
+        return;
+      }
       // Пользователь начал редактировать
       setIsUserEditing(true);
       setIsZapsLoading(true);
@@ -143,21 +162,29 @@ export const EarnWithdraw = ({
       // Ограничить до 6 знаков после запятой
       value = Math.floor(value * 1000000) / 1000000;
 
-      if (availableParsed) {
-        const parsedBalance = availableParsed;
-
-        if (value > parsedBalance) {
-          // availableParsed уже округлен до 6 знаков в useMemo
-          value = parsedBalance;
-        }
+      if (value > maxWithdrawableParsed) {
+        // ограничиваем ввод доступным лимитом
+        value = maxWithdrawableParsed;
       }
 
       return setAmountToWithdraw(value);
     },
-    [availableParsed],
+    [maxWithdrawableParsed, withdrawEntirePosition],
   );
 
   const { sendTransactionAsync: sendZapAsync } = useSendTransaction();
+
+  const handleWithdrawEntireToggle = useCallback(
+    (checked: boolean) => {
+      setWithdrawEntirePosition(checked);
+      setIsUserEditing(false);
+      const nextAmount = checked
+        ? fullWithdrawDisplayAmount
+        : partialWithdrawDefault;
+      setAmountToWithdraw(nextAmount);
+    },
+    [partialWithdrawDefault, fullWithdrawDisplayAmount],
+  );
 
   const onButtonClick = useCallback(async () => {
     if (isLoading) {
@@ -225,45 +252,54 @@ export const EarnWithdraw = ({
       }
       setIsZapsLoading(true);
 
-      const parsedAmountToWithdraw = parseUnits(
-        amountToWithdraw.toString().replace(',', '.'),
-        18,
-      );
+      const parsedAmountToWithdraw = withdrawEntirePosition
+        ? positionCost
+        : parseUnits(amountToWithdraw.toString().replace(',', '.'), 18);
 
       // Calculate size (withdrawCost) based on the proportion
       // If positionCost is 0, we can't calculate proportion, so use direct conversion
       let size: bigint;
       let actualWithdrawUsd = parsedAmountToWithdraw; // Default to user's input
-      
-      if (position && positionCost > BigInt(0)) {
+
+      if (withdrawEntirePosition) {
+        if (!position) {
+          throw new Error('No position found for this user');
+        }
+        size = position[2];
+        actualWithdrawUsd = positionCost;
+      } else if (position && positionCost > BigInt(0)) {
         // Calculate the proportion: size = (positionSize * withdrawUsd) / positionCost
         // But if user is withdrawing the full available amount (stableWithoutReservedUsd),
         // we should treat it as a full withdrawal to ensure reserved amount is returned
         const positionSize = position[2];
-        const calculatedSize = (positionSize * parsedAmountToWithdraw) / positionCost;
-        
+        const calculatedSize =
+          (positionSize * parsedAmountToWithdraw) / positionCost;
+
         // Check if user is withdrawing approximately the full available amount
         // If so, set size = positionSize to ensure it's treated as a full withdrawal
         // This ensures the reserved amount is returned (see EarnPool.sol line 419)
         // We use a small tolerance (0.01%) to account for rounding
         const tolerance = (parsedAmountToWithdraw * BigInt(1)) / BigInt(10000); // 0.01%
-        const isFullAvailableWithdrawal = 
-          parsedAmountToWithdraw >= available - tolerance && 
+        const isFullAvailableWithdrawal =
+          parsedAmountToWithdraw >= available - tolerance &&
           parsedAmountToWithdraw <= available + tolerance;
-        
+
         if (isFullAvailableWithdrawal && positionSize > BigInt(0)) {
           // User is withdrawing full available amount, treat as full withdrawal
           // This ensures reserved amount is returned
           size = positionSize;
           // When doing full withdrawal, use positionCost (which includes reserved) for calculations
           actualWithdrawUsd = positionCost;
-          console.log('[EarnWithdraw] Full available withdrawal detected, setting size to positionSize:', {
-            positionSize: positionSize.toString(),
-            available: available.toString(),
-            parsedAmountToWithdraw: parsedAmountToWithdraw.toString(),
-            positionCost: positionCost.toString(),
-            actualWithdrawUsd: actualWithdrawUsd.toString(),
-          });
+          console.log(
+            '[EarnWithdraw] Full available withdrawal detected, setting size to positionSize:',
+            {
+              positionSize: positionSize.toString(),
+              available: available.toString(),
+              parsedAmountToWithdraw: parsedAmountToWithdraw.toString(),
+              positionCost: positionCost.toString(),
+              actualWithdrawUsd: actualWithdrawUsd.toString(),
+            },
+          );
         } else {
           size = calculatedSize;
         }
@@ -274,10 +310,12 @@ export const EarnWithdraw = ({
           cube.stableDecimals,
         );
       }
-      
+
       // Validate that size is not zero (this will be caught by withdrawEarn, but check early for better UX)
       if (size === BigInt(0) && parsedAmountToWithdraw > BigInt(0)) {
-        throw new Error('Withdrawal amount is too small. Please increase the withdrawal amount.');
+        throw new Error(
+          'Withdrawal amount is too small. Please increase the withdrawal amount.',
+        );
       }
 
       const data = await withdrawEarn({
@@ -291,6 +329,7 @@ export const EarnWithdraw = ({
         positionCost,
         withdrawUsd: actualWithdrawUsd,
         unwrapNative: selectedVaultToken.isNative,
+        forceFullWithdrawal: withdrawEntirePosition,
       });
       setZapsData(data);
     }
@@ -299,12 +338,15 @@ export const EarnWithdraw = ({
       .catch((error) => {
         console.error('[EarnWithdraw] Error loading zap data:', error);
         setZapsData(null);
-        
+
         // Show user-friendly error messages
         if (error instanceof Error) {
           const errorMessage = error.message;
-          
-          if (errorMessage.includes('too small') || errorMessage.includes('invalid')) {
+
+          if (
+            errorMessage.includes('too small') ||
+            errorMessage.includes('invalid')
+          ) {
             // Don't show toast for small amounts during calculation, user can adjust
             console.warn('Withdrawal amount validation:', errorMessage);
           } else if (errorMessage.includes('insufficient liquidity')) {
@@ -314,14 +356,21 @@ export const EarnWithdraw = ({
               title: 'Insufficient Liquidity',
               description: 'Please try withdrawing to stable token instead.',
             });
-          } else if (errorMessage.includes('1inch') || errorMessage.includes('unavailable')) {
+          } else if (
+            errorMessage.includes('1inch') ||
+            errorMessage.includes('unavailable')
+          ) {
             console.warn('1inch API issue:', errorMessage);
             toast({
               variant: 'destructive',
               title: 'Swap Service Unavailable',
-              description: 'Please try withdrawing to stable token or try again later.',
+              description:
+                'Please try withdrawing to stable token or try again later.',
             });
-          } else if (errorMessage.includes('Contract simulation failed') || errorMessage.includes('revert')) {
+          } else if (
+            errorMessage.includes('Contract simulation failed') ||
+            errorMessage.includes('revert')
+          ) {
             console.warn('Withdrawal amount validation:', errorMessage);
             toast({
               variant: 'destructive',
@@ -350,6 +399,8 @@ export const EarnWithdraw = ({
     available,
     publicClient,
     slippageValue,
+    withdrawEntirePosition,
+    toast,
   ]);
 
   useEffect(() => {
@@ -358,21 +409,31 @@ export const EarnWithdraw = ({
 
   // Auto-fill balance on wallet/position change
   useEffect(() => {
-    if (!isConnected || !address || !positionCostParsed) {
+    if (!isConnected || !address) {
       return;
     }
 
-    // Only auto-fill if user hasn't started editing
     if (isUserEditing) {
       return;
     }
 
-    if (positionCostParsed > 0) {
-      // positionCostParsed is already rounded to 6 decimals
-      setAmountToWithdraw(positionCostParsed);
+    const defaultAmount = withdrawEntirePosition
+      ? fullWithdrawDisplayAmount
+      : partialWithdrawDefault;
+
+    if (defaultAmount > 0) {
+      setAmountToWithdraw(defaultAmount);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, address, positionCostParsed, isUserEditing]);
+  }, [
+    isConnected,
+    address,
+    positionCostParsed,
+    partialWithdrawDefault,
+    fullWithdrawDisplayAmount,
+    withdrawEntirePosition,
+    isUserEditing,
+  ]);
 
   return (
     <div className="flex flex-col gap-[16px] rounded-b-[12px] rounded-tr-[12px] bg-white bg-opacity-11 p-[16px]">
@@ -406,6 +467,7 @@ export const EarnWithdraw = ({
               step={0.1}
               value={amountToWithdrawInput}
               onChange={onWithdrawInputChange}
+              disabled={withdrawEntirePosition}
             />
             <DropdownTradeButton
               selectedToken={displaySelectedToken}
@@ -414,6 +476,20 @@ export const EarnWithdraw = ({
               setOpen={setIsCollapsibleOpen}
             />
           </div>
+          <label className="flex items-center gap-2 text-xs text-[#CFC9FF]">
+            <input
+              type="checkbox"
+              className="h-4 w-4"
+              checked={withdrawEntirePosition}
+              onChange={(event) =>
+                handleWithdrawEntireToggle(event.target.checked)
+              }
+            />
+            <span>
+              Withdraw entire position (incl. reserved ≈ $
+              {reservedParsed.toFixed(2)})
+            </span>
+          </label>
         </div>
         <CollapsibleContent asChild>
           <div className="flex flex-col gap-[12px]">
@@ -457,7 +533,7 @@ export const EarnWithdraw = ({
                   isLoading ||
                   isZapsLoading ||
                   amountToWithdrawInput === 0 ||
-                  amountToWithdraw > positionCostParsed
+                  amountToWithdraw > maxWithdrawableParsed
                 }
               >
                 {amountToWithdrawInput === 0 ? (

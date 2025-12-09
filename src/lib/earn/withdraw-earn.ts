@@ -25,6 +25,7 @@ export const withdrawEarn = async ({
   slippage,
   positionCost,
   unwrapNative,
+  forceFullWithdrawal = false,
 }: {
   cube: CubeWithApyAndTvl;
   provider: AppPublicClient;
@@ -36,6 +37,7 @@ export const withdrawEarn = async ({
   slippage: bigint;
   positionCost: bigint;
   unwrapNative: boolean;
+  forceFullWithdrawal?: boolean;
 }) => {
   const stopLossPercents = +formatUnits(stopLossCostPercent, 18);
   const earnPoolChecker = getContract({
@@ -64,15 +66,22 @@ export const withdrawEarn = async ({
   // Extract position fields: [automationTaskId, reservedForAutomation, size, stopLossCost, stopLossPercent]
   const reserved = position[1];
   const positionSize = position[2];
+  let effectiveWithdrawCost = withdrawCost;
+  let effectiveWithdrawUsd = withdrawUsd;
+
+  if (forceFullWithdrawal) {
+    effectiveWithdrawCost = positionSize;
+    effectiveWithdrawUsd = positionCost;
+  }
 
   // Validate position and withdrawCost
   if (positionSize === BigInt(0)) {
     throw new Error('No position found for this user');
   }
-  if (withdrawCost > positionSize) {
+  if (effectiveWithdrawCost > positionSize) {
     throw new Error('Withdraw amount exceeds position size');
   }
-  if (withdrawCost === BigInt(0)) {
+  if (effectiveWithdrawCost === BigInt(0)) {
     throw new Error('Withdraw amount must be greater than 0');
   }
 
@@ -84,16 +93,16 @@ export const withdrawEarn = async ({
   // Or: withdrawCost >= size / PERCENTS_100
   // But due to integer division, we need: withdrawCost >= ceil(size / PERCENTS_100)
   // Check if (withdrawCost * percents) < positionSize, which means partToWithdraw will be 0
-  const withdrawCostTimesPercents = withdrawCost * percents;
+  const withdrawCostTimesPercents = effectiveWithdrawCost * percents;
   const partToWithdrawCheck = withdrawCostTimesPercents / positionSize;
 
   console.log(
-    `[withdrawEarn] Validation: withdrawCost=${withdrawCost}, positionSize=${positionSize}, percents=${percents}, partToWithdrawCheck=${partToWithdrawCheck}`,
+    `[withdrawEarn] Validation: withdrawCost=${effectiveWithdrawCost}, positionSize=${positionSize}, percents=${percents}, partToWithdrawCheck=${partToWithdrawCheck}`,
   );
 
   if (
     partToWithdrawCheck === BigInt(0) &&
-    withdrawCost > BigInt(0) &&
+    effectiveWithdrawCost > BigInt(0) &&
     positionSize > BigInt(0)
   ) {
     // Calculate minimum withdrawCost needed: ceil(positionSize / percents)
@@ -103,7 +112,7 @@ export const withdrawEarn = async ({
       (minWithdrawCost * price) / BigInt(10 ** cube.stableDecimals);
     const minWithdrawFormatted = formatUnits(minWithdrawUsd, 18);
     console.warn(
-      `[withdrawEarn] Withdraw amount too small: withdrawCost=${withdrawCost}, minWithdrawCost=${minWithdrawCost}, minWithdrawUsd=$${minWithdrawFormatted}`,
+      `[withdrawEarn] Withdraw amount too small: withdrawCost=${effectiveWithdrawCost}, minWithdrawCost=${minWithdrawCost}, minWithdrawUsd=$${minWithdrawFormatted}`,
     );
     throw new Error(
       `Withdrawal amount is too small. Minimum withdrawal is approximately $${parseFloat(
@@ -118,18 +127,18 @@ export const withdrawEarn = async ({
   // This is a heuristic to catch rounding errors
   const suspiciouslySmall = BigInt(10 ** 12);
   if (
-    withdrawCost > BigInt(0) &&
-    withdrawCost < suspiciouslySmall &&
+    effectiveWithdrawCost > BigInt(0) &&
+    effectiveWithdrawCost < suspiciouslySmall &&
     positionSize > suspiciouslySmall
   ) {
     console.warn(
-      `[withdrawEarn] withdrawCost ${withdrawCost} seems suspiciously small compared to positionSize ${positionSize}`,
+      `[withdrawEarn] withdrawCost ${effectiveWithdrawCost} seems suspiciously small compared to positionSize ${positionSize}`,
     );
   }
 
   // Calculate approximate stopLossCost before calling getWithdrawAmountOut
   // This is needed because getWithdrawAmountOut requires the correct stopLossCost parameter
-  const costAfterWithdraw = positionCost - withdrawUsd;
+  const costAfterWithdraw = positionCost - effectiveWithdrawUsd;
   const adjustedCost =
     costAfterWithdraw - (reserved * price) / BigInt(10 ** cube.stableDecimals);
 
@@ -137,8 +146,11 @@ export const withdrawEarn = async ({
   const calculatedStopLossCost =
     (adjustedCost * BigInt(stopLossPercents)) / BigInt(100);
 
-  const stopLossCost =
-    calculatedStopLossCost < BigInt(0) ? BigInt(0) : calculatedStopLossCost;
+  const stopLossCost = forceFullWithdrawal
+    ? BigInt(0)
+    : calculatedStopLossCost < BigInt(0)
+    ? BigInt(0)
+    : calculatedStopLossCost;
 
   // Now call getWithdrawAmountOut with the calculated stopLossCost
   let stableExpected: bigint;
@@ -146,7 +158,7 @@ export const withdrawEarn = async ({
     const result = await earnPoolChecker.simulate.getWithdrawAmountOut([
       getAddress(cube.earn),
       userAddress,
-      withdrawCost,
+      effectiveWithdrawCost,
       stopLossCost,
     ]);
     stableExpected = result.result;
@@ -162,7 +174,7 @@ export const withdrawEarn = async ({
       const result = await earnPoolChecker.simulate.getWithdrawAmountOut([
         getAddress(cube.earn),
         userAddress,
-        withdrawCost,
+        effectiveWithdrawCost,
         BigInt(0),
       ]);
       stableExpected = result.result;
@@ -179,13 +191,13 @@ export const withdrawEarn = async ({
       ) {
         // Check if it's likely due to too small withdrawal amount
         // Recalculate partToWithdrawCheck to see if that's the issue
-        const withdrawCostTimesPercents = withdrawCost * percents;
+        const withdrawCostTimesPercents = effectiveWithdrawCost * percents;
         const partToWithdrawCheckRecalc =
           withdrawCostTimesPercents / positionSize;
 
         if (
           partToWithdrawCheckRecalc === BigInt(0) &&
-          withdrawCost > BigInt(0) &&
+          effectiveWithdrawCost > BigInt(0) &&
           positionSize > BigInt(0)
         ) {
           // Calculate minimum withdrawCost needed: ceil(positionSize / percents)
@@ -205,7 +217,7 @@ export const withdrawEarn = async ({
 
         // Log additional info for debugging
         console.error(`[withdrawEarn] Contract revert details:`, {
-          withdrawCost: withdrawCost.toString(),
+          withdrawCost: effectiveWithdrawCost.toString(),
           positionSize: positionSize.toString(),
           partToWithdrawCheck: partToWithdrawCheckRecalc.toString(),
           stopLossCost: stopLossCost.toString(),
@@ -230,7 +242,9 @@ export const withdrawEarn = async ({
   // The contract checks: size - params.withdrawCost == 0 (exact match)
   // We check the same condition, accounting for potential rounding by checking if difference is negligible
   const remainingAfterWithdraw =
-    positionSize > withdrawCost ? positionSize - withdrawCost : BigInt(0);
+    positionSize > effectiveWithdrawCost
+      ? positionSize - effectiveWithdrawCost
+      : BigInt(0);
   // Consider it a full withdrawal if remaining is 0 or very small (less than 1e12, accounting for rounding)
   // BUT: The contract uses exact match (size - params.withdrawCost == 0), so we should be more strict
   // However, due to rounding in calculations, we allow a small tolerance
@@ -242,7 +256,7 @@ export const withdrawEarn = async ({
   // Log detailed information for debugging
   console.log('[withdrawEarn] Reserved amount calculation:', {
     positionSize: positionSize.toString(),
-    withdrawCost: withdrawCost.toString(),
+    withdrawCost: effectiveWithdrawCost.toString(),
     remainingAfterWithdraw: remainingAfterWithdraw.toString(),
     isFullWithdrawal,
     stopLossCost: stopLossCost.toString(),
@@ -268,6 +282,11 @@ export const withdrawEarn = async ({
 
   const stableExpectedWithSlippage =
     stableWithoutReserved - (stableWithoutReserved * slippage) / percents;
+  const minStableOut = forceFullWithdrawal
+    ? BigInt(0)
+    : stableExpectedWithSlippage > BigInt(0)
+    ? stableExpectedWithSlippage
+    : BigInt(0);
 
   let oneInchSwap: Awaited<ReturnType<typeof oneInchEstimate>> | undefined;
 
@@ -305,10 +324,10 @@ export const withdrawEarn = async ({
   }
 
   const calldata = encodeEarnWithdrawData({
-    withdrawCost,
+    withdrawCost: effectiveWithdrawCost,
     withdrawalToken: tokenTo,
     unwrapNative,
-    minStableOut: stableExpectedWithSlippage,
+    minStableOut,
     oneInchSwapData: (oneInchSwap?.tx.data as Hex) ?? '0x',
     stopLossCost,
   });
@@ -316,7 +335,7 @@ export const withdrawEarn = async ({
   return {
     oneInchSwap,
     calldata,
-    minStableOutL: stableExpectedWithSlippage,
+    minStableOutL: minStableOut,
   };
 };
 
