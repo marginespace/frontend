@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margin Space - Under Maintenance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #0e121b 0%, #1a1f2e 50%, #0e121b 100%);
+            background-size: 200% 200%;
+            animation: gradient-shift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/margin-background.svg');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            z-index: 0;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(212, 107, 48, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse-glow 4s ease-in-out infinite;
+            z-index: 0;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.15;
+            }
+        }
+        
+        .container {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.08) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 60px 50px;
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 107, 48, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            z-index: 1;
+            animation: slide-up 0.8s ease-out;
+        }
+        
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo {
+            margin: 0 auto 40px;
+            animation: fade-in 1s ease-out 0.3s both;
+        }
+        
+        .logo svg {
+            width: 180px;
+            height: auto;
+            filter: drop-shadow(0 4px 12px rgba(212, 107, 48, 0.3));
+        }
+        
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 35px;
+            background: linear-gradient(135deg, #D58438 0%, #D54D27 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(212, 107, 48, 0.4), 0 0 20px rgba(212, 107, 48, 0.3);
+            animation: pulse-orange 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .icon::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #D58438 0%, #D54D27 100%);
+            opacity: 0.3;
+            filter: blur(10px);
+            animation: rotate-glow 3s linear infinite;
+        }
+        
+        @keyframes rotate-glow {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .icon svg {
+            width: 50px;
+            height: 50px;
+            fill: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes pulse-orange {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 8px 32px rgba(212, 107, 48, 0.4), 0 0 20px rgba(212, 107, 48, 0.3);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 12px 48px rgba(212, 107, 48, 0.6), 0 0 40px rgba(212, 107, 48, 0.5);
+            }
+        }
+        
+        h1 {
+            font-size: 36px;
+            color: #ffffff;
+            margin-bottom: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+            animation: fade-in 1s ease-out 0.5s both;
+        }
+        
+        p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+            margin-bottom: 16px;
+            animation: fade-in 1s ease-out 0.7s both;
+        }
+        
+        .status {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(212, 107, 48, 0.15);
+            border: 1px solid rgba(212, 107, 48, 0.3);
+            padding: 14px 28px;
+            border-radius: 50px;
+            margin-top: 35px;
+            font-size: 15px;
+            color: #FFF094;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(212, 107, 48, 0.2);
+            animation: fade-in 1s ease-out 0.9s both;
+        }
+        
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #D46B30;
+            border-radius: 50%;
+            margin-right: 10px;
+            box-shadow: 0 0 8px rgba(212, 107, 48, 0.6), 0 0 16px rgba(212, 107, 48, 0.4);
+            animation: blink 2s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.9);
+            }
+        }
+        
+        .contact {
+            margin-top: 30px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            animation: fade-in 1s ease-out 1.1s both;
+        }
+        
+        .contact a {
+            color: #D46B30;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .contact a:hover {
+            color: #F59E0B;
+            text-shadow: 0 0 8px rgba(212, 107, 48, 0.6);
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                padding: 40px 30px;
+                border-radius: 20px;
+            }
+            
+            .logo svg {
+                width: 140px;
+            }
+            
+            h1 {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+            
+            p {
+                font-size: 16px;
+            }
+            
+            .icon {
+                width: 85px;
+                height: 85px;
+                margin-bottom: 30px;
+            }
+            
+            .icon svg {
+                width: 42px;
+                height: 42px;
+            }
+            
+            .status {
+                padding: 12px 24px;
+                font-size: 14px;
+                margin-top: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <svg width="126" height="43" viewBox="0 0 126 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M67.1157 5.81438V18.6904H65.0004V9.51165L61.0824 15.9865H60.8249L56.9069 9.49325V18.6904H54.7915V5.81438H57.0724L60.9536 12.2524L64.8532 5.81438H67.1157ZM78.6227 18.6904L77.7214 16.0968H72.2398L71.3385 18.6904H69.0392L73.7114 5.81438H76.2498L80.9036 18.6904H78.6227ZM72.9388 14.1102H77.0224L74.9806 8.29762L72.9388 14.1102ZM90.1794 18.6904L87.457 13.9999H84.9554V18.6904H82.84V5.81438H87.9904C89.1432 5.81438 90.1181 6.21906 90.9151 7.02841C91.7245 7.8255 92.1292 8.8004 92.1292 9.95311C92.1292 10.7747 91.89 11.5289 91.4118 12.2156C90.9458 12.8901 90.3327 13.3806 89.5724 13.6872L92.4971 18.6904H90.1794ZM84.9554 7.80097V12.1053H87.9904C88.5545 12.1053 89.0328 11.8968 89.4252 11.4798C89.8176 11.0629 90.0138 10.554 90.0138 9.95311C90.0138 9.35223 89.8176 8.84332 89.4252 8.42638C89.0328 8.00944 88.5545 7.80097 87.9904 7.80097H84.9554ZM107.109 12.0317V12.9146C107.109 14.6805 106.527 16.1275 105.362 17.2557C104.197 18.3716 102.676 18.9296 100.8 18.9296C98.8136 18.9296 97.1704 18.2858 95.8706 16.9981C94.5829 15.7105 93.9391 14.1286 93.9391 12.2524C93.9391 10.3884 94.5829 8.81266 95.8706 7.52506C97.1704 6.22519 98.7769 5.57526 100.69 5.57526C101.892 5.57526 102.989 5.85117 103.982 6.403C104.976 6.95483 105.748 7.69674 106.3 8.62872L104.479 9.6772C104.136 9.06405 103.627 8.57354 102.952 8.20565C102.278 7.8255 101.524 7.63543 100.69 7.63543C99.341 7.63543 98.2312 8.07689 97.3605 8.95982C96.4898 9.84275 96.0545 10.9464 96.0545 12.2708C96.0545 13.5952 96.4898 14.6927 97.3605 15.5634C98.2434 16.4341 99.3961 16.8694 100.819 16.8694C101.959 16.8694 102.885 16.6057 103.596 16.0784C104.32 15.5389 104.78 14.8215 104.976 13.9263H100.671V12.0317H107.109ZM109.595 5.81438H111.711V18.6904H109.595V5.81438ZM122.561 5.81438H124.676V18.6904H123.021L116.951 9.95311V18.6904H114.835V5.81438H116.491L122.561 14.5517V5.81438Z" fill="white"/>
+                <path d="M59.0774 36.6151C57.8388 36.6151 56.7842 36.3331 55.9136 35.769C55.0552 35.2049 54.4543 34.4323 54.1109 33.4513L55.932 32.3844C56.447 33.8314 57.5139 34.5549 59.1326 34.5549C59.9297 34.5549 60.5244 34.4016 60.9168 34.0951C61.3215 33.7762 61.5238 33.3654 61.5238 32.8627C61.5238 32.3354 61.3092 31.9368 60.88 31.667C60.4508 31.385 59.6905 31.0784 58.5991 30.7473C57.986 30.5634 57.4893 30.3917 57.1092 30.2323C56.729 30.0728 56.3244 29.8521 55.8952 29.5701C55.4782 29.2758 55.1655 28.914 54.9571 28.4848C54.7486 28.0556 54.6444 27.5528 54.6444 26.9765C54.6444 25.836 55.049 24.9347 55.8584 24.2725C56.6677 23.598 57.6426 23.2608 58.7831 23.2608C59.8132 23.2608 60.7145 23.5122 61.4871 24.015C62.2596 24.5178 62.8544 25.2106 63.2713 26.0935L61.4871 27.1236C60.9475 25.9219 60.0462 25.321 58.7831 25.321C58.1699 25.321 57.6794 25.4681 57.3115 25.7624C56.9436 26.0445 56.7597 26.4308 56.7597 26.9213C56.7597 27.3995 56.9436 27.7797 57.3115 28.0617C57.6917 28.3315 58.3723 28.6197 59.3533 28.9263C59.8438 29.0857 60.1994 29.2083 60.4202 29.2942C60.6532 29.3677 60.972 29.4904 61.3767 29.662C61.7936 29.8337 62.1063 30.0054 62.3148 30.1771C62.5233 30.3488 62.744 30.5634 62.977 30.8209C63.2223 31.0784 63.3939 31.3727 63.492 31.7038C63.5901 32.0349 63.6392 32.4089 63.6392 32.8259C63.6392 33.9908 63.2161 34.9167 62.37 35.6034C61.5361 36.2779 60.4386 36.6151 59.0774 36.6151ZM70.6694 23.4999C71.8835 23.4999 72.8951 23.9046 73.7045 24.714C74.5261 25.5233 74.9369 26.5289 74.9369 27.7306C74.9369 28.9201 74.5261 29.9257 73.7045 30.7473C72.8951 31.5567 71.8835 31.9613 70.6694 31.9613H68.039V36.376H65.9237V23.4999H70.6694ZM70.6694 29.9747C71.2948 29.9747 71.8099 29.7663 72.2146 29.3493C72.6192 28.9201 72.8216 28.3806 72.8216 27.7306C72.8216 27.0807 72.6192 26.5473 72.2146 26.1303C71.8099 25.7011 71.2948 25.4865 70.6694 25.4865H68.039V29.9747H70.6694ZM84.4198 36.376L83.5185 33.7824H78.0369L77.1356 36.376H74.8363L79.5085 23.4999H82.0469L86.7007 36.376H84.4198ZM78.7359 31.7958H82.8195L80.7777 25.9832L78.7359 31.7958ZM94.2406 36.6151C92.3031 36.6151 90.6967 35.9774 89.4213 34.7021C88.146 33.4145 87.5083 31.8264 87.5083 29.938C87.5083 28.0495 88.146 26.4676 89.4213 25.1922C90.6967 23.9046 92.3031 23.2608 94.2406 23.2608C95.4056 23.2608 96.4786 23.5367 97.4596 24.0885C98.4529 24.6404 99.2255 25.3884 99.7773 26.3327L97.9379 27.3995C97.5945 26.7619 97.0918 26.2591 96.4296 25.8912C95.7796 25.511 95.05 25.321 94.2406 25.321C92.8672 25.321 91.7513 25.7563 90.8929 26.627C90.0467 27.4976 89.6237 28.6013 89.6237 29.938C89.6237 31.2746 90.0467 32.3783 90.8929 33.2489C91.7513 34.1196 92.8672 34.5549 94.2406 34.5549C95.05 34.5549 95.7858 34.371 96.448 34.0031C97.1102 33.623 97.6068 33.114 97.9379 32.4764L99.7773 33.5249C99.2378 34.4691 98.4713 35.2233 97.478 35.7874C96.497 36.3392 95.4179 36.6151 94.2406 36.6151ZM104.202 34.3526H109.904V36.376H102.087V23.4999H109.812V25.5233H104.202V28.8711H109.352V30.8761H104.202V34.3526Z" fill="white"/>
+                <rect width="43.4122" height="43" rx="11.8051" fill="url(#paint0_linear_3609_2012)"/>
+                <rect x="19.6948" y="11.3193" width="4.02569" height="4.62448" rx="0.597693" transform="rotate(90 19.6948 11.3193)" fill="black"/>
+                <rect width="4.02569" height="4.62448" rx="0.597693" transform="matrix(3.71822e-08 1 1 -5.13871e-08 23.6069 11.3193)" fill="black"/>
+                <rect width="3.81521" height="4.30389" rx="0.597693" transform="matrix(3.75387e-08 1 1 -5.08991e-08 23.7676 27.8872)" fill="black"/>
+                <rect x="11.0981" y="23.2041" width="8.41114" height="4.62448" rx="0.597693" transform="rotate(90 11.0981 23.2041)" fill="black"/>
+                <rect width="8.41114" height="4.62448" rx="0.597693" transform="matrix(3.75387e-08 1 1 -5.08991e-08 32.21 23.2041)" fill="black"/>
+                <rect x="15.4146" y="15.1104" width="8.41114" height="4.62448" rx="0.597693" transform="rotate(90 15.4146 15.1104)" fill="black"/>
+                <rect width="8.41114" height="4.62448" rx="0.597693" transform="matrix(3.75387e-08 1 1 -5.08991e-08 27.8604 15.1104)" fill="black"/>
+                <rect width="8.41114" height="4.62448" rx="0.597693" transform="matrix(3.75387e-08 1 1 -5.08991e-08 19.3418 15.1104)" fill="black"/>
+                <defs>
+                <linearGradient id="paint0_linear_3609_2012" x1="31.4081" y1="13.1126" x2="-6.56232" y2="26.2151" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D58438"/>
+                <stop offset="1" stop-color="#D54D27"/>
+                </linearGradient>
+                </defs>
+            </svg>
+        </div>
+        
+        <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+        </div>
+        
+        <h1>Site Under Maintenance</h1>
+        
+        <p>We're performing scheduled maintenance to improve our service.</p>
+        
+        <p>We apologize for any inconvenience and appreciate your patience.</p>
+        
+        <div class="status">
+            <span class="status-dot"></span>
+            Maintenance in Progress
+        </div>
+    </div>
+</body>
+</html>
